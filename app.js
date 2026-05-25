@@ -169,7 +169,7 @@ const ALL_FLOW_NODES = {
   focus_areas: {
     type: 'multiple',
     title: 'Which areas of your life need the most attention right now?',
-    subtitle: 'Select all that apply. We will dynamically build your custom flows.',
+    subtitle: '',
     options: [
       { id: 'physical_health', text: 'Physical Health & Fitness', desc: 'Strength, stamina, nutrition, and exercise consistency.', icon: 'activity' },
       { id: 'mental_health', text: 'Mental Health & Inner Peace', desc: 'Mindfulness, anxiety reduction, stress relief, and calm.', icon: 'heart' },
@@ -192,7 +192,7 @@ const ALL_FLOW_NODES = {
   fitness_activity: {
     type: 'single',
     title: 'What is your current physical activity level?',
-    subtitle: 'This defines your structural movement baseline.',
+    subtitle: '',
     options: [
       { id: 'fit_act_sedentary', text: 'Sedentary', desc: 'Rare movement, mostly desk-bound or stationary.', icon: 'coffee' },
       { id: 'fit_act_lightly', text: 'Lightly Active', desc: 'Occasional walks, active housework, or light chores.', icon: 'compass' },
@@ -208,7 +208,7 @@ const ALL_FLOW_NODES = {
   relationship_status: {
     type: 'single',
     title: 'What is your current relationship focus?',
-    subtitle: 'This helps adapt Stoic communication guidelines to your context.',
+    subtitle: '',
     options: [
       { id: 'rel_stat_single', text: 'Single', desc: 'Focusing on building personal autonomy and self-sovereignty.', icon: 'user' },
       { id: 'rel_stat_dating', text: 'In a relationship', desc: 'Navigating companionship, deep sharing, and mutual growth.', icon: 'heart' },
@@ -502,7 +502,7 @@ const ALL_FLOW_NODES = {
   reflection_progress: {
     type: 'single',
     title: 'What would progress look like for you?',
-    subtitle: 'Define your victory condition. Focus anchors action.',
+    subtitle: '',
     options: [
       { id: 'ref_prog_happier', text: 'Feeling happier daily', desc: 'Reducing cortisol spikes, finding organic presence and calm.', icon: 'smile' },
       { id: 'ref_prog_disciplined', text: 'Becoming disciplined', desc: 'Waking up, showing up, doing the work even when you hate it.', icon: 'shield' },
@@ -519,7 +519,7 @@ const ALL_FLOW_NODES = {
   reflection_pride: {
     type: 'single',
     title: 'When was the last time you truly felt proud of yourself?',
-    subtitle: 'A critical mirror. Realize where you stand.',
+    subtitle: '',
     options: [
       { id: 'ref_pride_today', text: 'Today', desc: 'Consistent wins, maintaining steady personal momentum.', icon: 'check-circle' },
       { id: 'ref_pride_last_few', text: 'Within the last few days', desc: 'Brief bursts, but looking for unshakeable permanence.', icon: 'rotate-cw' },
@@ -535,7 +535,7 @@ const ALL_FLOW_NODES = {
   identity: {
     type: 'single',
     title: 'Which statement sounds most like you?',
-    subtitle: 'This defines your deep mental archetype.',
+    subtitle: '',
     options: [
       { id: 'id_rebuild_life', text: 'I’m trying to rebuild my life slowly', desc: 'Healing systems, establishing gentle baseline routines.', icon: 'activity' },
       { id: 'id_disciplined', text: 'I want to become disciplined and consistent', desc: 'Systemizing habits, killing doomscrolling and distractions.', icon: 'lock' },
@@ -551,7 +551,7 @@ const ALL_FLOW_NODES = {
   values_priorities: {
     type: 'multiple',
     title: 'What matters most to you right now?',
-    subtitle: 'Select everything that resonates. This aligns your core drivers.',
+    subtitle: '',
     options: [
       { id: 'val_phys_health', text: 'Physical Health & Energy', desc: 'Optimizing body vitality, sleep cycles, and daily strength.', icon: 'activity' },
       { id: 'val_inner_peace', text: 'Inner Peace & Mental Calm', desc: 'Mindfulness practice, anxiety reduction, and mental silence.', icon: 'heart' },
@@ -574,7 +574,7 @@ const ALL_FLOW_NODES = {
   daily_environment: {
     type: 'multiple',
     title: 'Where do you spend most of your time?',
-    subtitle: 'Select all that apply. Your surroundings shape your habits.',
+    subtitle: '',
     options: [
       { id: 'env_home', text: 'At home with family', desc: 'Cozy spaces, domestic dynamics, and shared routines.', icon: 'home' },
       { id: 'env_alone', text: 'Mostly alone', desc: 'Solitary focus, quiet contemplation, or lonely plateaus.', icon: 'user' },
@@ -656,7 +656,7 @@ const ALL_FLOW_NODES = {
   future_self_vision: {
     type: 'multiple',
     title: 'If everything improved in the next year, what would change the most?',
-    subtitle: 'Select everything that applies. Vision anchors consistency.',
+    subtitle: '',
     options: [
       { id: 'vis_body', text: 'My body and health', desc: 'Gaining athletic shape, clean power, and longevity.', icon: 'activity' },
       { id: 'vis_confidence', text: 'My confidence', desc: 'Standing tall, speaking with voice, killing self-doubt.', icon: 'smile' },
@@ -676,7 +676,7 @@ const ALL_FLOW_NODES = {
   final_mindset: {
     type: 'single',
     title: 'What kind of life are you trying to build?',
-    subtitle: 'This defines your ultimate blueprint target.',
+    subtitle: '',
     options: [
       { id: 'mnd_peace', text: 'A peaceful and balanced life', desc: 'Prioritizing rest, mindfulness, clean routines, and calm.', icon: 'wind' },
       { id: 'mnd_success', text: 'A disciplined and successful life', desc: 'Reaching professional peaks, building financial security.', icon: 'shield' },
