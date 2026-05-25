@@ -263,8 +263,7 @@ const ALL_FLOW_NODES = {
             YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST HAVING FUN WITH THE APP YOU LITTLE BITCH?
           </h1>
           <button id="btn-mogging-reset" class="btn-premium danger mogging-btn">
-            <span>I will fix up and choose a plan</span>
-            <i data-lucide="rotate-ccw"></i>
+            <span>[ I will fix up and choose a plan ↺ ]</span>
           </button>
         </div>
       `;
@@ -312,7 +311,7 @@ const ALL_FLOW_NODES = {
       // Map to gym_q1 for downstream split widgets & metrics
       state.sessionData.flow_responses.gym_q1 = val;
       // Default a low consistency target for active widget splitting fallback
-      state.sessionData.flow_responses.gym_q2 = "Just trying to get moving (1-2 days a week).";
+      state.sessionData.flow_responses.gym_q2 = "1–3 days a week.";
       buildDynamicQueue();
     }
   },
@@ -322,9 +321,9 @@ const ALL_FLOW_NODES = {
     title: "What's your weekly consistency target?",
     subtitle: "",
     options: [
-      { id: 'gym_q2_moving', text: "Just trying to get moving (1-2 days a week).", desc: "Establishing a low-friction entry point for physical baseline.", icon: 'activity' },
-      { id: 'gym_q2_steady', text: "A steady, sustainable routine (3 days a week).", desc: "Solid, balanced split to build muscle and fitness.", icon: 'calendar' },
-      { id: 'gym_q2_serious', text: "Serious performance training (4-5 days a week).", desc: "High-frequency athlete program for advanced physical transformation.", icon: 'zap' }
+      { id: 'gym_q2_choice1', text: "1–3 days a week.", desc: "Establishing a low-friction entry point for physical baseline.", icon: 'activity' },
+      { id: 'gym_q2_choice2', text: "4–6 days a week.", desc: "Solid, balanced split to build muscle and fitness.", icon: 'calendar' },
+      { id: 'gym_q2_choice3', text: "7 or more days a week.", desc: "High-frequency regimen with minimal room for systemic recovery.", icon: 'zap' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.gym_q2 = val;
@@ -2000,6 +1999,12 @@ function calculateLifeMapMetrics() {
       rest -= 20;
     }
   }
+  
+  // Deduct 25 points if consistency target is 7 or more days (severe overtraining)
+  if (flow.gym_q2 === "7 or more days a week.") {
+    rest -= 25;
+  }
+  
   rest = Math.min(100, Math.max(15, rest));
 
   // 4. MIND (Focus, Discipline & Study)
@@ -3172,10 +3177,10 @@ function renderUserDashboard(viewWrap) {
   // WIDGET 1: FitnessTrackerWidget
   if (focus.includes('Gym & Fitness Training')) {
     const env = state.sessionData.flow_responses?.gym_q1 || 'Outdoors / Inactive';
-    const splitTarget = state.sessionData.flow_responses?.gym_q2 || '3 days a week';
+    const splitTarget = state.sessionData.flow_responses?.gym_q2 || '1–3 days a week.';
     
     let daysHtml = '';
-    if (splitTarget.includes('4-5')) {
+    if (splitTarget.includes('4–6') || splitTarget.includes('4-6') || splitTarget.includes('7 or more')) {
       daysHtml = `
         <div class="split-day-card">
           <span class="split-day-title">Day 1</span>
