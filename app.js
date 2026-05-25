@@ -825,9 +825,9 @@ function buildDynamicQueue() {
     'personality_energy',
     'future_self_vision',
     'final_mindset',
+    'profile_life_map',
     'ai_analysis_loading',
     'how_we_see_you',
-    'profile_life_map',
     'whats_holding_you_back',
     'what_most_never_realize',
     'transformation_preview',
@@ -1075,9 +1075,13 @@ function renderStandardOptionCard(viewWrap) {
     });
     
   } else {
-    // Single Selection Flow: Snappy card select
+    // Single Selection Flow: Snappy card select with dynamic click lock to prevent skipping
+    let cardClicked = false;
     cards.forEach(card => {
       card.addEventListener('click', () => {
+        if (cardClicked) return;
+        cardClicked = true;
+
         cards.forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         
@@ -2598,6 +2602,7 @@ function compileAlgorithmRoadmap() {
 
 // --- Navigation Controller Hook-ins ---
 function advanceStep() {
+  if (_isTransitioning) return; // Block index incrementing while slide transitions are active
   if (state.currentStepIndex < state.activeQueue.length - 1) {
     state.currentStepIndex++;
     renderActiveStep();
@@ -2605,9 +2610,8 @@ function advanceStep() {
 }
 
 function handleBackNavigation() {
+  if (_isTransitioning) return; // Block index decrementing while slide transitions are active
   if (state.currentStepIndex > 0) {
-    // If the step is sleep_support, and sleep_state was altered, remove sleep_support on back
-    const prevNode = state.activeQueue[state.currentStepIndex - 1];
     state.currentStepIndex--;
     renderActiveStep();
   }
