@@ -171,16 +171,12 @@ const ALL_FLOW_NODES = {
     title: 'Which areas of your life need the most attention right now?',
     subtitle: '',
     options: [
-      { id: 'physical_health', text: 'Physical Health & Fitness', desc: 'Strength, stamina, nutrition, and exercise consistency.', icon: 'activity' },
-      { id: 'mental_health', text: 'Mental Health & Inner Peace', desc: 'Mindfulness, anxiety reduction, stress relief, and calm.', icon: 'heart' },
-      { id: 'focus_productivity', text: 'Focus & Productivity', desc: 'Time management, flow states, and work optimization.', icon: 'zap' },
-      { id: 'discipline_consistency', text: 'Discipline & Consistency', desc: 'Building unbreakable habits and killing procrastination.', icon: 'lock' },
-      { id: 'education_learning', text: 'Education & Learning', desc: 'Skill acquisition, reading routines, and cognitive growth.', icon: 'book-open' },
-      { id: 'relationships', text: 'Relationships & Social Life', desc: 'Family bonds, deep friendships, communication, and self-love.', icon: 'users' },
-      { id: 'confidence_esteem', text: 'Confidence & Self-Esteem', desc: 'Imposter syndrome, body image, public presence, and voice.', icon: 'smile' },
-      { id: 'career_finance', text: 'Career & Financial Growth', desc: 'Goal mapping, salary progression, budgeting, and focus.', icon: 'dollar-sign' },
-      { id: 'sleep_energy', text: 'Sleep & Energy', desc: 'Circadian rhythm, deep rest, wake routines, and daily fuel.', icon: 'moon' },
-      { id: 'motivation_purpose', text: 'Motivation & Purpose', desc: 'Finding your calling, setting vision, and driving energy.', icon: 'target' }
+      { id: 'focus_gym', text: 'Gym & Fitness Training', desc: 'Strength, stamina, and workout consistency.', icon: 'activity' },
+      { id: 'focus_diet', text: 'Diet & Nutrition Balance', desc: 'Caloric tracking, meal scheduling, and cleaner eating habits.', icon: 'apple' },
+      { id: 'focus_sleep', text: 'Sleep & Circadian Rhythm', desc: 'Fixing sleep schedules, deep rest, and wind-down routines.', icon: 'moon' },
+      { id: 'focus_discipline', text: 'Focus, Discipline & Drive', desc: 'Beating procrastination, time management, and building unbreakable habits.', icon: 'zap' },
+      { id: 'focus_mental', text: 'Mental Health & Inner Peace', desc: 'Mindfulness, managing anxiety, and reducing daily stress.', icon: 'heart' },
+      { id: 'focus_relationships', text: 'Relationships & Social Life', desc: 'Family bonds, deep friendships, and social presence.', icon: 'users' }
     ],
     save: (vals) => {
       state.sessionData.focus_areas = vals;
@@ -902,7 +898,7 @@ function buildDynamicQueue() {
   }
 
   // ── CONDITIONAL: Physical Health deep-dive ────────────────────────────────
-  if (chosen.includes('Physical Health & Fitness')) {
+  if (chosen.includes('Physical Health & Fitness') || chosen.includes('Gym & Fitness Training')) {
     dynamicNodes.push('fitness_activity', 'fitness_lifestyle', 'fitness_goal', 'fitness_obstacle');
   }
 
@@ -916,12 +912,12 @@ function buildDynamicQueue() {
 
   // ── Focus & Productivity Flow ─────────────────────────────────────────────
   // Merged: education_state is completely consolidated into education_distraction
-  if (chosen.includes('Focus & Productivity') || chosen.includes('Education & Learning')) {
+  if (chosen.includes('Focus & Productivity') || chosen.includes('Education & Learning') || chosen.includes('Focus, Discipline & Drive')) {
     dynamicNodes.push('education_distraction');
   }
 
   // ── Discipline & Consistency Flow ─────────────────────────────────────────
-  if (chosen.includes('Discipline & Consistency') || chosen.includes('Motivation & Purpose')) {
+  if (chosen.includes('Discipline & Consistency') || chosen.includes('Motivation & Purpose') || chosen.includes('Focus, Discipline & Drive')) {
     dynamicNodes.push('discipline_state', 'discipline_motivation');
   }
 
@@ -2738,18 +2734,18 @@ function compileAlgorithmRoadmap() {
     challengePrefix4 = 'High-Performance ';
   }
 
-  if (chosenAreas.includes('Physical Health & Fitness')) {
+  if (chosenAreas.includes('Physical Health & Fitness') || chosenAreas.includes('Gym & Fitness Training')) {
     stage1 = challengePrefix1 + 'Circadian Reset & Dynamic Movement';
   }
-  if (chosenAreas.includes('Sleep & Energy') && flowAns.sleep_state && flowAns.sleep_state.includes('Pretty bad')) {
+  if ((chosenAreas.includes('Sleep & Energy') || chosenAreas.includes('Sleep & Circadian Rhythm')) && flowAns.sleep_state && flowAns.sleep_state.includes('Pretty bad')) {
     stage1 = challengePrefix1 + 'Circadian Sync & Sleep Routine Setup';
   }
   
-  if (chosenAreas.includes('Focus & Productivity') || chosenAreas.includes('Education & Learning')) {
+  if (chosenAreas.includes('Focus & Productivity') || chosenAreas.includes('Education & Learning') || chosenAreas.includes('Focus, Discipline & Drive')) {
     stage2 = challengePrefix2 + 'Attention Anchoring & Distraction Shielding';
   }
   
-  if (chosenAreas.includes('Discipline & Consistency') || chosenAreas.includes('Motivation & Purpose')) {
+  if (chosenAreas.includes('Discipline & Consistency') || chosenAreas.includes('Motivation & Purpose') || chosenAreas.includes('Focus, Discipline & Drive')) {
     stage3 = challengePrefix3 + 'Stoic Habit Loops & Friction Elimination';
   }
   
