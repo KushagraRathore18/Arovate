@@ -602,6 +602,12 @@ const ALL_FLOW_NODES = {
     type: 'custom',
     render: renderHowWeSeeYou
   },
+
+  // NEW PAGE — PROFILE & LIFE MAP
+  profile_life_map: {
+    type: 'custom',
+    render: renderProfileLifeMap
+  },
   
   // NEW PAGE — WHAT'S HOLDING YOU BACK
   whats_holding_you_back: {
@@ -821,6 +827,7 @@ function buildDynamicQueue() {
     'final_mindset',
     'ai_analysis_loading',
     'how_we_see_you',
+    'profile_life_map',
     'whats_holding_you_back',
     'what_most_never_realize',
     'transformation_preview',
@@ -1682,6 +1689,457 @@ function renderHowWeSeeYou(viewWrap) {
   bindCardGlowListeners();
 
   viewWrap.querySelector('#btn-submit-analysis').addEventListener('click', () => {
+    advanceStep();
+  });
+}
+
+// --- DYNAMIC SCORES CALCULATION FOR LIFE MAP ---
+function calculateLifeMapMetrics() {
+  const info = state.sessionData.basic_info || {};
+  const flow = state.sessionData.flow_responses || {};
+  const gen = state.sessionData.general_responses || {};
+  const focus = state.sessionData.focus_areas || [];
+  const stateVal = state.sessionData.life_state || [];
+
+  // BODY calculation (Base 35, Max 100)
+  let body = 35;
+  if (flow.fitness_lifestyle === 'fit_gym_consistent') body += 20;
+  else if (flow.fitness_lifestyle === 'fit_workout_occasion') body += 12;
+  else if (flow.fitness_lifestyle === 'fit_struggle_consistent') body += 6;
+  
+  if (info.activity_level === 'Very Active') body += 20;
+  else if (info.activity_level === 'Moderately Active') body += 14;
+  else if (info.activity_level === 'Lightly Active') body += 8;
+
+  if (flow.eating_state === 'healthy_balanced') body += 15;
+  else if (flow.eating_state === 'mostly_clean') body += 10;
+  else if (flow.eating_state === 'mixed_diet') body += 5;
+
+  if (focus.includes('Physical Health & Fitness')) body += 10;
+  body = Math.min(100, body);
+
+  // MIND calculation (Base 30, Max 100)
+  let mind = 30;
+  const confidence = parseInt(gen.routine_confidence) || 5;
+  mind += confidence * 2.5; // up to 25
+
+  if (flow.discipline_state === 'highly_disciplined') mind += 20;
+  else if (flow.discipline_state === 'mostly_consistent') mind += 14;
+  else if (flow.discipline_state === 'struggle_consistency') mind += 8;
+
+  if (gen.final_mindset === 'mnd_success' || gen.final_mindset === 'mnd_transform') mind += 15;
+  else if (gen.final_mindset === 'mnd_peace' || gen.final_mindset === 'mnd_meaning') mind += 10;
+
+  if (focus.includes('Discipline & Consistency') || focus.includes('Focus & Productivity')) mind += 10;
+  mind = Math.min(100, mind);
+
+  // REST calculation (Base 30, Max 100)
+  let rest = 30;
+  if (flow.sleep_state === 'deep_restful') rest += 35;
+  else if (flow.sleep_state === 'average_adequate') rest += 22;
+  else if (flow.sleep_state === 'poor_broken') rest += 10;
+  else if (flow.sleep_state === 'exhausting') rest += 5;
+
+  const addictions = gen.addictions_distractions || [];
+  if (!addictions.includes('Late-night scrolling')) rest += 15;
+  if (!stateVal.includes('exhausted')) rest += 15;
+  if (focus.includes('Sleep & Energy')) rest += 5;
+  rest = Math.min(100, rest);
+
+  // FUEL calculation (Base 35, Max 100)
+  let fuel = 35;
+  if (flow.eating_state === 'healthy_balanced') fuel += 35;
+  else if (flow.eating_state === 'mostly_clean') fuel += 25;
+  else if (flow.eating_state === 'mixed_diet') fuel += 15;
+  else if (flow.eating_state === 'struggle_junk') fuel += 5;
+
+  if (flow.eating_support === 'No, I have it under control') fuel += 15;
+  else if (flow.eating_support === 'Yes, small improvements') fuel += 8;
+
+  if (flow.fitness_goal === 'fit_goal_healthy' || flow.fitness_goal === 'fit_goal_stamina') fuel += 15;
+  fuel = Math.min(100, fuel);
+
+  // CONNECTION calculation (Base 35, Max 100)
+  let connection = 35;
+  if (info.relationship_status === 'in_relationship') connection += 20;
+  else if (info.relationship_status === 'focus_on_self') connection += 12;
+  else connection += 15;
+
+  const relTargets = flow.relationships_target || [];
+  if (relTargets.length > 0) connection += 15;
+
+  if (flow.relationships_challenge === 'rel_none') connection += 20;
+  else if (flow.relationships_challenge === 'rel_no_time') connection += 12;
+  else if (flow.relationships_challenge === 'rel_communication') connection += 10;
+
+  if (focus.includes('Relationships & Social Life')) connection += 10;
+  connection = Math.min(100, connection);
+
+  // PURPOSE calculation (Base 35, Max 100)
+  let purpose = 35;
+  if (stateVal.includes('improve_seriously') || stateVal.includes('level_up')) purpose += 20;
+  else if (stateVal.includes('okay_better')) purpose += 12;
+
+  if (flow.discipline_motivation === 'clear_vision') purpose += 20;
+  else if (flow.discipline_motivation === 'family_future') purpose += 15;
+  else if (flow.discipline_motivation === 'fear_regret') purpose += 10;
+
+  if (gen.final_mindset === 'mnd_meaning' || gen.final_mindset === 'mnd_transform') purpose += 15;
+  
+  const vision = gen.future_self_vision || [];
+  if (vision.length > 0) purpose += 10;
+  purpose = Math.min(100, purpose);
+
+  return { body, mind, rest, fuel, connection, purpose };
+}
+
+// SCREEN: Premium Profile & Dynamic Life Map Radar Visualizer
+function renderProfileLifeMap(viewWrap) {
+  const scores = calculateLifeMapMetrics();
+  
+  viewWrap.innerHTML = `
+    <div class="question-header">
+      <span class="question-pre">Identity Fusion</span>
+      <h2 class="question-title">Synthesize Your Life Map</h2>
+      <p class="question-desc">Lock in your credentials to secure your Stoic character profile and compile your personalized transformation program.</p>
+    </div>
+
+    <div class="profile-map-layout">
+      <!-- Left Side: Profile Form -->
+      <div class="profile-form-card animate-fade-in">
+        <div class="profile-card-header">
+          <span class="profile-card-title">
+            <i data-lucide="shield-check" style="color: var(--accent-cyan);"></i>
+            Secure Your Profile
+          </span>
+          <p class="profile-card-desc">Create your local credentials. Your data is stored fully privately on your device.</p>
+        </div>
+
+        <form id="profile-form" class="profile-form" novalidate>
+          <div class="form-group">
+            <label for="prof-username" class="input-label">Username</label>
+            <div class="input-wrapper">
+              <i data-lucide="user" class="input-icon"></i>
+              <input type="text" id="prof-username" class="input-premium has-icon" placeholder="Choose a name" autocomplete="username">
+            </div>
+            <span class="validation-error" id="error-username">Username is required</span>
+          </div>
+
+          <div class="form-group">
+            <label for="prof-email" class="input-label">Email Address</label>
+            <div class="input-wrapper">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input type="email" id="prof-email" class="input-premium has-icon" placeholder="your.name@domain.com" autocomplete="email">
+            </div>
+            <span class="validation-error" id="error-email">Please enter a valid email address</span>
+          </div>
+
+          <div class="form-group">
+            <label for="prof-password" class="input-label">Password</label>
+            <div class="input-wrapper">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input type="password" id="prof-password" class="input-premium has-icon" placeholder="Min. 6 characters" autocomplete="new-password">
+            </div>
+            <span class="validation-error" id="error-password">Password must be at least 6 characters</span>
+          </div>
+
+          <div class="profile-terms">
+            By proceeding, you agree to compile and encrypt your baseline metrics inside Kairos' IndexedDB storage.
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Side: Radar Chart Visualizer -->
+      <div class="map-visualizer-card animate-fade-in">
+        <div class="profile-card-header" style="align-self: flex-start; width: 100%;">
+          <span class="profile-card-title">
+            <i data-lucide="compass" style="color: var(--accent-purple);"></i>
+            Your Baseline Life Map
+          </span>
+          <p class="profile-card-desc">Heuristic mapping across six biological and cognitive dimensions.</p>
+        </div>
+
+        <div class="map-canvas-container">
+          <canvas id="life-map-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button id="btn-lock-profile" class="btn-premium primary">
+        <span>Lock In Profile & Map</span>
+        <i data-lucide="lock"></i>
+      </button>
+    </div>
+  `;
+
+  lucide.createIcons();
+
+  const canvas = viewWrap.querySelector('#life-map-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Handle high DPI display
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = 450 * dpr;
+  canvas.height = 450 * dpr;
+  ctx.scale(dpr, dpr);
+
+  const cx = 225;
+  const cy = 215;
+  const maxRadius = 135;
+  const dimensions = [
+    { key: 'body', label: 'BODY' },
+    { key: 'mind', label: 'MIND' },
+    { key: 'rest', label: 'REST' },
+    { key: 'fuel', label: 'FUEL' },
+    { key: 'connection', label: 'CONNECTION' },
+    { key: 'purpose', label: 'PURPOSE' }
+  ];
+  const totalAxes = dimensions.length;
+  const angleStep = (Math.PI * 2) / totalAxes;
+  const startAngle = -Math.PI / 2; // Point straight up
+
+  // Animation parameters
+  let animationProgress = 0;
+  const animationDuration = 800; // ms
+  const startTime = performance.now();
+
+  function drawRadar(progress) {
+    ctx.clearRect(0, 0, 450, 450);
+
+    // 1. Draw Concentric Grid Rings (Hexagons)
+    const rings = 5;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 1;
+    for (let r = 1; r <= rings; r++) {
+      const radius = (r / rings) * maxRadius;
+      ctx.beginPath();
+      for (let i = 0; i < totalAxes; i++) {
+        const x = cx + Math.cos(startAngle + i * angleStep) * radius;
+        const y = cy + Math.sin(startAngle + i * angleStep) * radius;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      // Add small numeric scale markings on the vertical top axis
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.font = "9px 'Plus Jakarta Sans', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText((r * 20).toString(), cx, cy - radius + 3);
+    }
+
+    // 2. Draw Axis Lines & Outer Labels
+    for (let i = 0; i < totalAxes; i++) {
+      const angle = startAngle + i * angleStep;
+      const xOuter = cx + Math.cos(angle) * maxRadius;
+      const yOuter = cy + Math.sin(angle) * maxRadius;
+
+      // Axis Line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(xOuter, yOuter);
+      ctx.stroke();
+
+      // Labels Text
+      const dim = dimensions[i];
+      const score = Math.round(scores[dim.key]);
+      const labelRadius = maxRadius + 22;
+      const labelX = cx + Math.cos(angle) * labelRadius;
+      const labelY = cy + Math.sin(angle) * labelRadius;
+
+      // Text Alignment calculations to keep labels centered beautifully
+      const cos = Math.cos(angle);
+      if (Math.abs(cos) < 0.1) ctx.textAlign = 'center';
+      else if (cos > 0) ctx.textAlign = 'left';
+      else ctx.textAlign = 'right';
+
+      ctx.textBaseline = 'middle';
+
+      // Dimension Name
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.font = "bold 11px 'Outfit', sans-serif";
+      ctx.fillText(dim.label, labelX, labelY - 7);
+
+      // Score Number
+      ctx.fillStyle = 'var(--text-muted)';
+      ctx.font = "600 11px 'Plus Jakarta Sans', sans-serif";
+      
+      // Let color reflect score intensity
+      if (scores[dim.key] >= 80) {
+        ctx.fillStyle = '#06b6d4'; // Cyan for excellent
+      } else if (scores[dim.key] >= 50) {
+        ctx.fillStyle = '#8b5cf6'; // Purple for average
+      } else {
+        ctx.fillStyle = '#f43f5e'; // Rose/Red for low
+      }
+      ctx.fillText(`${score}/100`, labelX, labelY + 7);
+    }
+
+    // 3. Plot Connected Data Area Polygon
+    const points = [];
+    for (let i = 0; i < totalAxes; i++) {
+      const angle = startAngle + i * angleStep;
+      const dim = dimensions[i];
+      // Animate score coordinates scaling outwards from center
+      const currentScore = scores[dim.key] * progress;
+      const radius = (currentScore / 100) * maxRadius;
+      points.push({
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius
+      });
+    }
+
+    // Fill Path with glowing gradient
+    ctx.beginPath();
+    points.forEach((p, idx) => {
+      if (idx === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    });
+    ctx.closePath();
+    
+    const fillGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, maxRadius);
+    fillGrad.addColorStop(0, 'rgba(99, 102, 241, 0.08)');  // Indigo base
+    fillGrad.addColorStop(0.5, 'rgba(139, 92, 246, 0.22)'); // Purple mid
+    fillGrad.addColorStop(1, 'rgba(6, 182, 212, 0.35)');    // Cyan neon edge
+    ctx.fillStyle = fillGrad;
+    ctx.fill();
+
+    // Neon Stroke
+    ctx.strokeStyle = '#06b6d4'; // Cyan stroke
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#06b6d4';
+    ctx.stroke();
+    ctx.shadowBlur = 0; // reset
+
+    // 4. Draw glowing dots at vertices
+    points.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#8b5cf6';
+      ctx.lineWidth = 2.5;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#8b5cf6';
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0; // reset
+    });
+  }
+
+  // Animation Loop using requestAnimationFrame
+  function animateRadar(time) {
+    const elapsed = time - startTime;
+    animationProgress = Math.min(1, elapsed / animationDuration);
+
+    // Easing function (cubic Out)
+    const ease = 1 - Math.pow(1 - animationProgress, 3);
+
+    drawRadar(ease);
+
+    if (animationProgress < 1) {
+      requestAnimationFrame(animateRadar);
+    }
+  }
+
+  // Kick off chart animation loop
+  requestAnimationFrame(animateRadar);
+
+  // Form input validation and Lock-in submission logic
+  const form = viewWrap.querySelector('#profile-form');
+  const uInput = viewWrap.querySelector('#prof-username');
+  const eInput = viewWrap.querySelector('#prof-email');
+  const pInput = viewWrap.querySelector('#prof-password');
+
+  const uError = viewWrap.querySelector('#error-username');
+  const eError = viewWrap.querySelector('#error-email');
+  const pError = viewWrap.querySelector('#error-password');
+
+  // Input listeners to clear error messages in real-time
+  uInput.addEventListener('input', () => {
+    uError.classList.remove('visible');
+    uInput.style.borderColor = '';
+  });
+  eInput.addEventListener('input', () => {
+    eError.classList.remove('visible');
+    eInput.style.borderColor = '';
+  });
+  pInput.addEventListener('input', () => {
+    pError.classList.remove('visible');
+    pInput.style.borderColor = '';
+  });
+
+  viewWrap.querySelector('#btn-lock-profile').addEventListener('click', (e) => {
+    e.preventDefault();
+    let isValid = true;
+
+    // 1. Username verification
+    const username = uInput.value.trim();
+    if (!username) {
+      uError.innerText = "Username is required to label your blueprint";
+      uError.classList.add('visible');
+      uInput.style.borderColor = '#ef4444';
+      isValid = false;
+    }
+
+    // 2. Email verification
+    const email = eInput.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      eError.innerText = "Email is required to link your progress alerts";
+      eError.classList.add('visible');
+      eInput.style.borderColor = '#ef4444';
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      eError.innerText = "Please enter a mathematically correct email format";
+      eError.classList.add('visible');
+      eInput.style.borderColor = '#ef4444';
+      isValid = false;
+    }
+
+    // 3. Password verification
+    const password = pInput.value;
+    if (!password) {
+      pError.innerText = "A password is required to encrypt your session";
+      pError.classList.add('visible');
+      pInput.style.borderColor = '#ef4444';
+      isValid = false;
+    } else if (password.length < 6) {
+      pError.innerText = "Password must be at least 6 characters for local security";
+      pError.classList.add('visible');
+      pInput.style.borderColor = '#ef4444';
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    // Save profile securely in local session and commit state
+    state.sessionData.profile = {
+      username: username,
+      email: email,
+      // For privacy demo, we store a masked reference
+      passwordMasked: '•'.repeat(password.length)
+    };
+
+    // Replace the basic info placeholder name with user's custom name!
+    if (state.sessionData.basic_info) {
+      state.sessionData.basic_info.first_name = username;
+    }
+
+    // Calculate & save life map dimensions directly into the session database schema
+    state.sessionData.life_map = scores;
+
+    // Write state to IndexedDB securely
+    saveSession(state.sessionData)
+      .then(() => {
+        updateDBInspectorBadge();
+      })
+      .catch(err => console.error("Database write error:", err));
+
+    // Advance to next cinematic insights card
     advanceStep();
   });
 }

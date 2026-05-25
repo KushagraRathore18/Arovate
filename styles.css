@@ -1930,3 +1930,186 @@ html, body {
     font-size: 26px;
   }
 }
+
+/* --- PROFILE & LIFE MAP LAYOUT --- */
+.profile-map-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 32px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  align-items: stretch;
+}
+
+@media (max-width: 960px) {
+  .profile-map-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.profile-form-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.profile-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-indigo));
+}
+
+.profile-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.profile-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.input-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: var(--transition-fast);
+}
+
+.input-premium.has-icon {
+  padding-left: 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-wrapper:focus-within .input-icon {
+  color: var(--accent-cyan);
+}
+
+.validation-error {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+  min-height: 16px;
+  display: block;
+  opacity: 0;
+  transition: var(--transition-fast);
+  text-align: left;
+}
+
+.validation-error.visible {
+  opacity: 1;
+}
+
+.profile-terms {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* Radar Chart Card */
+.map-visualizer-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.map-visualizer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-indigo), var(--accent-cyan));
+}
+
+.map-canvas-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1.05;
+  margin: auto;
+}
+
+#life-map-canvas {
+  width: 100%;
+  height: 100%;
+  max-width: 450px;
+  max-height: 450px;
+}
+
