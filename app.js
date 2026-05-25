@@ -174,7 +174,7 @@ const ALL_FLOW_NODES = {
       { id: 'focus_gym', text: 'Gym & Fitness Training', desc: 'Strength, stamina, and workout consistency.', icon: 'activity' },
       { id: 'focus_diet', text: 'Diet & Nutrition Balance', desc: 'Caloric tracking, meal scheduling, and cleaner eating habits.', icon: 'apple' },
       { id: 'focus_sleep', text: 'Sleep & Circadian Rhythm', desc: 'Fixing sleep schedules, deep rest, and wind-down routines.', icon: 'moon' },
-      { id: 'focus_discipline', text: 'Focus, Discipline & Drive', desc: 'Beating procrastination, time management, and building unbreakable habits.', icon: 'zap' },
+      { id: 'focus_discipline', text: 'Focus, Discipline & Study', desc: 'Beating procrastination, time management, and building deep study habits.', icon: 'zap' },
       { id: 'focus_mental', text: 'Mental Health & Inner Peace', desc: 'Mindfulness, managing anxiety, and reducing daily stress.', icon: 'heart' },
       { id: 'focus_relationships', text: 'Relationships & Social Life', desc: 'Family bonds, deep friendships, and social presence.', icon: 'users' }
     ],
@@ -912,12 +912,12 @@ function buildDynamicQueue() {
 
   // ── Focus & Productivity Flow ─────────────────────────────────────────────
   // Merged: education_state is completely consolidated into education_distraction
-  if (chosen.includes('Focus & Productivity') || chosen.includes('Education & Learning') || chosen.includes('Focus, Discipline & Drive')) {
+  if (chosen.includes('Focus & Productivity') || chosen.includes('Education & Learning') || chosen.includes('Focus, Discipline & Study')) {
     dynamicNodes.push('education_distraction');
   }
 
   // ── Discipline & Consistency Flow ─────────────────────────────────────────
-  if (chosen.includes('Discipline & Consistency') || chosen.includes('Motivation & Purpose') || chosen.includes('Focus, Discipline & Drive')) {
+  if (chosen.includes('Discipline & Consistency') || chosen.includes('Motivation & Purpose') || chosen.includes('Focus, Discipline & Study')) {
     dynamicNodes.push('discipline_state', 'discipline_motivation');
   }
 
@@ -2741,11 +2741,11 @@ function compileAlgorithmRoadmap() {
     stage1 = challengePrefix1 + 'Circadian Sync & Sleep Routine Setup';
   }
   
-  if (chosenAreas.includes('Focus & Productivity') || chosenAreas.includes('Education & Learning') || chosenAreas.includes('Focus, Discipline & Drive')) {
+  if (chosenAreas.includes('Focus & Productivity') || chosenAreas.includes('Education & Learning') || chosenAreas.includes('Focus, Discipline & Study')) {
     stage2 = challengePrefix2 + 'Attention Anchoring & Distraction Shielding';
   }
   
-  if (chosenAreas.includes('Discipline & Consistency') || chosenAreas.includes('Motivation & Purpose') || chosenAreas.includes('Focus, Discipline & Drive')) {
+  if (chosenAreas.includes('Discipline & Consistency') || chosenAreas.includes('Motivation & Purpose') || chosenAreas.includes('Focus, Discipline & Study')) {
     stage3 = challengePrefix3 + 'Stoic Habit Loops & Friction Elimination';
   }
   
