@@ -265,7 +265,33 @@ const ALL_FLOW_NODES = {
       state.sessionData.flow_responses.fitness_gym_no_psych = val;
     }
   },
-  
+
+  // Gym-goer workout help
+  fitness_gym_help: {
+    type: 'single',
+    title: 'Do you need help with your gym workout or schedule?',
+    subtitle: '',
+    options: [
+      { id: 'gym_help_schedule', text: 'Yes, I need a solid workout schedule', desc: 'Build me a structured weekly gym plan I can actually stick to.', icon: 'calendar' },
+      { id: 'gym_help_exercises', text: 'Yes, I need help with exercises / form', desc: 'Show me the right movements and techniques for my goals.', icon: 'activity' },
+      { id: 'gym_help_no', text: 'No, my gym routine is locked in', desc: 'I already have a plan and just need accountability.', icon: 'check-circle' }
+    ],
+    save: (val) => { state.sessionData.flow_responses.fitness_gym_help = val; }
+  },
+
+  // Home-workout help
+  fitness_home_help: {
+    type: 'single',
+    title: 'Do you need help with your home workout routine or schedule?',
+    subtitle: '',
+    options: [
+      { id: 'home_help_schedule', text: 'Yes, I need a clean home schedule', desc: 'Give me a structured week I can follow without any equipment.', icon: 'calendar' },
+      { id: 'home_help_routines', text: 'Yes, I need effective minimal-equipment routines', desc: 'Show me what actually works when training at home.', icon: 'home' },
+      { id: 'home_help_no', text: 'No, my home setup is locked in', desc: 'I have my own system and just need to stay consistent.', icon: 'check-circle' }
+    ],
+    save: (val) => { state.sessionData.flow_responses.fitness_home_help = val; }
+  },
+
   fitness_lifestyle: {
     type: 'single',
     title: 'What best describes your current fitness lifestyle?',
@@ -408,31 +434,26 @@ const ALL_FLOW_NODES = {
   // 9. SLEEP FLOW
   sleep_state: {
     type: 'single',
-    title: 'How has your sleep been recently?',
-    subtitle: 'Sleep is the fundamental pillar of human cognition and energy.',
+    title: "How's your sleep been lately?",
+    subtitle: '',
     options: [
-      { id: 'slp_good_consistent', text: 'Very good and consistent', desc: 'Waking up refreshed, regular bedtimes.', icon: 'smile' },
-      { id: 'slp_decent_inconsistent', text: 'Decent but inconsistent', desc: 'Average sleep, but fluctuates wildly on weekends.', icon: 'meh' },
-      { id: 'slp_poor_exhausting', text: 'Poor and exhausting', desc: 'Struggling to fall asleep, waking up completely drained.', icon: 'frown' },
-      { id: 'slp_stay_up_late', text: 'I stay up too late often', desc: 'Revenge bedtime procrastination, doomscrolling past midnight.', icon: 'smartphone' },
-      { id: 'slp_broken', text: 'My sleep schedule is completely broken', desc: 'Day/night cycle reversed, chaotic sleep blocks.', icon: 'alert-circle' }
+      { id: 'slp_solid', text: 'Solid — I wake up rested', desc: 'Consistent bedtime, full nights, waking up recharged.', icon: 'smile' },
+      { id: 'slp_hit_or_miss', text: 'Hit or miss — depends on the night', desc: 'Some nights great, some rough — no real pattern.', icon: 'meh' },
+      { id: 'slp_bad', text: 'Pretty bad — always tired', desc: 'Struggling to get proper rest, running on empty.', icon: 'frown' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.sleep_state = val;
-      // INTERNAL BRANCHING: If poor or broken sleep, dynamically inject sleep support question next!
-      if (val === 'Poor and exhausting' || val === 'My sleep schedule is completely broken' || val === 'I stay up too late often') {
-        injectSleepSupportNode();
-      }
+      injectSleepSupportNode();
     }
   },
   sleep_support: {
     type: 'single',
-    title: 'Would you like help improving your sleep routine?',
-    subtitle: 'We can structure a specialized evening winding-down protocol.',
+    title: 'Do you need help with your sleep?',
+    subtitle: '',
     options: [
-      { id: 'slp_sup_yes', text: 'Yes, definitely', desc: 'Build an optimized pre-sleep wind-down routine for me.', icon: 'check-circle' },
-      { id: 'slp_sup_maybe', text: 'Maybe later', desc: 'Keep it general for now, I will configure sleep settings later.', icon: 'help-circle' },
-      { id: 'slp_sup_no', text: 'Not right now', desc: 'I prefer to focus on other self-improvement targets first.', icon: 'x-circle' }
+      { id: 'slp_help_schedule', text: 'Yes, help me build a fixed bedtime schedule', desc: 'Structure my nights so I wake up at the same time every day.', icon: 'clock' },
+      { id: 'slp_help_faster', text: 'Yes, give me tips to fall asleep faster', desc: 'Wind-down routines, phone habits, and sleep hygiene fixes.', icon: 'moon' },
+      { id: 'slp_help_no', text: 'No, my sleep is completely fine', desc: "I'm already sleeping well and don't need adjustments.", icon: 'check-circle' }
     ],
     save: (val) => { state.sessionData.flow_responses.sleep_support = val; }
   },
@@ -862,9 +883,11 @@ function buildDynamicQueue() {
   dynamicNodes.push('fitness_gym_gate');
   const gymGate = state.sessionData.flow_responses.fitness_gym_gate;
   if (gymGate === 'Yes') {
-    dynamicNodes.push('fitness_gym_frequency');
+    dynamicNodes.push('fitness_gym_frequency', 'fitness_gym_help');
   } else if (gymGate === 'No') {
     dynamicNodes.push('fitness_gym_no_psych');
+  } else if (gymGate === 'I do home workouts / other workouts') {
+    dynamicNodes.push('fitness_home_help');
   }
   
   // 1. Physical Health & Fitness Flow
@@ -1570,7 +1593,7 @@ function generateAIPersonalityAnalysis() {
   let patternsTags = ['Variable Routines', 'Willpower Reserves', 'Predictable Anchors'];
 
   let sleepPattern = '';
-  if (addictions.includes('Late-night scrolling') || state.sessionData.flow_responses.sleep_state?.includes('Poor')) {
+  if (addictions.includes('Late-night scrolling') || state.sessionData.flow_responses.sleep_state?.includes('Pretty bad')) {
     sleepPattern = 'Your sleep architecture is currently volatile due to bedtime stimulation or doomscrolling. Waking up exhausted creates a mid-day focus crash, forcing you to rely on stimulants or sheer willpower.';
   } else {
     sleepPattern = 'Your sleep cycle is reasonably stable, providing a solid chemical baseline for cognitive energy and mid-day stamina.';
@@ -1838,10 +1861,9 @@ function calculateLifeMapMetrics() {
 
   // REST calculation (Base 30, Max 100)
   let rest = 30;
-  if (flow.sleep_state === 'deep_restful') rest += 35;
-  else if (flow.sleep_state === 'average_adequate') rest += 22;
-  else if (flow.sleep_state === 'poor_broken') rest += 10;
-  else if (flow.sleep_state === 'exhausting') rest += 5;
+  if (flow.sleep_state === 'Solid — I wake up rested') rest += 35;
+  else if (flow.sleep_state === 'Hit or miss — depends on the night') rest += 20;
+  else if (flow.sleep_state === 'Pretty bad — always tired') rest += 8;
 
   const addictions = gen.addictions_distractions || [];
   if (!addictions.includes('Late-night scrolling')) rest += 15;
@@ -2670,7 +2692,7 @@ function compileAlgorithmRoadmap() {
   if (chosenAreas.includes('Physical Health & Fitness')) {
     stage1 = challengePrefix1 + 'Circadian Reset & Dynamic Movement';
   }
-  if (chosenAreas.includes('Sleep & Energy') && flowAns.sleep_state && flowAns.sleep_state.includes('Poor')) {
+  if (chosenAreas.includes('Sleep & Energy') && flowAns.sleep_state && flowAns.sleep_state.includes('Pretty bad')) {
     stage1 = challengePrefix1 + 'Circadian Sync & Sleep Routine Setup';
   }
   
