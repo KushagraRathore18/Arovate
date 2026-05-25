@@ -667,21 +667,7 @@ const ALL_FLOW_NODES = {
     ],
     save: (val) => {
       state.sessionData.general_responses.identity = val;
-      let arch = "THE BASELINE BUILDER";
-      if (val.includes("rebuild my life slowly") || val.includes("rebuild my life")) {
-        arch = "THE BASELINE BUILDER";
-      } else if (val.includes("disciplined and consistent")) {
-        arch = "THE UNSHAKEABLE PILLAR";
-      } else if (val.includes("unlock my full potential")) {
-        arch = "THE APEX CATALYST";
-      } else if (val.includes("peace and balance")) {
-        arch = "THE STOIC COMMANDER";
-      } else if (val.includes("transform myself completely")) {
-        arch = "THE SOVEREIGN CORE";
-      } else if (val.includes("high-performance lifestyle")) {
-        arch = "THE APEX CATALYST";
-      }
-      state.sessionData.userArchetype = arch;
+      calculateLifeMapMetrics();
     }
   },
   
@@ -2026,10 +2012,73 @@ function calculateLifeMapMetrics() {
     purpose -= 30;
   }
   
-  // 7. Overthinking / Negative Self-Talk: -25 from MIND
   if (addictions.includes('Overthinking') || addictions.includes('Negative self-talk')) {
     mind -= 25;
   }
+
+  // --- PERMUTATION MATRIX ENGINE FOR USER ARCHETYPE ---
+  const userTracks = state.sessionData.focus_areas || state.sessionData.selectedTracks || [];
+  let physicalCount = 0;
+  let cognitiveCount = 0;
+  let mindfulnessCount = 0;
+
+  userTracks.forEach(track => {
+    if (track === "Gym & Fitness Training" || track === "Diet & Nutrition Balance") {
+      physicalCount += 10;
+    } else if (track === "Focus, Discipline & Study") {
+      cognitiveCount += 10;
+    } else if (track === "Sleep & Circadian Rhythm" || track === "Mental Health & Inner Peace" || track === "Relationships & Social Life") {
+      mindfulnessCount += 10;
+    }
+  });
+
+  let dominantTrack = "";
+  if (physicalCount > cognitiveCount && physicalCount > mindfulnessCount) {
+    dominantTrack = "PHYSICAL";
+  } else if (cognitiveCount > physicalCount && cognitiveCount > mindfulnessCount) {
+    dominantTrack = "COGNITIVE";
+  } else if (mindfulnessCount > physicalCount && mindfulnessCount > cognitiveCount) {
+    dominantTrack = "MINDFULNESS";
+  } else {
+    dominantTrack = "MIXED";
+  }
+
+  if (userTracks.length >= 4) {
+    dominantTrack = "MIXED";
+  }
+
+  const mindsetState = state.sessionData.general_responses?.identity || "";
+  let userArchetype = "";
+
+  if (mindsetState.includes("rebuild my life")) {
+    if (dominantTrack === "PHYSICAL") userArchetype = "THE BASELINE KINETIC";
+    else if (dominantTrack === "COGNITIVE") userArchetype = "THE METHODICAL MIND";
+    else if (dominantTrack === "MINDFULNESS") userArchetype = "THE RENEWING SPIRIT";
+    else userArchetype = "THE RECOVERY CATALYST";
+  } else if (mindsetState.includes("disciplined and consistent")) {
+    if (dominantTrack === "PHYSICAL") userArchetype = "THE IRON PILLAR";
+    else if (dominantTrack === "COGNITIVE") userArchetype = "THE ARCHITECT OF FOCUS";
+    else if (dominantTrack === "MINDFULNESS") userArchetype = "THE STOIC GUARDIAN";
+    else userArchetype = "THE UNSHAKEABLE PILLAR";
+  } else if (mindsetState.includes("unlock my full potential") || mindsetState.includes("high-performance lifestyle")) {
+    if (dominantTrack === "PHYSICAL") userArchetype = "THE APEX BIOTYPE";
+    else if (dominantTrack === "COGNITIVE") userArchetype = "THE COGNITIVE OVERLORD";
+    else if (dominantTrack === "MINDFULNESS") userArchetype = "THE TRANSCENDENT CORE";
+    else userArchetype = "THE APEX HYBRID";
+  } else if (mindsetState.includes("peace and balance")) {
+    if (dominantTrack === "PHYSICAL") userArchetype = "THE WARRIOR MONK";
+    else if (dominantTrack === "COGNITIVE") userArchetype = "THE SERENE STRATEGIST";
+    else if (dominantTrack === "MINDFULNESS") userArchetype = "THE ZENITH ASCETIC";
+    else userArchetype = "THE HARMONIOUS SOVEREIGN";
+  } else if (mindsetState.includes("transform myself completely")) {
+    if (dominantTrack === "PHYSICAL") userArchetype = "THE KINETIC VANGUARD";
+    else if (dominantTrack === "COGNITIVE") userArchetype = "THE NEURAL EVOLUTIONARY";
+    else if (dominantTrack === "MINDFULNESS") userArchetype = "THE SOVEREIGN MIND";
+    else userArchetype = "THE SOVEREIGN CORE";
+  }
+
+  userArchetype = userArchetype || "THE UNSHAKEABLE PILLAR";
+  state.sessionData.userArchetype = userArchetype;
 
   // --- ABSOLUTE MATH BOUNDARY GUARDS (Strict Floor [15%] and Ceiling [100%]) ---
   body = Math.min(100, Math.max(15, body));
@@ -2520,29 +2569,8 @@ function compileAlgorithmRoadmap() {
   const identityVal = genAns.identity || '';
 
   // 1. Archetype synthesis
-  let archetype = 'The Centered Pathfinder';
-  if (mindset.includes('complete personal transformation') || energy.includes('Ready for a complete transformation')) {
-    archetype = 'The Phoenix Ascendant';
-  } else if (mindset.includes('peaceful and balanced') || energy.includes('Mentally exhausted')) {
-    archetype = 'The Stoic Alchemist';
-  } else if (mindset.includes('disciplined and successful') || energy.includes('Disciplined and focused')) {
-    archetype = 'The Sovereign Achiever';
-  } else if (mindset.includes('healthy and energetic')) {
-    archetype = 'The Vitality Sovereign';
-  } else if (mindset.includes('meaningful and purposeful') || energy.includes('Lost and directionless')) {
-    archetype = 'The Purpose Pathfinder';
-  } else if (mindset.includes('confident and respected')) {
-    archetype = 'The Unshakable Pillar';
-  } else {
-    // Fallback
-    if (stateVal.includes('improve yourself') || identityVal.includes('high-performance') || identityVal.includes('full potential')) {
-      archetype = 'The Sovereign Optimizer';
-    } else if (stateVal.includes('okay, but') || identityVal.includes('disciplined')) {
-      archetype = 'The Dynamic Architect';
-    } else if (stateVal.includes('exhausted') || stateVal.includes('stuck') || identityVal.includes('rebuild')) {
-      archetype = 'The Resilient Ascendant';
-    }
-  }
+  calculateLifeMapMetrics();
+  const archetype = state.sessionData.userArchetype || 'THE UNSHAKEABLE PILLAR';
   
   // 2. Custom letter crafting
   let letter = `Welcome to the KAIROS ascent protocol, ${info.first_name}. `;
@@ -2858,12 +2886,12 @@ function renderUserDashboard(viewWrap) {
   
   viewWrap.className = 'dashboard-layout-container';
   
-  const focus = state.sessionData.focus_areas || state.sessionData.selectedTracks || [];
-  const first_name = state.sessionData.basic_info?.first_name || 'Achiever';
-  const archetype = state.sessionData.userArchetype || state.sessionData.generated_roadmap?.archetype || 'THE UNSHAKEABLE PILLAR';
-  
   // Calculate and bind Life Map metrics
   const scores = calculateLifeMapMetrics();
+
+  const focus = state.sessionData.focus_areas || state.sessionData.selectedTracks || [];
+  const first_name = state.sessionData.basic_info?.first_name || 'Achiever';
+  const archetype = state.sessionData.userArchetype || 'THE UNSHAKEABLE PILLAR';
   
   function hexToRgb(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
