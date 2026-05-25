@@ -253,6 +253,16 @@ const ALL_FLOW_NODES = {
   gym_mogging: {
     type: 'custom',
     render: (viewWrap) => {
+      const gender = state.sessionData?.basic_info?.gender || '';
+      let mogText = "YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST PLAYING GAMES WITH THE APP?";
+      if (gender === 'Male') {
+        mogText = "YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST HAVING FUN WITH THE APP YOU LITTLE BITCH?";
+      } else if (gender === 'Female') {
+        mogText = "YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST HAVING FUN WITH THE APP YOU LITTLE LAZY PRINCESS?";
+      } else if (gender === 'Non-binary' || gender === 'Prefer not to say') {
+        mogText = "YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST PLAYING GAMES WITH THE APP?";
+      }
+
       viewWrap.className = 'page-view mogging-screen';
       viewWrap.innerHTML = `
         <div class="mogging-container animate-slide-to-black">
@@ -260,7 +270,7 @@ const ALL_FLOW_NODES = {
             <i data-lucide="skull"></i>
           </div>
           <h1 class="mogging-text">
-            YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST HAVING FUN WITH THE APP YOU LITTLE BITCH?
+            ${mogText}
           </h1>
           <button id="btn-mogging-reset" class="btn-premium danger mogging-btn">
             <span>[ I will fix up and choose a plan ↺ ]</span>
