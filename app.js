@@ -216,7 +216,9 @@ const ALL_FLOW_NODES = {
       state.sessionData.basic_info.relationship_status = val;
       state.sessionData.flow_responses.relationship_status = val;
     }
-    // 1. GYM & FITNESS TRAINING (Strictly Conditional)
+  },
+  
+  // 1. GYM & FITNESS TRAINING (Strictly Conditional)
   gym_q1: {
     type: 'single',
     title: "What does your current workout environment look like?",
@@ -249,7 +251,7 @@ const ALL_FLOW_NODES = {
   gym_q3: {
     type: 'multiple',
     get title() {
-      const username = state.sessionData.basic_info.first_name || 'my friend';
+      const username = state?.sessionData?.basic_info?.first_name || 'my friend';
       return `Alright ${username}, if we're setting up your physical training loop, where do you need guidance?`;
     },
     subtitle: "",
@@ -1008,8 +1010,8 @@ function renderActiveStep() {
   const viewWrap = document.createElement('div');
   viewWrap.className = 'page-view';
 
-  if (state.activeNode.type === 'custom') {
-    state.activeNode.render(viewWrap);
+  if (state.activeNode?.type === 'custom') {
+    state.activeNode?.render?.(viewWrap);
   } else {
     renderStandardOptionCard(viewWrap);
   }
@@ -1110,34 +1112,37 @@ function bindCardGlowListeners() {
 
 // Standard option renderer (supporting Single and Multiple selection cards)
 function renderStandardOptionCard(viewWrap) {
-  const isMultiple = state.activeNode.type === 'multiple';
+  const isMultiple = state.activeNode?.type === 'multiple';
   
   // Retrieve previously selected value if navigating backward
-  const nodeKey = state.activeQueue[state.currentStepIndex];
+  const nodeKey = state.activeQueue?.[state.currentStepIndex];
   let selectedVal = null;
   if (isMultiple) {
     // Check flow_responses first, then top-level sessionData (covers life_state & focus_areas),
     // then focus_areas array, then default to empty array.
-    const topLevel = state.sessionData[nodeKey];
-    selectedVal = state.sessionData.flow_responses[nodeKey]
-               || state.sessionData.general_responses[nodeKey]
+    const topLevel = state.sessionData?.[nodeKey];
+    selectedVal = state.sessionData?.flow_responses?.[nodeKey]
+               || state.sessionData?.general_responses?.[nodeKey]
                || (Array.isArray(topLevel) ? topLevel : null)
                || [];
   } else {
-    selectedVal = state.sessionData.flow_responses[nodeKey] ||
-                  state.sessionData.general_responses[nodeKey] || '';
+    selectedVal = state.sessionData?.flow_responses?.[nodeKey] ||
+                  state.sessionData?.general_responses?.[nodeKey] || '';
   }
+  
+  const title = state.activeNode?.title || '';
+  const subtitle = state.activeNode?.subtitle || '';
   
   viewWrap.innerHTML = `
     <div class="question-header">
       <span class="question-pre">Kairos Analysis</span>
-      <h2 class="question-title">${state.activeNode.title}</h2>
-      <p class="question-desc">${state.activeNode.subtitle}</p>
+      <h2 class="question-title">${title}</h2>
+      <p class="question-desc">${subtitle}</p>
     </div>
     
     <div class="${isMultiple ? 'cards-grid' : 'cards-layout'}">
-      ${state.activeNode.options.map(opt => {
-        const isSel = isMultiple ? selectedVal.includes(opt.text) : selectedVal === opt.text;
+      ${(state.activeNode?.options || []).map(opt => {
+        const isSel = isMultiple ? (Array.isArray(selectedVal) ? selectedVal.includes(opt.text) : false) : selectedVal === opt.text;
         
         // Custom dynamic classing based on Challenge Intensity selections
         let intensityGlow = '';
