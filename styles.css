@@ -3237,4 +3237,96 @@ html, body {
   margin-bottom: 4px;
 }
 
+/* --- Mogging Screen (Path A Motivation Pushback) --- */
+.page-view.mogging-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100% !important;
+  background: #000000 !important;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+
+.mogging-container {
+  max-width: 800px;
+  text-align: center;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  animation: moggingEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes moggingEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.mogging-skull-icon {
+  font-size: 80px;
+  color: #ff453a;
+  filter: drop-shadow(0 0 20px rgba(255, 69, 58, 0.6));
+  animation: skullPulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes skullPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(255, 69, 58, 0.4));
+  }
+  100% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 35px rgba(255, 69, 58, 0.9));
+  }
+}
+
+.mogging-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.15),
+               0 0 10px rgba(255, 69, 58, 0.3);
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .mogging-text {
+    font-size: 28px;
+  }
+}
+
+.mogging-btn {
+  margin-top: 16px;
+  box-shadow: 0 0 30px rgba(255, 69, 58, 0.2);
+  transition: all 0.3s ease;
+}
+
+.mogging-btn:hover {
+  background: #ff453a !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 40px rgba(255, 69, 58, 0.6);
+  transform: scale(1.05);
+}
+
+
 

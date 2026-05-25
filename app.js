@@ -231,6 +231,89 @@ const ALL_FLOW_NODES = {
     ],
     save: (val) => {
       state.sessionData.flow_responses.gym_q1 = val;
+      buildDynamicQueue();
+    }
+  },
+
+  gym_q2_pushback: {
+    type: 'single',
+    title: "Could you realistically start incorporating workouts into your weekly routine?",
+    subtitle: "",
+    options: [
+      { id: 'gym_q2_pb_yes', text: "Yes.", desc: "I am ready to allocate time and effort for consistency.", icon: 'check-circle' },
+      { id: 'gym_q2_pb_no', text: "No.", desc: "I refuse to train or cannot allocate any mental space.", icon: 'x-circle' },
+      { id: 'gym_q2_pb_compromise', text: "I don't want to do it, but I could if it actually improves my health or fitness.", desc: "Willing to try if the evidence and health benefits are clear.", icon: 'help-circle' }
+    ],
+    save: (val) => {
+      state.sessionData.flow_responses.gym_q2_pushback = val;
+      buildDynamicQueue();
+    }
+  },
+
+  gym_mogging: {
+    type: 'custom',
+    render: (viewWrap) => {
+      viewWrap.className = 'page-view mogging-screen';
+      viewWrap.innerHTML = `
+        <div class="mogging-container animate-slide-to-black">
+          <div class="mogging-skull-icon">
+            <i data-lucide="skull"></i>
+          </div>
+          <h1 class="mogging-text">
+            YOU SURE YOU WANNA IMPROVE YOUR FITNESS OR YOU JUST HAVING FUN WITH THE APP YOU LITTLE BITCH?
+          </h1>
+          <button id="btn-mogging-reset" class="btn-premium danger mogging-btn">
+            <span>I will fix up and choose a plan</span>
+            <i data-lucide="rotate-ccw"></i>
+          </button>
+        </div>
+      `;
+      
+      lucide.createIcons();
+      
+      viewWrap.querySelector('#btn-mogging-reset').addEventListener('click', () => {
+        // Resets the Gym branch state
+        state.sessionData.flow_responses.gym_q1 = '';
+        state.sessionData.flow_responses.gym_q2_pushback = '';
+        state.sessionData.flow_responses.gym_q3_adaptation = '';
+        state.sessionData.flow_responses.gym_q2 = '';
+        
+        // Rebuild the queue
+        buildDynamicQueue();
+        
+        // Route back to gym_q1
+        const gymQ1Index = state.activeQueue.indexOf('gym_q1');
+        if (gymQ1Index !== -1) {
+          state.currentStepIndex = gymQ1Index;
+        } else {
+          state.currentStepIndex = 0; // Fallback
+        }
+        
+        // Animate exit transition and active
+        viewWrap.classList.remove('active');
+        setTimeout(() => {
+          renderActiveStep();
+        }, 300);
+      });
+    }
+  },
+
+  gym_q3_adaptation: {
+    type: 'single',
+    title: "What type of workout can you realistically commit to on a regular basis?",
+    subtitle: "",
+    options: [
+      { id: 'gym_q3_ad_comm', text: "Commercial Gym Training", desc: "Standard machines and structured gym access.", icon: 'building' },
+      { id: 'gym_q3_ad_home', text: "Home Workouts / Bodyweight", desc: "No travel friction, training inside your own room.", icon: 'home' },
+      { id: 'gym_q3_ad_outdoors', text: "Outdoor Sports & Calisthenics", desc: "Running, outdoor bars, or team sports.", icon: 'compass' }
+    ],
+    save: (val) => {
+      state.sessionData.flow_responses.gym_q3_adaptation = val;
+      // Map to gym_q1 for downstream split widgets & metrics
+      state.sessionData.flow_responses.gym_q1 = val;
+      // Default a low consistency target for active widget splitting fallback
+      state.sessionData.flow_responses.gym_q2 = "Just trying to get moving (1-2 days a week).";
+      buildDynamicQueue();
     }
   },
   
@@ -924,7 +1007,20 @@ function buildDynamicQueue() {
 
   // 1. Gym & Fitness Training
   if (chosen.includes('Gym & Fitness Training')) {
-    dynamicNodes.push('gym_q1', 'gym_q2', 'gym_q3');
+    const gymQ1Ans = state.sessionData.flow_responses?.gym_q1;
+    const gymQ2PushbackAns = state.sessionData.flow_responses?.gym_q2_pushback;
+    
+    if (gymQ1Ans === 'I am currently completely inactive.') {
+      dynamicNodes.push('gym_q1', 'gym_q2_pushback');
+      
+      if (gymQ2PushbackAns === 'No.') {
+        dynamicNodes.push('gym_mogging');
+      } else if (gymQ2PushbackAns === 'Yes.' || gymQ2PushbackAns === "I don't want to do it, but I could if it actually improves my health or fitness.") {
+        dynamicNodes.push('gym_q3_adaptation', 'gym_q3');
+      }
+    } else {
+      dynamicNodes.push('gym_q1', 'gym_q2', 'gym_q3');
+    }
   }
 
   // 2. Diet & Nutrition Balance
@@ -998,7 +1094,7 @@ function renderActiveStep() {
   // 1. Manage Navigation Header Visibility
   const header = document.getElementById('app-header');
   if (header) {
-    if (nodeKey === 'welcome' || nodeKey === 'final_roadmap') {
+    if (nodeKey === 'welcome' || nodeKey === 'final_roadmap' || nodeKey === 'gym_mogging') {
       header.classList.remove('visible');
     } else {
       header.classList.add('visible');
