@@ -428,6 +428,10 @@ html, body {
   line-height: 1.5;
 }
 
+.question-desc:empty {
+  display: none;
+}
+
 .split-desc-line {
   display: block;
   font-size: 15px;

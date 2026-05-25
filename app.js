@@ -253,12 +253,13 @@ const ALL_FLOW_NODES = {
   
   fitness_gym_no_psych: {
     type: 'single',
-    title: 'Do you want to go? Could you?',
-    subtitle: '<span class="split-desc-line">1. Do you want to go to the gym?</span><span class="split-desc-line" style="margin-top: 4px; display: block;">2. Could you go to the gym?</span>',
+    title: 'Do you want to go?<br>Could you?',
+    subtitle: '',
     options: [
       { id: 'fit_psych_yes', text: 'Yes', desc: 'I desire to go, and I have the logistical capability to make it happen.', icon: 'heart' },
       { id: 'fit_psych_no', text: 'No', desc: 'I do not wish to go, and I am content with my current movement scope.', icon: 'slash' },
-      { id: 'fit_psych_conditional', text: "Don't want to, but can if that improves my life", desc: 'Open to expanding comfort zone if stoichiometric evidence warrants it.', icon: 'sparkles' }
+      { id: 'fit_psych_conditional', text: "Don't want to, but can if that improves my life", desc: 'Open to expanding comfort zone if stoichiometric evidence warrants it.', icon: 'sparkles' },
+      { id: 'fit_psych_home', text: "I can't, but I can do home workouts", desc: "Gym access isn't feasible, but I am fully capable of training in my own space.", icon: 'home' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.fitness_gym_no_psych = val;
@@ -1799,6 +1800,7 @@ function calculateLifeMapMetrics() {
     const psych = flow.fitness_gym_no_psych;
     if (psych === 'Yes') body += 10;
     else if (psych === "Don't want to, but can if that improves my life") body += 14;
+    else if (psych === "I can't, but I can do home workouts") body += 14;
     else if (psych === 'No') body += 4;
   } else if (gymGate === 'I do home workouts / other workouts') {
     body += 15;
