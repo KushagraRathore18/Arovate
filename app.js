@@ -590,6 +590,36 @@ const ALL_FLOW_NODES = {
     ],
     save: (val) => { state.sessionData.general_responses.final_mindset = val; }
   },
+
+  // NEW PAGE — AI ANALYSIS LOADING
+  ai_analysis_loading: {
+    type: 'custom',
+    render: renderAiAnalysisLoading
+  },
+  
+  // NEW PAGE — HOW WE SEE YOU
+  how_we_see_you: {
+    type: 'custom',
+    render: renderHowWeSeeYou
+  },
+  
+  // NEW PAGE — WHAT'S HOLDING YOU BACK
+  whats_holding_you_back: {
+    type: 'custom',
+    render: renderWhatsHoldingYouBack
+  },
+  
+  // NEW PAGE — WHAT MOST PEOPLE NEVER REALIZE
+  what_most_never_realize: {
+    type: 'custom',
+    render: renderWhatMostNeverRealize
+  },
+  
+  // NEW PAGE — TRANSFORMATION PREVIEW
+  transformation_preview: {
+    type: 'custom',
+    render: renderTransformationPreview
+  },
   
   // 14. FINAL ROADMAP ONBOARDING COMPLETE (Universal)
   final_roadmap: {
@@ -789,6 +819,11 @@ function buildDynamicQueue() {
     'personality_energy',
     'future_self_vision',
     'final_mindset',
+    'ai_analysis_loading',
+    'how_we_see_you',
+    'whats_holding_you_back',
+    'what_most_never_realize',
+    'transformation_preview',
     'final_roadmap'
   ];
   
@@ -1401,6 +1436,526 @@ function renderRoutineConfidence(viewWrap) {
   
   viewWrap.querySelector('#btn-submit-slider').addEventListener('click', () => {
     state.sessionData.general_responses.routine_confidence = parseInt(slider.value);
+    advanceStep();
+  });
+}
+
+  viewWrap.querySelector('#btn-submit-slider').addEventListener('click', () => {
+    state.sessionData.general_responses.routine_confidence = parseInt(slider.value);
+    advanceStep();
+  });
+}
+
+// --- AI PERSONALITY ANALYSIS & COPY GENERATION ENGINE ---
+function generateAIPersonalityAnalysis() {
+  const info = state.sessionData.basic_info || { first_name: 'Alexander' };
+  const energy = state.sessionData.general_responses.personality_energy || '';
+  const stateVal = state.sessionData.life_state || [];
+  const confidence = state.sessionData.general_responses.routine_confidence || 5;
+  const addictions = state.sessionData.general_responses.addictions_distractions || [];
+  const routine = state.sessionData.general_responses.routine || '';
+  const challenge = state.sessionData.general_responses.challenge_intensity || 'Balanced Growth';
+  const values = state.sessionData.general_responses.values_priorities || [];
+  const vision = state.sessionData.general_responses.future_self_vision || [];
+  const mindset = state.sessionData.general_responses.final_mindset || '';
+
+  // 1. Core Mindset Card (Card 1)
+  let mindsetTitle = 'The Silent Anchor';
+  let mindsetText = `You carry a steady, quiet determination but feel trapped by a lack of absolute daily clarity. You have high self-awareness and want to apply yourself, but you are currently running in circles because your daily actions are not connected to a clear 'why'. We see a solid foundation ready to compound rapidly once we anchor your habits to a singular, ultimate calling.`;
+  let mindsetTags = ['Quietly Determined', 'High Self-Awareness', 'Unlocking Clarity'];
+
+  if (energy.includes('Mentally exhausted') || energy.includes('Rebuilding myself slowly')) {
+    mindsetTitle = 'A Soul in Recovery';
+    mindsetText = `You are navigating a phase of mental fatigue and cognitive overload. You possess a strong desire for personal growth, but your battery is depleted. Your primary task is not to enforce rigid, military discipline, but to focus on gentle circadian resets and baseline micro-routines to rebuild your self-trust before scaling challenge layers.`;
+    mindsetTags = ['Mindful Recovery', 'Circadian Reset', 'Rebuilding Baseline'];
+  } else if (energy.includes('Ambitious but inconsistent') || energy.includes('Ready for a complete transformation')) {
+    mindsetTitle = 'The Aspiring Catalyst';
+    mindsetText = `You carry a massive spark of ambition and a clear vision of your potential. However, you currently suffer from 'motivation dependency'—experiencing intense bursts of effort followed by rapid collapse cycles. Your path requires shifting from emotional inspiration to quiet, systemic habits that run automatically on dark days.`;
+    mindsetTags = ['Ambitious Drive', 'Habit Autopilot', 'Slaying Inconsistency'];
+  } else if (energy.includes('Highly driven but overwhelmed') || energy.includes('Disciplined and focused')) {
+    mindsetTitle = 'The High-Performance Engine';
+    mindsetText = `You possess high execution power and natural drive. You don't struggle to take action; instead, you struggle to manage your cognitive capacity, spreading yourself too thin across multiple vectors. You run at redline speed. Your growth lies in radical simplification, energetic boundaries, and Stoic self-stewardship.`;
+    mindsetTags = ['High Execution', 'Simplifying Focus', 'Burnout Prevention'];
+  }
+
+  // 2. Current Patterns Card (Card 2)
+  let patternsTitle = 'Energy & Focus Flow';
+  let patternsText = `Your daily patterns show high intent but variable execution. Your routine stability is currently fragmented by situational changes, forcing you to constantly expend willpower to get started. By scheduling predictable anchors, we will turn discipline into a frictionless habit.`;
+  let patternsTags = ['Variable Routines', 'Willpower Reserves', 'Predictable Anchors'];
+
+  let sleepPattern = '';
+  if (addictions.includes('Late-night scrolling') || state.sessionData.flow_responses.sleep_state?.includes('Poor')) {
+    sleepPattern = 'Your sleep architecture is currently volatile due to bedtime stimulation or doomscrolling. Waking up exhausted creates a mid-day focus crash, forcing you to rely on stimulants or sheer willpower.';
+  } else {
+    sleepPattern = 'Your sleep cycle is reasonably stable, providing a solid chemical baseline for cognitive energy and mid-day stamina.';
+  }
+
+  let environmentPattern = '';
+  if (addictions.includes('Phone addiction') || addictions.includes('Social media addiction')) {
+    environmentPattern = 'Digital dopamine loops—constant notifications and phone checks—have micro-fragmented your attention span. This makes deep work feel painful, causing a drift to instant escapes.';
+  } else if (addictions.includes('Overthinking') || addictions.includes('Negative self-talk')) {
+    environmentPattern = 'Your primary focus leak is internal. Overthinking, perfectionism, and self-doubt paralyze your activation gates, draining your willpower before you even begin a task.';
+  } else {
+    environmentPattern = 'Your distraction hygiene is excellent, letting us bypass basic adjustments and go straight into refining peak focus states.';
+  }
+
+  patternsText = `${sleepPattern} ${environmentPattern}`;
+  
+  if (addictions.includes('Phone addiction') || addictions.includes('Social media addiction')) {
+    patternsTags = ['Dopamine Detoxing', 'Attention Reclaiming', 'Screen Boundaries'];
+  } else if (addictions.includes('Overthinking') || addictions.includes('Negative self-talk')) {
+    patternsTags = ['Quiet Mind', 'Conquering Paralysis', 'Action Over Perfect'];
+  } else {
+    patternsTags = ['High Attention Span', 'Flow State Access', 'Peak Focus'];
+  }
+
+  // 3. Struggles Insight (Whats Holding You Back Page)
+  const strugglesList = [];
+
+  if (addictions.includes('Constant procrastination')) {
+    strugglesList.push({
+      title: 'Procrastination Avoidance Loops',
+      desc: 'You delay high-impact tasks not out of laziness, but due to subconscious dread. The task feels massive, so your brain seeks immediate emotional relief in minor distractions. We will neutralize this by introducing 5-minute activation triggers.',
+      icon: 'clock'
+    });
+  }
+  if (addictions.includes('Late-night scrolling') || state.sessionData.flow_responses.sleep_state?.includes('Poor')) {
+    strugglesList.push({
+      title: 'Revenge Bedtime Procrastination',
+      desc: 'You stay up late scrolling because it is the only part of the day where you feel fully in control of your time. However, this midnight tax destroys the next day\'s energy reserves. We will replace this with a luxurious evening wind-down protocol.',
+      icon: 'moon'
+    });
+  }
+  if (routine.includes('chaotic') || routine.includes('different') || routine.includes('almost no')) {
+    strugglesList.push({
+      title: 'Reactive Decision Fatigue',
+      desc: 'Because your days lack a predictable skeletal skeleton, you must constantly decide what to do next. This exhausts your willpower before you even begin working. We will systemize your mornings so focus becomes automatic.',
+      icon: 'compass'
+    });
+  }
+  if (addictions.includes('Overthinking') || addictions.includes('Negative self-talk')) {
+    strugglesList.push({
+      title: 'Analysis Paralysis Gates',
+      desc: 'You spend so much energy designing the perfect plan that you exhaust your activation energy. You must learn to value imperfect, dirty actions over clean stagnation. We will prioritize consistency over perfection.',
+      icon: 'brain'
+    });
+  }
+  if (energy.includes('Mentally exhausted')) {
+    strugglesList.push({
+      title: 'Cognitive Battery Depletion',
+      desc: 'Your mind is running on low voltage, making even simple tasks feel like climbing a mountain. Pushing for high performance right now is a trap that will lead to burnout. We will prioritize recovery and steady progress.',
+      icon: 'battery-low'
+    });
+  }
+
+  // Fallbacks if list is empty
+  while (strugglesList.length < 3) {
+    if (strugglesList.length === 0) {
+      strugglesList.push({
+        title: 'Motivation Dependency',
+        desc: 'Relying on emotional spikes to do hard things instead of establishing stable, automatic daily systems. We will build habit consistency that functions independently of your mood.',
+        icon: 'zap'
+      });
+    } else if (strugglesList.length === 1) {
+      strugglesList.push({
+        title: 'Focus Fragmentation Leaks',
+        desc: 'Erratic notification checks and shifting browser tabs micro-slice your focus, taking you out of flow states. We will isolate your attention during high-impact blocks.',
+        icon: 'smartphone'
+      });
+    } else {
+      strugglesList.push({
+        title: 'Vague Priority Drift',
+        desc: 'Trying to work on everything at once without a singular, dominant focus point. We will narrow your scope to build massive compounding force on a single target.',
+        icon: 'target'
+      });
+    }
+  }
+
+  return {
+    mindset: { title: mindsetTitle, text: mindsetText, tags: mindsetTags },
+    patterns: { title: patternsTitle, text: patternsText, tags: patternsTags },
+    struggles: strugglesList.slice(0, 3)
+  };
+}
+
+// SCREEN: Immersive AI Loading Screen
+function renderAiAnalysisLoading(viewWrap) {
+  viewWrap.className = 'page-view';
+  viewWrap.innerHTML = `
+    <div class="ai-loading-container">
+      <div class="ai-loader-concentric">
+        <div class="orbit-ring outer"></div>
+        <div class="orbit-ring middle"></div>
+        <div class="orbit-ring inner"></div>
+        <span class="ai-loader-percentage" id="loader-pct">0%</span>
+      </div>
+      <div class="ai-status-pulse-text" id="loader-status">Analyzing your patterns...</div>
+    </div>
+  `;
+
+  const pct = viewWrap.querySelector('#loader-pct');
+  const status = viewWrap.querySelector('#loader-status');
+
+  const statusTexts = [
+    "Analyzing your patterns...",
+    "Understanding your habits and mindset...",
+    "Building your personal growth profile...",
+    "Identifying hidden obstacles...",
+    "Generating your transformation roadmap..."
+  ];
+
+  let currentPercent = 0;
+  let statusIndex = 0;
+
+  // Pulse animation loop
+  const interval = setInterval(() => {
+    currentPercent += Math.floor(Math.random() * 8) + 3;
+    if (currentPercent >= 100) {
+      currentPercent = 100;
+      clearInterval(interval);
+      pct.innerText = `100%`;
+      status.innerText = "Growth profile synthesized.";
+      setTimeout(() => {
+        advanceStep();
+      }, 800);
+    } else {
+      pct.innerText = `${currentPercent}%`;
+      // Smoothly transition loading texts based on percentage milestones
+      const targetIndex = Math.min(statusTexts.length - 1, Math.floor((currentPercent / 100) * statusTexts.length));
+      if (targetIndex !== statusIndex) {
+        statusIndex = targetIndex;
+        status.style.opacity = 0;
+        setTimeout(() => {
+          status.innerText = statusTexts[statusIndex];
+          status.style.opacity = 1;
+        }, 200);
+      }
+    }
+  }, 150);
+}
+
+// SCREEN: "How We See You" Analysis Screen
+function renderHowWeSeeYou(viewWrap) {
+  const analysis = generateAIPersonalityAnalysis();
+  const info = state.sessionData.basic_info;
+
+  viewWrap.innerHTML = `
+    <div class="question-header">
+      <span class="question-pre">Cognitive Synthesis</span>
+      <h2 class="question-title">How We See You</h2>
+      <p class="question-desc">Based on your answers, this is the version of you we currently see.</p>
+    </div>
+
+    <p class="analysis-intro-text">
+      Alexander, your responses paint a clear picture of a highly self-aware individual. You have recognized where your daily routines break down, and you have taken the first step by deconstructing the habits holding you back. Here is your baseline profile:
+    </p>
+
+    <div class="analysis-grid">
+      <!-- Card 1: Mindset -->
+      <div class="analysis-card mindset-card glow-card">
+        <div class="analysis-card-title">
+          <i data-lucide="brain" style="color: var(--accent-purple);"></i>
+          <span>${analysis.mindset.title}</span>
+        </div>
+        <p class="analysis-card-text">${analysis.mindset.text}</p>
+        <div class="analysis-tags">
+          ${analysis.mindset.tags.map(t => `<span class="analysis-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+
+      <!-- Card 2: Patterns -->
+      <div class="analysis-card patterns-card glow-card">
+        <div class="analysis-card-title">
+          <i data-lucide="activity" style="color: var(--accent-cyan);"></i>
+          <span>${analysis.patterns.title}</span>
+        </div>
+        <p class="analysis-card-text">${analysis.patterns.text}</p>
+        <div class="analysis-tags">
+          ${analysis.patterns.tags.map(t => `<span class="analysis-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button id="btn-submit-analysis" class="btn-premium primary">
+        <span>Continue to Insight</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  `;
+
+  lucide.createIcons();
+  bindCardGlowListeners();
+
+  viewWrap.querySelector('#btn-submit-analysis').addEventListener('click', () => {
+    advanceStep();
+  });
+}
+
+// SCREEN: "What's Holding You Back" Insights Page
+function renderWhatsHoldingYouBack(viewWrap) {
+  const analysis = generateAIPersonalityAnalysis();
+
+  viewWrap.innerHTML = `
+    <div class="question-header">
+      <span class="question-pre">Friction Audit</span>
+      <h2 class="question-title">What's Slowing Your Growth</h2>
+      <p class="question-desc">We have mapped the primary leaks draining your consistency. Conquering them starts with awareness.</p>
+    </div>
+
+    <div class="struggles-layout">
+      ${analysis.struggles.map(s => `
+        <div class="struggle-item">
+          <div class="struggle-icon-box">
+            <i data-lucide="${s.icon}"></i>
+          </div>
+          <div class="struggle-details">
+            <span class="struggle-title">${s.title}</span>
+            <p class="struggle-desc">${s.desc}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <h3 class="plan-helpers-header">How Your Plan Will Help</h3>
+
+    <div class="plan-helpers-grid">
+      <div class="plan-helper-card glow-card">
+        <i data-lucide="anchor" class="plan-helper-icon"></i>
+        <span class="plan-helper-title">Habit Anchoring</span>
+        <p class="plan-helper-desc">Frictionless 5-minute micro-habits that bypass your brain's action resistance.</p>
+      </div>
+
+      <div class="plan-helper-card glow-card">
+        <i data-lucide="shield" class="plan-helper-icon"></i>
+        <span class="plan-helper-title">Friction Insulation</span>
+        <p class="plan-helper-desc">Systematic rules to lock out environments and digital loops that trigger procrastination.</p>
+      </div>
+
+      <div class="plan-helper-card glow-card">
+        <i data-lucide="trending-up" class="plan-helper-icon"></i>
+        <span class="plan-helper-title">Consistency Scaling</span>
+        <p class="plan-helper-desc">Gradual progression models that increase routine demands only after self-trust stabilizes.</p>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button id="btn-submit-struggles" class="btn-premium primary">
+        <span>Continue</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  `;
+
+  lucide.createIcons();
+  bindCardGlowListeners();
+
+  viewWrap.querySelector('#btn-submit-struggles').addEventListener('click', () => {
+    advanceStep();
+  });
+}
+
+// SCREEN: "What Most People Never Realize" Psychological commitment page
+function renderWhatMostNeverRealize(viewWrap) {
+  viewWrap.innerHTML = `
+    <div class="question-header">
+      <span class="question-pre">Stoic Truth</span>
+      <h2 class="question-title">What Most People Never Realize</h2>
+      <p class="question-desc">Personal growth fails because we rely on the wrong systems.</p>
+    </div>
+
+    <div class="realization-layout">
+      <!-- Left side: The Stagnation Loop -->
+      <div class="stagnation-timeline">
+        <span class="stagnation-title">The Stagnation Loop</span>
+        
+        <div class="stagnation-step">
+          <div class="stagnation-dot">1</div>
+          <div class="stagnation-details">
+            <span class="stagnation-step-title">Motivation Hype</span>
+            <p class="stagnation-step-desc">A burst of emotional drive sparks the desire to change everything overnight.</p>
+          </div>
+        </div>
+
+        <div class="stagnation-step">
+          <div class="stagnation-dot">2</div>
+          <div class="stagnation-details">
+            <span class="stagnation-step-title">Sudden Friction</span>
+            <p class="stagnation-step-desc">Life gets busy, fatigue kicks in, and the initial excitement evaporates.</p>
+          </div>
+        </div>
+
+        <div class="stagnation-step">
+          <div class="stagnation-dot">3</div>
+          <div class="stagnation-details">
+            <span class="stagnation-step-title">Consistency Crash</span>
+            <p class="stagnation-step-desc">Missing a habit triggers a guilt spiral. The routine is completely abandoned.</p>
+          </div>
+        </div>
+
+        <div class="stagnation-step">
+          <div class="stagnation-dot">4</div>
+          <div class="stagnation-details">
+            <span class="stagnation-step-title">Stagnation Loop</span>
+            <p class="stagnation-step-desc">You return exactly to where you started, waiting for the next spark of motivation.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Why you are already ahead -->
+      <div class="realization-details">
+        <span class="realization-header">Why you are already breaking the cycle.</span>
+        <p class="realization-text">
+          95% of people quit because they rely on emotional inspiration to do hard things. They build massive plans but build zero self-awareness. By choosing to deconstruct your day honestly, you have already bypassed the first gate:
+        </p>
+
+        <div class="advantage-item">
+          <i data-lucide="eye" class="advantage-icon"></i>
+          <div class="advantage-content">
+            <span class="advantage-title">Radical Self-Awareness</span>
+            <p class="stagnation-step-desc">You did not look for quick hacks. You audited your routine, sleep, and environment honestly.</p>
+          </div>
+        </div>
+
+        <div class="advantage-item">
+          <i data-lucide="sliders" class="advantage-icon"></i>
+          <div class="advantage-content">
+            <span class="advantage-title">Analytical Intent</span>
+            <p class="stagnation-step-desc">We know exactly what drains your cognitive battery. We can insulate you from leaks systematically.</p>
+          </div>
+        </div>
+
+        <div class="advantage-item">
+          <i data-lucide="lock" class="advantage-icon"></i>
+          <div class="advantage-content">
+            <span class="advantage-title">Habits Over Hype</span>
+            <p class="stagnation-step-desc">We are not building a motivation plan. We are assembling a resilient habits system.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button id="btn-submit-realize" class="btn-premium primary">
+        <span>Preview Your Transformation</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  `;
+
+  lucide.createIcons();
+
+  viewWrap.querySelector('#btn-submit-realize').addEventListener('click', () => {
+    advanceStep();
+  });
+}
+
+// SCREEN: "Your Transformation Preview" interactive milestone node
+function renderTransformationPreview(viewWrap) {
+  const chosen = state.sessionData.focus_areas || [];
+  
+  // Custom milestones based on focus areas
+  const milestoneDetails = [
+    {
+      days: "Days 1-7",
+      title: "Base Synchronization",
+      desc: "We will establish circular sleep synchronization and frictionless morning triggers. Your only task is starting—building initial momentum with zero routine resistance.",
+      icon: "activity"
+    },
+    {
+      days: "Days 8-21",
+      title: "Focus Insulation",
+      desc: "We will systematically isolate you from digital dopamine loops and phone distraction triggers during high-impact blocks. We block cognitive friction before it drains you.",
+      icon: "shield"
+    },
+    {
+      days: "Days 22-45",
+      title: "Willpower Autopilot",
+      desc: "Habit systems compound. Action triggers shift from conscious willpower effort to automatic, neurological reflexes. The daily routine operates smoothly on auto-pilot.",
+      icon: "zap"
+    },
+    {
+      days: "Days 46+",
+      title: "Peak Ascent Scaling",
+      desc: "We compound your consistency to scale major lifetime goals. Circadian resting and Stoic habit loops are fully established, giving you ultimate sovereignty and autonomy.",
+      icon: "target"
+    }
+  ];
+
+  viewWrap.innerHTML = `
+    <div class="question-header">
+      <span class="question-pre">Habit Evolution</span>
+      <h2 class="question-title">Your Transformation starts here</h2>
+      <p class="question-desc">Click each milestone phase below to preview the progression of your KAIROS ascent protocol.</p>
+    </div>
+
+    <div class="preview-timeline">
+      ${milestoneDetails.map((m, idx) => `
+        <div class="timeline-node ${idx === 0 ? 'active' : ''}" data-idx="${idx}">
+          <div class="timeline-node-icon">
+            <i data-lucide="${m.icon}"></i>
+          </div>
+          <span class="timeline-node-days">${m.days}</span>
+          <span class="timeline-node-title">${m.title}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Active Details Display Box -->
+    <div class="preview-detail-card" id="detail-card">
+      <div class="preview-detail-icon-box" id="detail-icon-box">
+        <i data-lucide="${milestoneDetails[0].icon}"></i>
+      </div>
+      <div class="preview-detail-content">
+        <span class="preview-detail-header" id="detail-header">${milestoneDetails[0].days}</span>
+        <span class="preview-detail-title" id="detail-title">${milestoneDetails[0].title}</span>
+        <p class="preview-detail-desc" id="detail-desc">${milestoneDetails[0].desc}</p>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button id="btn-submit-preview" class="btn-premium primary">
+        <span>Generate Ascent Roadmap</span>
+        <i data-lucide="sparkles"></i>
+      </button>
+    </div>
+  `;
+
+  lucide.createIcons();
+
+  const nodes = viewWrap.querySelectorAll('.timeline-node');
+  const dCard = viewWrap.querySelector('#detail-card');
+  const dIconBox = viewWrap.querySelector('#detail-icon-box');
+  const dHeader = viewWrap.querySelector('#detail-header');
+  const dTitle = viewWrap.querySelector('#detail-title');
+  const dDesc = viewWrap.querySelector('#detail-desc');
+
+  nodes.forEach(node => {
+    node.addEventListener('click', () => {
+      nodes.forEach(n => n.classList.remove('active'));
+      node.classList.add('active');
+
+      const idx = parseInt(node.getAttribute('data-idx'));
+      const details = milestoneDetails[idx];
+
+      // Smooth content fade shift
+      dCard.style.opacity = 0;
+      dCard.style.transform = 'translateY(5px)';
+      
+      setTimeout(() => {
+        dIconBox.innerHTML = `<i data-lucide="${details.icon}"></i>`;
+        dHeader.innerText = details.days;
+        dTitle.innerText = details.title;
+        dDesc.innerText = details.desc;
+        lucide.createIcons();
+        
+        dCard.style.opacity = 1;
+        dCard.style.transform = 'translateY(0)';
+      }, 200);
+    });
+  });
+
+  viewWrap.querySelector('#btn-submit-preview').addEventListener('click', () => {
     advanceStep();
   });
 }
