@@ -636,24 +636,7 @@ const ALL_FLOW_NODES = {
     save: (val) => { state.sessionData.general_responses.routine = val; }
   },
   
-  // 12. REFLECTION PAGES (Universal)
-  reflection_progress: {
-    type: 'single',
-    title: 'What would progress look like for you?',
-    subtitle: '',
-    options: [
-      { id: 'ref_prog_happier', text: 'Feeling happier daily', desc: 'Reducing cortisol spikes, finding organic presence and calm.', icon: 'smile' },
-      { id: 'ref_prog_disciplined', text: 'Becoming disciplined', desc: 'Waking up, showing up, doing the work even when you hate it.', icon: 'shield' },
-      { id: 'ref_prog_look_better', text: 'Looking better physically', desc: 'Sculpting posture, building athletic composition, lean force.', icon: 'dumbbell' },
-      { id: 'ref_prog_more_energy', text: 'Having more energy', desc: 'Waking up clean, feeling stable power and mental clarity.', icon: 'battery-charging' },
-      { id: 'ref_prog_peaceful', text: 'Feeling mentally peaceful', desc: 'Silencing overthinking, anchors, and internal anxiety.', icon: 'wind' },
-      { id: 'ref_prog_proud', text: 'Being proud of myself', desc: 'Knowing your words and actions are in complete alignment.', icon: 'award' },
-      { id: 'ref_prog_relationships', text: 'Building meaningful relationships', desc: 'Cutting toxic contacts, attracting values-aligned partners.', icon: 'users' },
-      { id: 'ref_prog_successful', text: 'Becoming successful', desc: 'Scaling productivity to multiply professional/financial metrics.', icon: 'trending-up' },
-      { id: 'ref_prog_in_control', text: 'Finally feeling in control of my life', desc: 'Sovereignty. You command your schedule, focus, and future.', icon: 'lock' }
-    ],
-    save: (val) => { state.sessionData.general_responses.reflection_progress = val; }
-  },
+
   reflection_pride: {
     type: 'single',
     title: 'When was the last time you truly felt proud of yourself?',
@@ -708,26 +691,7 @@ const ALL_FLOW_NODES = {
     save: (vals) => { state.sessionData.general_responses.values_priorities = vals; }
   },
 
-  // NEW PAGE — DAILY ENVIRONMENT
-  daily_environment: {
-    type: 'multiple',
-    title: 'Where do you spend most of your time?',
-    subtitle: '',
-    options: [
-      { id: 'env_home', text: 'At home with family', desc: 'Cozy spaces, domestic dynamics, and shared routines.', icon: 'home' },
-      { id: 'env_alone', text: 'Mostly alone', desc: 'Solitary focus, quiet contemplation, or lonely plateaus.', icon: 'user' },
-      { id: 'env_school', text: 'At school or college', desc: 'Study halls, lecture blocks, exams, and campus life.', icon: 'book-open' },
-      { id: 'env_work', text: 'At work', desc: 'Office desks, virtual meetings, or manual work sites.', icon: 'briefcase' },
-      { id: 'env_gym', text: 'In the gym', desc: 'Iron grinds, athletic circles, and physical tracking.', icon: 'dumbbell' },
-      { id: 'env_online', text: 'Online or on social media', desc: 'Feeds, digital spaces, virtual communities.', icon: 'smartphone' },
-      { id: 'env_friends', text: 'With friends', desc: 'Socializing, group hangouts, active shared time.', icon: 'users' },
-      { id: 'env_outside', text: 'Outside/traveling', desc: 'Under the sky, exploring trails, or commuting often.', icon: 'map' },
-      { id: 'env_gaming', text: 'Gaming or entertainment spaces', desc: 'Chasing digital goals, streaming, and relaxing.', icon: 'gamepad-2' },
-      { id: 'env_public', text: 'Busy public environments', desc: 'Coffee shops, public transit, packed cities.', icon: 'map-pin' },
-      { id: 'env_quiet', text: 'Quiet personal spaces', desc: 'My room, personal sanctuary, distraction-free zones.', icon: 'coffee' }
-    ],
-    save: (vals) => { state.sessionData.general_responses.daily_environment = vals; }
-  },
+
 
   // NEW PAGE — ROUTINE CONFIDENCE SCALE
   routine_confidence: {
@@ -771,24 +735,7 @@ const ALL_FLOW_NODES = {
     save: (val) => { state.sessionData.general_responses.challenge_intensity = val; }
   },
 
-  // NEW PAGE — PERSONALITY & ENERGY STYLE
-  personality_energy: {
-    type: 'single',
-    title: 'Which description feels closest to your current energy?',
-    subtitle: '',
-    options: [
-      { id: 'eng_calm', text: 'Calm but unmotivated', desc: 'Stable resting state, but lacking the fire of motivation.', icon: 'coffee' },
-      { id: 'eng_ambitious', text: 'Ambitious but inconsistent', desc: 'High aspirations, but struggle with daily execution.', icon: 'trending-up' },
-      { id: 'eng_exhausted', text: 'Mentally exhausted', desc: 'Feeling drained, burnt out, and needing steady recovery.', icon: 'battery-low' },
-      { id: 'eng_lost', text: 'Lost and directionless', desc: 'Ready to work, but searching for a clear, meaningful path.', icon: 'compass' },
-      { id: 'eng_quiet', text: 'Quietly determined', desc: 'Steady focus, working in silence towards specific benchmarks.', icon: 'shield' },
-      { id: 'eng_driven', text: 'Highly driven but overwhelmed', desc: 'Fast execution, but dealing with high cognitive load.', icon: 'zap' },
-      { id: 'eng_focused', text: 'Disciplined and focused', desc: 'Strong habits, seeking peak optimization and mastery.', icon: 'lock' },
-      { id: 'eng_rebuilding', text: 'Rebuilding myself slowly', desc: 'Healing systems, taking step-by-step progress metrics.', icon: 'rotate-cw' },
-      { id: 'eng_transform', text: 'Ready for a complete transformation', desc: 'The ultimate pivot point. Fully locked in for reinvention.', icon: 'sparkles' }
-    ],
-    save: (val) => { state.sessionData.general_responses.personality_energy = val; }
-  },
+
 
   // NEW PAGE — FUTURE SELF VISION
   future_self_vision: {
@@ -1047,13 +994,10 @@ function buildDynamicQueue() {
 
   const universalEndNodes = [
     'routine',
-    'reflection_progress',
     'identity',
-    'daily_environment',
     'routine_confidence',
     'addictions_distractions',
     'challenge_intensity',
-    'personality_energy',
     'final_mindset',
     'profile_life_map',
     'ai_analysis_loading',
@@ -1998,6 +1942,12 @@ function calculateLifeMapMetrics() {
   // Deduct 25 points if consistency target is 7 or more days (severe overtraining)
   if (flow.gym_q2 === "7 or more days a week.") {
     rest -= 25;
+  }
+
+  // Deduct 20 points if routine is chaotic or almost none
+  const routine = state.sessionData.general_responses?.routine || '';
+  if (routine === "Completely chaotic" || routine === "I have almost no routine") {
+    rest -= 20;
   }
 
   // 4. MIND (Focus, Discipline & Study)
