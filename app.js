@@ -2362,51 +2362,118 @@ function renderWhatsHoldingYouBack(viewWrap) {
 
   viewWrap.className = 'page-view';
   viewWrap.innerHTML = `
-    <div class="question-header">
+    <div class="question-header" style="margin-bottom: 24px;">
       <span class="question-pre">Friction & Strategy Analysis</span>
       <h2 class="question-title">Friction & Strategy Analysis</h2>
-      <p class="question-desc">We have identified your primary physical and cognitive bottlenecks and mapped direct counter-strategy protocols.</p>
+      <p class="question-desc" style="margin-bottom: 0;">We have identified your primary physical and cognitive bottlenecks and mapped direct counter-strategy protocols.</p>
     </div>
 
-    <h3 class="plan-helpers-header" style="text-align: left; margin: 20px 0 16px; font-size: 18px;">Your Identified Bottlenecks</h3>
-    <div class="plan-helpers-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
-      ${analysis.struggles.map(s => `
-        <div class="struggle-item" style="flex-direction: column; gap: 12px; padding: 20px; text-align: center; border-left: none; border-bottom: 4px solid rgba(239, 68, 68, 0.4); margin-bottom: 0;">
-          <div class="struggle-icon-box" style="margin: 0 auto 4px;">
-            <i data-lucide="${s.icon}"></i>
+    <!-- 2-Column Responsive Layout Container Grid -->
+    <div class="friction-analysis-layout-grid">
+      
+      <!-- COLUMN 1: Stoic Truth & Stagnation Loop (40% Width) -->
+      <div class="friction-column-left">
+        <div class="friction-card-header">
+          <span class="friction-card-pre">Stoic Truth</span>
+          <h3 class="friction-card-title">What Most People Never Realize</h3>
+        </div>
+
+        <div class="stagnation-timeline">
+          <span class="stagnation-title">THE STAGNATION LOOP</span>
+          
+          <div class="stagnation-step">
+            <div class="stagnation-dot">1</div>
+            <div class="stagnation-details">
+              <span class="stagnation-step-title">Motivation Hype</span>
+              <p class="stagnation-step-desc">A burst of emotional drive sparks the desire to change everything overnight.</p>
+            </div>
           </div>
-          <div class="struggle-details">
-            <span class="struggle-title" style="font-size: 16px; text-align: center; display: block;">${s.title}</span>
-            <p class="struggle-desc" style="font-size: 13px; text-align: center; line-height: 1.4; margin-top: 4px;">${s.desc}</p>
+
+          <div class="stagnation-step">
+            <div class="stagnation-dot">2</div>
+            <div class="stagnation-details">
+              <span class="stagnation-step-title">Sudden Friction</span>
+              <p class="stagnation-step-desc">Life gets busy, fatigue kicks in, and the initial excitement evaporates.</p>
+            </div>
+          </div>
+
+          <div class="stagnation-step">
+            <div class="stagnation-dot">3</div>
+            <div class="stagnation-details">
+              <span class="stagnation-step-title">Consistency Crash</span>
+              <p class="stagnation-step-desc">Missing a habit triggers a guilt spiral. The routine is completely abandoned.</p>
+            </div>
+          </div>
+
+          <div class="stagnation-step">
+            <div class="stagnation-dot">4</div>
+            <div class="stagnation-details">
+              <span class="stagnation-step-title">Stagnation Loop</span>
+              <p class="stagnation-step-desc">You return exactly to where you started, waiting for the next spark of motivation.</p>
+            </div>
           </div>
         </div>
-      `).join('')}
+
+        <div class="breaking-cycle-box">
+          <span class="breaking-cycle-title">WHY YOU ARE BREAKING THE CYCLE</span>
+          <p class="breaking-cycle-desc">
+            95% of people quit because they rely on emotional inspiration to do hard things. They build massive plans but build zero self-awareness. By choosing to deconstruct your day honestly, you have already bypassed the first gate. We are not building a motivation plan; we are assembling a resilient habits system.
+          </p>
+        </div>
+      </div>
+
+      <!-- COLUMN 2: Personalized Elements (60% Width) -->
+      <div class="friction-column-right">
+        
+        <!-- Top Half: Your Identified Bottlenecks -->
+        <div class="bottlenecks-section">
+          <h3 class="plan-helpers-header" style="text-align: left; margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #fff;">Your Identified Bottlenecks</h3>
+          <div class="plan-helpers-grid" style="grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 0;">
+            ${analysis.struggles.map(s => `
+              <div class="struggle-item" style="flex-direction: column; gap: 8px; padding: 16px; text-align: left; border-left: none; border-bottom: 3px solid rgba(239, 68, 68, 0.4); margin-bottom: 0; min-height: 110px;">
+                <div class="struggle-icon-box" style="margin: 0 0 4px; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ff453a;">
+                  <i data-lucide="${s.icon}"></i>
+                </div>
+                <div class="struggle-details">
+                  <span class="struggle-title" style="font-size: 14px; text-align: left; display: block; font-weight: 600; color: #fff;">${s.title}</span>
+                  <p class="struggle-desc" style="font-size: 12px; text-align: left; line-height: 1.4; margin-top: 4px; color: var(--text-secondary);">${s.desc}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Bottom Half: How Your Plan Will Help -->
+        <div class="helpers-section">
+          <h3 class="plan-helpers-header" style="text-align: left; margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #fff;">How Your Plan Will Help</h3>
+          <div class="plan-helpers-grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 0;">
+            <div class="plan-helper-card glow-card" style="padding: 16px;">
+              <i data-lucide="anchor" class="plan-helper-icon" style="font-size: 18px; margin-bottom: 8px;"></i>
+              <span class="plan-helper-title" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Habit Anchoring</span>
+              <p class="plan-helper-desc" style="font-size: 11px; margin: 0; line-height: 1.4; color: var(--text-secondary);">Frictionless 5-minute micro-habits that bypass your brain's action resistance.</p>
+            </div>
+
+            <div class="plan-helper-card glow-card" style="padding: 16px;">
+              <i data-lucide="shield" class="plan-helper-icon" style="font-size: 18px; margin-bottom: 8px;"></i>
+              <span class="plan-helper-title" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Friction Insulation</span>
+              <p class="plan-helper-desc" style="font-size: 11px; margin: 0; line-height: 1.4; color: var(--text-secondary);">Systematic rules to lock out environments and digital loops that trigger procrastination.</p>
+            </div>
+
+            <div class="plan-helper-card glow-card" style="padding: 16px;">
+              <i data-lucide="trending-up" class="plan-helper-icon" style="font-size: 18px; margin-bottom: 8px;"></i>
+              <span class="plan-helper-title" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Consistency Scaling</span>
+              <p class="plan-helper-desc" style="font-size: 11px; margin: 0; line-height: 1.4; color: var(--text-secondary);">Gradual progression models that increase routine demands only after self-trust stabilizes.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
-    <h3 class="plan-helpers-header" style="text-align: left; margin: 20px 0 16px; font-size: 18px;">How Your Plan Will Help</h3>
-    <div class="plan-helpers-grid" style="margin-bottom: 30px;">
-      <div class="plan-helper-card glow-card">
-        <i data-lucide="anchor" class="plan-helper-icon"></i>
-        <span class="plan-helper-title">Habit Anchoring</span>
-        <p class="plan-helper-desc">Frictionless 5-minute micro-habits that bypass your brain's action resistance.</p>
-      </div>
-
-      <div class="plan-helper-card glow-card">
-        <i data-lucide="shield" class="plan-helper-icon"></i>
-        <span class="plan-helper-title">Friction Insulation</span>
-        <p class="plan-helper-desc">Systematic rules to lock out environments and digital loops that trigger procrastination.</p>
-      </div>
-
-      <div class="plan-helper-card glow-card">
-        <i data-lucide="trending-up" class="plan-helper-icon"></i>
-        <span class="plan-helper-title">Consistency Scaling</span>
-        <p class="plan-helper-desc">Gradual progression models that increase routine demands only after self-trust stabilizes.</p>
-      </div>
-    </div>
-
-    <div class="action-bar">
+    <div class="action-bar" style="margin-top: 24px;">
       <button id="btn-submit-struggles" class="btn-premium primary">
-        <span>Continue to Roadmap</span>
+        <span>Continue to Roadmap →</span>
         <i data-lucide="arrow-right"></i>
       </button>
     </div>
