@@ -1437,13 +1437,6 @@ function renderRoutineConfidence(viewWrap) {
   viewWrap.querySelector('#btn-submit-slider').addEventListener('click', () => {
     state.sessionData.general_responses.routine_confidence = parseInt(slider.value);
     advanceStep();
-  });
-}
-
-  viewWrap.querySelector('#btn-submit-slider').addEventListener('click', () => {
-    state.sessionData.general_responses.routine_confidence = parseInt(slider.value);
-    advanceStep();
-  });
 }
 
 // --- AI PERSONALITY ANALYSIS & COPY GENERATION ENGINE ---
