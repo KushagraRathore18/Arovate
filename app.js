@@ -2088,6 +2088,31 @@ function calculateLifeMapMetrics() {
   purpose = Math.min(100, Math.max(15, purpose));
   connection = Math.min(100, Math.max(15, connection));
 
+  // --- GLOBAL COMPETITIVE RANK TIER CALCULATION ---
+  const globalAverage = (purpose + connection + body + rest + fuel + mind) / 6;
+  let userRank = "DISCIPLINE BEGINNER";
+  let rankColor = "#FFA500";
+
+  if (globalAverage >= 0 && globalAverage <= 39) {
+    userRank = "RECOVERY NOOB";
+    rankColor = "#FF3333";
+  } else if (globalAverage >= 40 && globalAverage <= 59) {
+    userRank = "DISCIPLINE BEGINNER";
+    rankColor = "#FFA500";
+  } else if (globalAverage >= 60 && globalAverage <= 74) {
+    userRank = "CONSISTENT COMPETITOR";
+    rankColor = "#FFFF00";
+  } else if (globalAverage >= 75 && globalAverage <= 89) {
+    userRank = "ADVANCED PERFORMER";
+    rankColor = "#00FF66";
+  } else if (globalAverage >= 90 && globalAverage <= 100) {
+    userRank = "APEX SOVEREIGN";
+    rankColor = "#00FFFF";
+  }
+
+  state.sessionData.userRank = userRank || "DISCIPLINE BEGINNER";
+  state.sessionData.rankColor = rankColor || "#FFA500";
+
   return { body, mind, rest, fuel, connection, purpose };
 }
 
@@ -2493,6 +2518,10 @@ function renderRoadmapScreen(viewWrap) {
   const roadmap = compileAlgorithmRoadmap();
   state.sessionData.generated_roadmap = roadmap;
 
+  const userRank = state.sessionData.userRank || "DISCIPLINE BEGINNER";
+  const rankColor = state.sessionData.rankColor || "#FFA500";
+  const userArchetype = state.sessionData.userArchetype || "THE UNSHAKEABLE PILLAR";
+
   // Persist session to database (IndexedDB)
   saveSession(state.sessionData)
     .then(() => {
@@ -2537,10 +2566,15 @@ function renderRoadmapScreen(viewWrap) {
       
       <span class="roadmap-badge">Onboarding Complete</span>
       <h2 class="welcome-title" style="font-size: 38px; letter-spacing:-1px;">Your Ascent Roadmap</h2>
-      <p class="welcome-subtitle" style="font-size: 15px; margin-bottom: 24px;">Welcome, ${state.sessionData.basic_info.first_name || 'my friend'}. Here is your customized timeline progression for the <strong>${roadmap.archetype}</strong> protocol.</p>
+      <p class="welcome-subtitle" style="font-size: 15px; margin-bottom: 24px;">Welcome, ${state.sessionData.basic_info.first_name || 'my friend'}. Here is your customized timeline progression for the <strong>${userArchetype}</strong> protocol.</p>
       
       <div class="roadmap-card" style="margin-top: 0; padding-top: 24px; padding-bottom: 24px;">
-        <div class="roadmap-archetype" style="margin-bottom: 12px; font-size: 18px;">Archetype: ${roadmap.archetype}</div>
+        <!-- Center Gamification Display Block -->
+        <div class="gamified-rank-block" style="text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+          <span class="gamified-rank-title" style="display: block; font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 900; letter-spacing: 3px; color: ${rankColor}; text-shadow: 0 0 20px ${rankColor}88, 0 0 40px ${rankColor}44; text-transform: uppercase;">${userRank}</span>
+          <span class="gamified-archetype-subtitle" style="display: block; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 6px; opacity: 0.9;">${userArchetype}</span>
+        </div>
+        
         <p class="roadmap-desc" style="margin-bottom: 24px; padding-bottom: 16px; font-size: 14px;">${roadmap.letter}</p>
 
         <!-- 4-Phase Horizontal Timeline View in the center -->
@@ -2959,6 +2993,8 @@ function renderUserDashboard(viewWrap) {
   const focus = state.sessionData.focus_areas || state.sessionData.selectedTracks || [];
   const first_name = state.sessionData.basic_info?.first_name || 'Achiever';
   const archetype = state.sessionData.userArchetype || 'THE UNSHAKEABLE PILLAR';
+  const userRank = state.sessionData.userRank || "DISCIPLINE BEGINNER";
+  const rankColor = state.sessionData.rankColor || "#FFA500";
   
   function hexToRgb(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -3454,12 +3490,16 @@ function renderUserDashboard(viewWrap) {
   viewWrap.innerHTML = `
     <!-- Left Sidebar: Life Map & Profile Synthesis -->
     <aside class="dashboard-sidebar animate-fade-in">
-      <div class="dashboard-profile-banner">
+      <div class="dashboard-profile-banner" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
         <div class="dashboard-avatar-glow">
           <i data-lucide="shield-check"></i>
         </div>
-        <span class="dashboard-profile-title">${first_name}</span>
-        <span class="dashboard-profile-archetype">${archetype}</span>
+        <span class="dashboard-profile-title" style="font-size: 18px; font-weight: 700; color: #fff; margin: 0;">${first_name}</span>
+        
+        <!-- Gamified Rank Tier Display -->
+        <span class="dashboard-profile-rank" style="font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: ${rankColor}; text-shadow: 0 0 10px ${rankColor}66, 0 0 20px ${rankColor}33; text-transform: uppercase; margin-top: 2px;">${userRank}</span>
+        
+        <span class="dashboard-profile-archetype" style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; margin-top: 2px;">${archetype}</span>
       </div>
       
       <div class="lifemap-dashboard-canvas-box">
