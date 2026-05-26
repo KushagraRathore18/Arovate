@@ -3599,8 +3599,20 @@ html, body {
 
 /* --- Strategic Alignment Premium UI/UX Redesign --- */
 
-.max-w-7xl {
-  max-width: 1280px !important;
+.strategic-alignment-grid-cols-2 {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 32px !important;
+  width: 100% !important;
+  max-width: 1320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+@media (min-width: 1024px) {
+  .strategic-alignment-grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 48px !important;
+  }
 }
 
 .px-6-custom {
@@ -3614,52 +3626,79 @@ html, body {
   }
 }
 
-.p-10-custom {
-  padding: 40px !important;
-}
-@media (max-width: 767px) {
-  .p-10-custom {
-    padding: 24px !important;
-  }
+/* Widescreen Cinematic Background Radial Glows */
+.page-view-wide {
+  position: relative;
+  background: radial-gradient(circle at 10% 20%, rgba(239, 68, 68, 0.02) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.02) 0%, transparent 40%) !important;
 }
 
-/* Reality Loop Card Container (Red Accent Glow) */
+/* Reality Loop Card Container (Red Apple/Linear SaaS Glow) */
 .reality-loop-card {
-  border: 1px solid rgba(239, 68, 68, 0.12) !important;
-  background: rgba(8, 8, 8, 0.8) !important;
-  backdrop-filter: blur(12px) !important;
-  box-shadow: 0 15px 50px -15px rgba(239, 68, 68, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.03) !important;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(8, 8, 8, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 25px 60px -20px rgba(0, 0, 0, 0.8), 
+              0 0 50px -10px rgba(239, 68, 68, 0.04) !important;
+  border-radius: 24px !important;
+  padding: 48px !important;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 .reality-loop-card:hover {
   border-color: rgba(239, 68, 68, 0.22) !important;
-  box-shadow: 0 20px 55px -12px rgba(239, 68, 68, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9), 
+              0 0 60px -5px rgba(239, 68, 68, 0.1) !important;
 }
 
-/* How You Break the Loop Card Container (Indigo Accent Glow) */
+/* How You Break the Loop Card Container (Indigo Apple/Linear SaaS Glow) */
 .kairos-break-card {
-  border: 1px solid rgba(99, 102, 241, 0.12) !important;
-  background: rgba(8, 8, 8, 0.8) !important;
-  backdrop-filter: blur(12px) !important;
-  box-shadow: 0 15px 50px -15px rgba(99, 102, 241, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.03) !important;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(8, 8, 8, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 25px 60px -20px rgba(0, 0, 0, 0.8), 
+              0 0 50px -10px rgba(99, 102, 241, 0.04) !important;
+  border-radius: 24px !important;
+  padding: 48px !important;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 .kairos-break-card:hover {
   border-color: rgba(99, 102, 241, 0.22) !important;
-  box-shadow: 0 20px 55px -12px rgba(99, 102, 241, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9), 
+              0 0 60px -5px rgba(99, 102, 241, 0.1) !important;
 }
 
-/* The Kairos Advantage Card Container (Purple Accent Glow) */
-.kairos-advantage-card {
-  border: 1px solid rgba(168, 85, 247, 0.12) !important;
-  background: rgba(10, 10, 10, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  box-shadow: 0 15px 50px -15px rgba(168, 85, 247, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.03) !important;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+@media (max-width: 767px) {
+  .reality-loop-card, .kairos-break-card {
+    padding: 28px 20px !important;
+  }
 }
-.kairos-advantage-card:hover {
-  border-color: rgba(168, 85, 247, 0.22) !important;
-  box-shadow: 0 20px 55px -12px rgba(168, 85, 247, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.04) !important;
+
+/* The Kairos Advantage Card Container (Purple Accent Widescreen Grid) */
+.strategic-alignment-advantage-card {
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(8, 8, 8, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  border-radius: 24px !important;
+  padding: 48px !important;
+  box-shadow: 0 25px 60px -20px rgba(0, 0, 0, 0.8),
+              0 0 50px -10px rgba(168, 85, 247, 0.03) !important;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  margin-top: 48px !important;
+  width: 100% !important;
+  max-width: 1320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.strategic-alignment-advantage-card:hover {
+  border-color: rgba(168, 85, 247, 0.2) !important;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9),
+              0 0 60px -5px rgba(168, 85, 247, 0.08) !important;
+}
+@media (max-width: 767px) {
+  .strategic-alignment-advantage-card {
+    padding: 28px 20px !important;
+    margin-top: 32px !important;
+  }
 }
 
 /* Individual Strategy Cards inside Right Column */
@@ -3667,18 +3706,23 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  padding: 24px 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
   background: rgba(255, 255, 255, 0.01) !important;
-  border-radius: 14px !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  margin-bottom: 8px;
+  border-radius: 16px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 16px;
 }
 .strategy-mini-card:hover {
   border-color: rgba(99, 102, 241, 0.3) !important;
-  background: rgba(99, 102, 241, 0.04) !important;
-  transform: translateY(-2px) scale(1.01);
+  background: rgba(99, 102, 241, 0.03) !important;
+  transform: translateY(-2px) scale(1.005);
   box-shadow: 0 10px 30px rgba(99, 102, 241, 0.06) !important;
+}
+@media (max-width: 767px) {
+  .strategy-mini-card {
+    padding: 20px 16px !important;
+  }
 }
 
 .strategy-icon-box {
@@ -3708,8 +3752,8 @@ html, body {
 }
 
 .advantage-icon-box {
-  width: 40px;
-  height: 40px;
+  width: 44px !important;
+  height: 44px !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3773,8 +3817,32 @@ html, body {
 @media (min-width: 768px) {
   .advantage-column-divider {
     border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
-    padding-right: 24px !important;
+    padding-right: 32px !important;
   }
+}
+
+/* Cinematic SaaS Typography Hierarchy */
+.strategic-alignment-title {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 3.5rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  line-height: 1.1 !important;
+  letter-spacing: -1.5px !important;
+}
+@media (max-width: 767px) {
+  .strategic-alignment-title {
+    font-size: 2.25rem !important;
+  }
+}
+
+.strategic-alignment-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 1.15rem !important;
+  color: #d1d1d6 !important;
+  line-height: 1.6 !important;
+  max-width: 800px !important;
+  margin: 16px auto 0 auto !important;
 }
 
 .btn-premium-cta {
@@ -3801,6 +3869,7 @@ html, body {
   box-shadow: 0 15px 40px rgba(168, 85, 247, 0.55) !important;
   transform: translateY(-3px) scale(1.03) !important;
 }
+
 
 
 
