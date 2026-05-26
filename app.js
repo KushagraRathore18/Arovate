@@ -2579,61 +2579,61 @@ function renderProfileLifeMap(viewWrap) {
 function renderWhatsHoldingYouBack(viewWrap) {
   viewWrap.className = 'page-view page-view-wide';
   viewWrap.innerHTML = `
-    <div class="question-header" style="margin-bottom: 40px; text-align: center;">
-      <span class="question-pre" style="color: #6366f1; letter-spacing: 0.15em; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 8px;">STRATEGIC ALIGNMENT</span>
-      <h2 class="question-title" style="font-size: 2.75rem; font-weight: 800; color: #ffffff; margin: 0 0 16px 0; font-family: 'Outfit', sans-serif;">Strategic Alignment</h2>
-      <p class="question-desc" style="color: #94a3b8; font-size: 1.05rem; max-width: 640px; margin: 0 auto; line-height: 1.6; font-family: 'Plus Jakarta Sans', sans-serif;">We have mapped your primary focus struggles against the <span style="color: #818cf8; font-weight: 600;">high-conviction</span> Kairos execution model.</p>
+    <div class="question-header" style="margin-bottom: 48px; text-align: center;">
+      <span class="question-pre" style="color: #6366f1; letter-spacing: 0.2em; font-size: 0.85rem; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 12px;">STRATEGIC ALIGNMENT</span>
+      <h2 class="question-title" style="font-size: 3rem; font-weight: 800; color: #ffffff; margin: 0 0 16px 0; font-family: 'Outfit', sans-serif; line-height: 1.15; letter-spacing: -0.5px;">Strategic Alignment</h2>
+      <p class="question-desc" style="color: #94a3b8; font-size: 1.15rem; max-width: 720px; margin: 0 auto; line-height: 1.6; font-family: 'Plus Jakarta Sans', sans-serif;">We have mapped your primary focus struggles against the <span style="color: #818cf8; font-weight: 600;">high-conviction</span> Kairos execution model.</p>
     </div>
 
     <!-- 2-Column Responsive Layout Container Grid -->
-    <div class="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 px-4 md:px-8 mt-8">
+    <div class="w-full max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-2 gap-8 px-6-custom px-10-custom mt-10">
       
       <!-- COLUMN 1: Why Most People Stay Stuck (The Reality Loop) -->
       <div class="w-full">
-        <div class="reality-loop-card p-6 md:p-8 rounded-2xl">
-          <div class="friction-card-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px; margin-bottom: 24px;">
+        <div class="reality-loop-card p-10-custom rounded-2xl">
+          <div class="friction-card-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px; margin-bottom: 28px;">
             <span class="friction-card-pre" style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #ef4444; display: block; margin-bottom: 6px; font-weight: 700;">THE REALITY LOOP</span>
             <h3 class="friction-card-title" style="font-family: 'Outfit', sans-serif; font-size: 24px; margin: 0; font-weight: 800; color: #fff; letter-spacing: -0.5px;">Why Most People Stay Stuck</h3>
           </div>
 
-          <div class="stagnation-timeline" style="display: flex; flex-direction: column; gap: 28px;">
-            <div class="stagnation-step" style="display: flex; gap: 20px; position: relative;">
+          <div class="stagnation-timeline-spacious">
+            <div class="stagnation-step" style="display: flex; gap: 24px; position: relative;">
               <div class="stagnation-dot-premium">
-                <i data-lucide="zap-off" style="width: 14px; height: 14px;"></i>
+                <i data-lucide="zap-off" style="width: 16px; height: 16px;"></i>
               </div>
               <div class="stagnation-details">
-                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; display: block;">1. Motivation fades quickly</span>
-                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: var(--text-secondary); line-height: 1.45; margin: 4px 0 0 0;">Initial emotional drive sparks quick starts but evaporates when real resistance hits.</p>
+                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: #ffffff; display: block;">1. Motivation fades quickly</span>
+                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #a1a1aa; line-height: 1.55; margin: 6px 0 0 0;">Initial emotional drive sparks quick starts but evaporates when real resistance hits.</p>
               </div>
             </div>
 
-            <div class="stagnation-step" style="display: flex; gap: 20px; position: relative;">
+            <div class="stagnation-step" style="display: flex; gap: 24px; position: relative;">
               <div class="stagnation-dot-premium">
-                <i data-lucide="smartphone" style="width: 14px; height: 14px;"></i>
+                <i data-lucide="smartphone" style="width: 16px; height: 16px;"></i>
               </div>
               <div class="stagnation-details">
-                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; display: block;">2. Distractions break consistency</span>
-                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: var(--text-secondary); line-height: 1.45; margin: 4px 0 0 0;">Unprotected focus environments and daily digital loops trigger procrastination patterns.</p>
+                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: #ffffff; display: block;">2. Distractions break consistency</span>
+                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #a1a1aa; line-height: 1.55; margin: 6px 0 0 0;">Unprotected focus environments and daily digital loops trigger procrastination patterns.</p>
               </div>
             </div>
 
-            <div class="stagnation-step" style="display: flex; gap: 20px; position: relative;">
+            <div class="stagnation-step" style="display: flex; gap: 24px; position: relative;">
               <div class="stagnation-dot-premium">
-                <i data-lucide="compass" style="width: 14px; height: 14px;"></i>
+                <i data-lucide="compass" style="width: 16px; height: 16px;"></i>
               </div>
               <div class="stagnation-details">
-                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; display: block;">3. Goals become unclear</span>
-                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: var(--text-secondary); line-height: 1.45; margin: 4px 0 0 0;">Vague progress definitions lead directly to choice fatigue and execution blockages.</p>
+                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: #ffffff; display: block;">3. Goals become unclear</span>
+                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #a1a1aa; line-height: 1.55; margin: 6px 0 0 0;">Vague progress definitions lead directly to choice fatigue and execution blockages.</p>
               </div>
             </div>
 
-            <div class="stagnation-step" style="display: flex; gap: 20px; position: relative;">
+            <div class="stagnation-step" style="display: flex; gap: 24px; position: relative;">
               <div class="stagnation-dot-premium">
-                <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
               </div>
               <div class="stagnation-details">
-                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; display: block;">4. People restart endlessly</span>
-                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: var(--text-secondary); line-height: 1.45; margin: 4px 0 0 0;">Without high-quality habit anchors, you loop indefinitely at absolute baseline limits.</p>
+                <span class="stagnation-step-title" style="font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 600; color: #ffffff; display: block;">4. People restart endlessly</span>
+                <p class="stagnation-step-desc" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #a1a1aa; line-height: 1.55; margin: 6px 0 0 0;">Without high-quality habit anchors, you loop indefinitely at absolute baseline limits.</p>
               </div>
             </div>
           </div>
@@ -2642,7 +2642,7 @@ function renderWhatsHoldingYouBack(viewWrap) {
 
       <!-- COLUMN 2: How You Break the Loop with Kairos -->
       <div class="w-full">
-        <div class="kairos-break-card p-6 md:p-8 rounded-2xl">
+        <div class="kairos-break-card p-10-custom rounded-2xl">
           <div class="friction-card-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px; margin-bottom: 24px;">
             <span class="friction-card-pre" style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-indigo); display: block; margin-bottom: 6px; font-weight: 700;">HOW YOU BREAK THE LOOP WITH KAIROS</span>
             <h3 class="friction-card-title" style="font-family: 'Outfit', sans-serif; font-size: 24px; margin: 0; font-weight: 800; color: #fff; letter-spacing: -0.5px;">How You Break the Loop with Kairos</h3>
@@ -2654,11 +2654,11 @@ function renderWhatsHoldingYouBack(viewWrap) {
             <div class="strategy-mini-card">
               <div class="flex items-center gap-4">
                 <div class="strategy-icon-box">
-                  <i data-lucide="anchor" style="width: 16px; height: 16px;"></i>
+                  <i data-lucide="anchor" style="width: 18px; height: 18px;"></i>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <span style="font-size: 15px; font-weight: 700; color: #fff; display: block; text-align: left; font-family: 'Outfit', sans-serif;">Habit Anchoring</span>
-                  <p style="font-size: 13px; color: var(--text-secondary); margin: 0; text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">Deploying frictionless 5-minute micro-habits to instantly bypass brain friction and mental resistance.</p>
+                  <span style="font-size: 16px; font-weight: 700; color: #fff; display: block; text-align: left; font-family: 'Outfit', sans-serif;">Habit Anchoring</span>
+                  <p style="font-size: 13.5px; color: #a1a1aa; margin: 0; text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.5;">Deploying frictionless 5-minute micro-habits to instantly bypass brain friction and mental resistance.</p>
                 </div>
               </div>
               <div class="strategy-index">01</div>
@@ -2668,11 +2668,11 @@ function renderWhatsHoldingYouBack(viewWrap) {
             <div class="strategy-mini-card">
               <div class="flex items-center gap-4">
                 <div class="strategy-icon-box">
-                  <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+                  <i data-lucide="shield" style="width: 18px; height: 18px;"></i>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <span style="font-size: 15px; font-weight: 700; color: #fff; display: block; text-align: left; font-family: 'Outfit', sans-serif;">Distraction Protection</span>
-                  <p style="font-size: 13px; color: var(--text-secondary); margin: 0; text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">Building non-negotiable digital environmental blockades to aggressively insulate your high-focus windows.</p>
+                  <span style="font-size: 16px; font-weight: 700; color: #fff; display: block; text-align: left; font-family: 'Outfit', sans-serif;">Distraction Protection</span>
+                  <p style="font-size: 13.5px; color: #a1a1aa; margin: 0; text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.5;">Building non-negotiable digital environmental blockades to aggressively insulate your high-focus windows.</p>
                 </div>
               </div>
               <div class="strategy-index">02</div>
@@ -2682,11 +2682,11 @@ function renderWhatsHoldingYouBack(viewWrap) {
             <div class="strategy-mini-card">
               <div class="flex items-center gap-4">
                 <div class="strategy-icon-box">
-                  <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
+                  <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <span style="font-size: 15px; font-weight: 700; color: #fff; display: block; text-align: left; font-family: 'Outfit', sans-serif;">Consistency Scaling</span>
-                  <p style="font-size: 13px; color: var(--text-secondary); margin: 0; text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">Systematically scaling baseline routine targets only after your core daily execution velocity stabilizes.</p>
+                  <span style="font-size: 16px; font-weight: 700; color: #fff; display: block; text-align: left; font-family: 'Outfit', sans-serif;">Consistency Scaling</span>
+                  <p style="font-size: 13.5px; color: #a1a1aa; margin: 0; text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.5;">Systematically scaling baseline routine targets only after your core daily execution velocity stabilizes.</p>
                 </div>
               </div>
               <div class="strategy-index">03</div>
@@ -2698,24 +2698,24 @@ function renderWhatsHoldingYouBack(viewWrap) {
     </div>
 
     <!-- 3-Column Metrics Panel Row: How Kairos Will Help -->
-    <div class="w-full block clear-both mt-8 pt-0 layout-flush max-w-6xl mx-auto px-4 md:px-8">
-      <div class="kairos-advantage-card p-6 md:p-8 rounded-2xl">
-        <div style="text-align: center; margin-bottom: 32px;">
-          <span style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #c084fc; display: block; margin-bottom: 6px; font-weight: 700;">THE KAIROS ADVANTAGE</span>
-          <h3 style="font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; font-family: 'Outfit', sans-serif; margin: 0 0 8px 0;">How Kairos Will Help</h3>
-          <p style="font-size: 14px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.5;">Our systems remove friction, protect your focus, and compound your execution.</p>
+    <div class="w-full block clear-both mt-8 pt-0 layout-flush max-w-7xl mx-auto px-6-custom px-10-custom">
+      <div class="kairos-advantage-card p-10-custom rounded-2xl">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <span style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #c084fc; display: block; margin-bottom: 8px; font-weight: 700;">THE KAIROS ADVANTAGE</span>
+          <h3 style="font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; font-family: 'Outfit', sans-serif; margin: 0 0 8px 0;">How Kairos Will Help</h3>
+          <p style="font-size: 15px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.55;">Our systems remove friction, protect your focus, and compound your execution.</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Column 1: Habit Anchoring -->
-          <div class="flex flex-col justify-between p-5 border border-neutral-900 bg-zinc-950/60 rounded-xl">
+          <div class="flex flex-col justify-between p-5 border border-neutral-900 bg-zinc-950/60 rounded-xl advantage-column-divider">
             <div class="flex items-start gap-4">
               <div class="advantage-icon-box">
-                <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+                <i data-lucide="zap" style="width: 18px; height: 18px;"></i>
               </div>
               <div style="display: flex; flex-direction: column; gap: 4px;">
-                <span style="font-size: 15px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; display: block; text-align: left;">Habit Anchoring</span>
-                <p style="font-size: 13px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45; text-align: left;">Frictionless 5-minute micro-habits to bypass brain resistance.</p>
+                <span style="font-size: 16px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; display: block; text-align: left;">Habit Anchoring</span>
+                <p style="font-size: 13.5px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45; text-align: left;">Frictionless 5-minute micro-habits to bypass brain resistance.</p>
               </div>
             </div>
             <div class="slider-track-container w-full mt-6">
@@ -2724,14 +2724,14 @@ function renderWhatsHoldingYouBack(viewWrap) {
           </div>
 
           <!-- Column 2: Distraction Protection -->
-          <div class="flex flex-col justify-between p-5 border border-neutral-900 bg-zinc-950/60 rounded-xl">
+          <div class="flex flex-col justify-between p-5 border border-neutral-900 bg-zinc-950/60 rounded-xl advantage-column-divider">
             <div class="flex items-start gap-4">
               <div class="advantage-icon-box">
-                <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+                <i data-lucide="shield" style="width: 18px; height: 18px;"></i>
               </div>
               <div style="display: flex; flex-direction: column; gap: 4px;">
-                <span style="font-size: 15px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; display: block; text-align: left;">Distraction Protection</span>
-                <p style="font-size: 13px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45; text-align: left;">Digital environmental blockades to aggressively insulate your focus.</p>
+                <span style="font-size: 16px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; display: block; text-align: left;">Distraction Protection</span>
+                <p style="font-size: 13.5px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45; text-align: left;">Digital environmental blockades to aggressively insulate your focus.</p>
               </div>
             </div>
             <div class="slider-track-container w-full mt-6">
@@ -2743,11 +2743,11 @@ function renderWhatsHoldingYouBack(viewWrap) {
           <div class="flex flex-col justify-between p-5 border border-neutral-900 bg-zinc-950/60 rounded-xl">
             <div class="flex items-start gap-4">
               <div class="advantage-icon-box">
-                <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
+                <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i>
               </div>
               <div style="display: flex; flex-direction: column; gap: 4px;">
-                <span style="font-size: 15px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; display: block; text-align: left;">Consistency Scaling</span>
-                <p style="font-size: 13px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45; text-align: left;">Scaling targets only after your core daily execution velocity stabilizes.</p>
+                <span style="font-size: 16px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; display: block; text-align: left;">Consistency Scaling</span>
+                <p style="font-size: 13.5px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45; text-align: left;">Scaling targets only after your core daily execution velocity stabilizes.</p>
               </div>
             </div>
             <div class="slider-track-container w-full mt-6">
@@ -2760,9 +2760,9 @@ function renderWhatsHoldingYouBack(viewWrap) {
 
     <!-- Centered CTA with healthy top margin and complete isolation -->
     <div class="action-bar mt-12" style="margin-bottom: 20px; display: flex; justify-content: center; width: 100%;">
-      <button id="btn-submit-struggles" class="btn-premium primary" style="padding: 16px 40px; font-size: 15px; font-weight: 600; min-width: 280px; justify-content: center; display: inline-flex; align-items: center; gap: 8px;">
-        <span>Continue to Your Roadmap →</span>
-        <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+      <button id="btn-submit-struggles" class="btn-premium-cta">
+        <span>Continue to Your Roadmap</span>
+        <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
       </button>
     </div>
   `;
@@ -2774,6 +2774,7 @@ function renderWhatsHoldingYouBack(viewWrap) {
     advanceStep();
   });
 }
+
 
 
 // SCREEN: Algorithmic Roadmap Synthesis Screen
