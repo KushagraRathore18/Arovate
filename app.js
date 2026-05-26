@@ -599,7 +599,7 @@ const ALL_FLOW_NODES = {
 
   relationships_q2_active: {
     type: 'single',
-    title: "How would you describe your relationship right now?",
+    title: "How would you honestly describe the current state of your relationship?",
     subtitle: "Choose the statement that fits best.",
     options: [
       { id: 'rel_q2_strong', text: "Strong & Supportive", desc: "Mutual support, deep values alignment, and healthy daily focus.", icon: 'zap' },
@@ -612,16 +612,15 @@ const ALL_FLOW_NODES = {
     }
   },
 
-  relationships_q2_history: {
+  relationships_q2_social_circle: {
     type: 'single',
-    title: "Have you been in a romantic relationship recently?",
+    title: "How would you describe the active baseline energy of your primary social circle?",
     subtitle: "Choose the statement that fits best.",
     options: [
-      { id: 'rel_q2_h_recent', text: "Yes, currently or within 1 month", desc: "Fresh separation or loosely looking for new alignment.", icon: 'refresh-cw' },
-      { id: 'rel_q2_h_medium', text: "Within 1–6 months", desc: "Processing lessons, focusing on routine stabilization.", icon: 'calendar' },
-      { id: 'rel_q2_h_year', text: "Within 6–12 months", desc: "Recovering autonomy, building high-performance lifestyle.", icon: 'lock' },
-      { id: 'rel_q2_h_long', text: "More than a year ago", desc: "Substantial single block, established individual habits.", icon: 'shield' },
-      { id: 'rel_q2_h_never', text: "Never / Long-term single", desc: "Focusing purely on self-sovereignty and absolute focus goals.", icon: 'compass' }
+      { id: 'rel_circle_high', text: "High Energy & Ambition", desc: "Aligned peers pushing each other to level up and execute.", icon: 'zap' },
+      { id: 'rel_circle_complacent', text: "Complacent & Low Friction", desc: "Comfortable and supportive, but lacks aggressive growth.", icon: 'smile' },
+      { id: 'rel_circle_draining', text: "Chaotic & Draining", desc: "Frequent drama, digital distractions, or negative loops.", icon: 'battery-low' },
+      { id: 'rel_circle_neutral', text: "Mostly Neutral / Passive", desc: "Low alignment but minimal active drag or friction.", icon: 'compass' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.relationships_q2 = val;
@@ -629,153 +628,72 @@ const ALL_FLOW_NODES = {
   },
 
   relationships_q3: {
-    type: 'custom',
-    render: (viewWrap) => {
-      // get options dynamically based on Q1
+    type: 'single',
+    title: "Which social challenge affects you the most right now?",
+    subtitle: "Select the primary external friction point.",
+    get options() {
       const q1Ans = state.sessionData.flow_responses?.relationships_q1 || [];
-      const envOptions = [];
+      const opts = [];
+
       if (q1Ans.includes("Mostly Alone")) {
-        envOptions.push({ id: 'rel_q3_isolation', text: "I feel isolated from people", desc: "Lacking high-vibe social outlets and feeling cut off.", icon: 'user-x' });
+        opts.push({ id: 'rel_q3_isolation', text: "I feel isolated", desc: "Lacking high-vibe social outlets and feeling cut off.", icon: 'user-x' });
       }
       if (q1Ans.includes("With Family")) {
-        envOptions.push({ id: 'rel_q3_family', text: "Family stress affects my focus", desc: "Domestic drama or high family expectations breaking focus.", icon: 'home' });
+        opts.push({ id: 'rel_q3_family', text: "Family stress", desc: "Domestic drama or high family expectations breaking focus.", icon: 'home' });
       }
       if (q1Ans.includes("With Friends / Peers")) {
-        envOptions.push({ id: 'rel_q3_peers', text: "My circle lacks ambition or direction", desc: "Complacent friends who just want to kill time.", icon: 'users' });
+        opts.push({ id: 'rel_q3_peers', text: "My circle lacks ambition", desc: "Complacent friends who just want to kill time.", icon: 'users' });
       }
       
       // Always show stable fallback
-      envOptions.push({ id: 'rel_q3_none', text: "My social environment is mostly stable", desc: "Stable social connections; focus remains on execution.", icon: 'shield-check' });
+      opts.push({ id: 'rel_q3_none', text: "Stable", desc: "Stable social connections; focus remains on execution.", icon: 'shield-check' });
 
-      // Psychological choices
-      const psychOptions = [
-        { id: 'rel_q4_anxiety', text: "Overthinking & Social Anxiety", desc: "Fear of judgment or over-analyzing social interactions.", icon: 'alert-circle' },
-        { id: 'rel_q4_pleasing', text: "Weak Boundaries / People Pleasing", desc: "Sacrificing personal priorities to appease others.", icon: 'shield-alert' },
-        { id: 'rel_q4_validation', text: "Validation Seeking", desc: "Chasing external approval or status comparison loops.", icon: 'award' },
-        { id: 'rel_q4_isolation', text: "Emotional Isolation", desc: "Struggling to let people in or build deep emotional bridges.", icon: 'lock' },
-        { id: 'rel_q4_confident', text: "I communicate confidently", desc: "Confident, stable, and highly functional interpersonal states.", icon: 'shield-check' }
-      ];
+      return opts;
+    },
+    save: (val) => {
+      // Map to backward compatible strings for scoring engine
+      let mapped = "My social environment is mostly stable";
+      if (val === "I feel isolated") {
+        mapped = "I feel isolated from people";
+      } else if (val === "Family stress") {
+        mapped = "Family stress affects my focus";
+      } else if (val === "My circle lacks ambition") {
+        mapped = "My circle lacks ambition or direction";
+      }
+      state.sessionData.flow_responses.relationships_q3 = mapped;
 
-      // Retrieve previous values if back-navigating
-      let selectedEnv = state.sessionData.flow_responses?.relationships_q3 || '';
-      let selectedPsych = state.sessionData.flow_responses?.relationships_q4 || '';
+      // Custom dashboard offer logic based on env challenge
+      state.sessionData.dashboard_offers = state.sessionData.dashboard_offers || {};
+      if (val === "I feel isolated") {
+        state.sessionData.dashboard_offers.social = 'Social Connection & Vibe Alignment Protocol';
+      } else if (val === "Family stress") {
+        state.sessionData.dashboard_offers.social = 'Stoic Boundaries & Compassion Rings Map';
+      } else if (val === "My circle lacks ambition") {
+        state.sessionData.dashboard_offers.social = 'Attention Insulation & Peer Upgrades Vault';
+      } else {
+        state.sessionData.dashboard_offers.social = 'Inner Circle Automation Reminders';
+      }
+    }
+  },
 
-      viewWrap.innerHTML = `
-        <div class="question-header" style="margin-bottom: 24px;">
-          <span class="question-pre">Social Friction Audit</span>
-          <h2 class="question-title">What is your primary social bottleneck?</h2>
-          <p class="question-desc">We need to map both your external social environment and your internal psychological patterns.</p>
-        </div>
-        
-        <div class="merged-friction-form" style="display: flex; flex-direction: column; gap: 32px; width: 100%;">
-          
-          <!-- PART 1: Environmental check -->
-          <div class="env-friction-section" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
-            <h3 style="margin: 0; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-indigo); font-family: 'Outfit', sans-serif;">1. External Social Environment</h3>
-            <p style="margin: 0; font-size: 13px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif;">Select the primary external friction point you experience daily:</p>
-            <div class="cards-layout" style="margin-top: 8px;">
-              ${envOptions.map(opt => {
-                const isSel = selectedEnv === opt.text;
-                return `
-                  <div class="glow-card env-card ${isSel ? 'selected' : ''}" data-value="${opt.text}" style="padding: 16px 20px;">
-                    <div class="card-icon-box" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); color: var(--accent-indigo); margin-right: 16px; flex-shrink: 0;">
-                      <i data-lucide="${opt.icon}" style="width: 16px; height: 16px;"></i>
-                    </div>
-                    <div class="card-content" style="text-align: left; flex-grow: 1;">
-                      <span class="card-title" style="font-size: 14px; font-weight: 600; color: #fff; font-family: 'Outfit', sans-serif;">${opt.text}</span>
-                      <p class="card-desc" style="font-size: 12px; color: var(--text-secondary); margin-top: 2px; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">${opt.desc}</p>
-                    </div>
-                    <div class="card-indicator">
-                      <i data-lucide="check"></i>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- PART 2: Internal Psychological Struggle -->
-          <div class="psych-friction-section" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
-            <h3 style="margin: 0; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-indigo); font-family: 'Outfit', sans-serif;">2. Internal Psychological Struggle</h3>
-            <p style="margin: 0; font-size: 13px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif;">Select your primary internal friction point when interacting with others:</p>
-            <div class="cards-layout" style="margin-top: 8px;">
-              ${psychOptions.map(opt => {
-                const isSel = selectedPsych === opt.text;
-                return `
-                  <div class="glow-card psych-card ${isSel ? 'selected' : ''}" data-value="${opt.text}" style="padding: 16px 20px;">
-                    <div class="card-icon-box" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.15); color: #ef4444; margin-right: 16px; flex-shrink: 0;">
-                      <i data-lucide="${opt.icon}" style="width: 16px; height: 16px;"></i>
-                    </div>
-                    <div class="card-content" style="text-align: left; flex-grow: 1;">
-                      <span class="card-title" style="font-size: 14px; font-weight: 600; color: #fff; font-family: 'Outfit', sans-serif;">${opt.text}</span>
-                      <p class="card-desc" style="font-size: 12px; color: var(--text-secondary); margin-top: 2px; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">${opt.desc}</p>
-                    </div>
-                    <div class="card-indicator">
-                      <i data-lucide="check"></i>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- Action button -->
-          <div class="action-bar" style="margin-top: 16px; display: flex; justify-content: center; width: 100%;">
-            <button id="btn-submit-friction-audit" class="btn-premium primary" style="min-width: 280px;" ${selectedEnv && selectedPsych ? '' : 'disabled'}>
-              <span>Continue</span>
-              <i data-lucide="arrow-right"></i>
-            </button>
-          </div>
-
-        </div>
-      `;
-
-      // Set up click handlers
-      const envCards = viewWrap.querySelectorAll('.env-card');
-      const psychCards = viewWrap.querySelectorAll('.psych-card');
-      const submitBtn = viewWrap.querySelector('#btn-submit-friction-audit');
-
-      envCards.forEach(card => {
-        card.addEventListener('click', () => {
-          envCards.forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
-          selectedEnv = card.getAttribute('data-value');
-          if (selectedEnv && selectedPsych) {
-            submitBtn.removeAttribute('disabled');
-          }
-        });
-      });
-
-      psychCards.forEach(card => {
-        card.addEventListener('click', () => {
-          psychCards.forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
-          selectedPsych = card.getAttribute('data-value');
-          if (selectedEnv && selectedPsych) {
-            submitBtn.removeAttribute('disabled');
-          }
-        });
-      });
-
-      submitBtn.addEventListener('click', () => {
-        // Save both values
-        state.sessionData.flow_responses.relationships_q3 = selectedEnv;
-        state.sessionData.flow_responses.relationships_q4 = selectedPsych;
-
-        // Custom dashboard offer logic based on env challenge
-        state.sessionData.dashboard_offers = state.sessionData.dashboard_offers || {};
-        if (selectedEnv === "I feel isolated from people") {
-          state.sessionData.dashboard_offers.social = 'Social Connection & Vibe Alignment Protocol';
-        } else if (selectedEnv === "Family stress affects my focus") {
-          state.sessionData.dashboard_offers.social = 'Stoic Boundaries & Compassion Rings Map';
-        } else if (selectedEnv === "My circle lacks ambition or direction") {
-          state.sessionData.dashboard_offers.social = 'Attention Insulation & Peer Upgrades Vault';
-        } else {
-          state.sessionData.dashboard_offers.social = 'Inner Circle Automation Reminders';
-        }
-
-        advanceStep();
-      });
+  relationships_q4: {
+    type: 'single',
+    title: "What is your biggest internal struggle when dealing with people?",
+    subtitle: "Select the closest bottleneck.",
+    options: [
+      { id: 'rel_q4_anxiety', text: "Overthinking & Social Anxiety", desc: "Fear of judgment or over-analyzing social interactions.", icon: 'alert-circle' },
+      { id: 'rel_q4_pleasing', text: "Weak Boundaries", desc: "Sacrificing personal priorities to appease others.", icon: 'shield-alert' },
+      { id: 'rel_q4_validation', text: "Validation Seeking", desc: "Chasing external approval or status comparison loops.", icon: 'award' },
+      { id: 'rel_q4_isolation', text: "Emotional Isolation", desc: "Struggling to let people in or build deep emotional bridges.", icon: 'lock' },
+      { id: 'rel_q4_confident', text: "I communicate confidently", desc: "Confident, stable, and highly functional interpersonal states.", icon: 'shield-check' }
+    ],
+    save: (val) => {
+      // Map to exact scoring matches
+      if (val === "Weak Boundaries") {
+        state.sessionData.flow_responses.relationships_q4 = "Weak Boundaries / People Pleasing";
+      } else {
+        state.sessionData.flow_responses.relationships_q4 = val;
+      }
     }
   },
 
@@ -1139,13 +1057,15 @@ function buildDynamicQueue() {
     dynamicNodes.push('relationships_q1');
     const q1Ans = state.sessionData.flow_responses?.relationships_q1 || [];
     const hasRomantic = q1Ans.includes("With my Girlfriend") || q1Ans.includes("With my Boyfriend") || q1Ans.includes("With my Partner");
+    const hasSocialCircle = q1Ans.includes("With Family") || q1Ans.includes("With Friends / Peers");
     
     if (hasRomantic) {
       dynamicNodes.push('relationships_q2_active');
-    } else {
-      dynamicNodes.push('relationships_q2_history');
+    } else if (hasSocialCircle) {
+      dynamicNodes.push('relationships_q2_social_circle');
     }
-    dynamicNodes.push('relationships_q3');
+    
+    dynamicNodes.push('relationships_q3', 'relationships_q4');
   }
 
   const universalEndNodes = [
@@ -2615,8 +2535,8 @@ function renderWhatsHoldingYouBack(viewWrap) {
   viewWrap.className = 'page-view page-view-wide';
   viewWrap.innerHTML = `
     <div class="question-header" style="margin-bottom: 40px; text-align: center;">
-      <span class="question-pre">Friction & Strategy Analysis</span>
-      <h2 class="question-title">Friction & Strategy Analysis</h2>
+      <span class="question-pre">Strategic Alignment</span>
+      <h2 class="question-title">Strategic Alignment</h2>
       <p class="question-desc" style="margin-bottom: 0; max-width: 700px; margin-left: auto; margin-right: auto;">We have mapped your primary focus struggles against the high-conviction Kairos execution model.</p>
     </div>
 
@@ -2675,9 +2595,9 @@ function renderWhatsHoldingYouBack(viewWrap) {
         </div>
       </div>
 
-      <!-- COLUMN 2: Breaking the Loop -->
+      <!-- COLUMN 2: How You Break the Loop with Kairos -->
       <div class="w-full flex flex-col gap-6">
-        <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.3px; font-family: 'Outfit', sans-serif;">Breaking the Loop</h3>
+        <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.3px; font-family: 'Outfit', sans-serif;">How You Break the Loop with Kairos</h3>
         <p style="margin: 0 0 12px 0; font-size: 13.5px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.55;">To build bulletproof consistency, Kairos deploys a suite of behavioral counter-strategies designed to neutralize execution drag:</p>
         
         <div class="flex flex-col gap-4">
@@ -2716,6 +2636,43 @@ function renderWhatsHoldingYouBack(viewWrap) {
         </div>
       </div>
 
+    </div>
+
+    <!-- 3-Column Metrics Panel Row: How Kairos Will Help -->
+    <div class="w-full max-w-6xl mx-auto px-4 md:px-8 mt-12">
+      <div class="p-6 md:p-8 border border-neutral-800 bg-zinc-950/40 rounded-xl">
+        <h3 style="margin: 0 0 24px 0; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; font-family: 'Outfit', sans-serif; text-align: center;">How Kairos Will Help</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Column 1: Habit Anchoring -->
+          <div class="flex flex-col gap-2 p-5 border border-neutral-900 bg-zinc-950/60 rounded-lg text-center items-center">
+            <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--accent-indigo); margin-bottom: 8px;">
+              <i data-lucide="anchor" style="width: 18px; height: 18px;"></i>
+            </div>
+            <span style="font-size: 15px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; margin-bottom: 4px;">Habit Anchoring</span>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">Frictionless 5-minute micro-habits to bypass brain resistance.</p>
+          </div>
+
+          <!-- Column 2: Distraction Protection -->
+          <div class="flex flex-col gap-2 p-5 border border-neutral-900 bg-zinc-950/60 rounded-lg text-center items-center">
+            <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--accent-indigo); margin-bottom: 8px;">
+              <i data-lucide="shield" style="width: 18px; height: 18px;"></i>
+            </div>
+            <span style="font-size: 15px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; margin-bottom: 4px;">Distraction Protection</span>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">Digital environmental blockades to aggressively insulate your focus.</p>
+          </div>
+
+          <!-- Column 3: Consistency Scaling -->
+          <div class="flex flex-col gap-2 p-5 border border-neutral-900 bg-zinc-950/60 rounded-lg text-center items-center">
+            <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--accent-indigo); margin-bottom: 8px;">
+              <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i>
+            </div>
+            <span style="font-size: 15px; font-weight: 700; color: #fff; font-family: 'Outfit', sans-serif; margin-bottom: 4px;">Consistency Scaling</span>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.45;">Scaling targets only after your core daily execution velocity stabilizes.</p>
+          </div>
+
+        </div>
+      </div>
     </div>
 
     <!-- Centered CTA with healthy top margin and complete isolation -->
