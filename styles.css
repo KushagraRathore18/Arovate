@@ -222,6 +222,10 @@ html, body {
               transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.page-view.page-view-wide {
+  max-width: 1400px !important;
+}
+
 .page-view.active {
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -3360,44 +3364,36 @@ html, body {
 /* --- Friction & Strategy Analysis Split-Column Grid --- */
 .friction-analysis-layout-grid {
   display: grid;
-  grid-template-columns: 4.2fr 5.8fr;
+  grid-template-columns: 1fr;
   gap: 32px;
-  margin-top: 24px;
-  align-items: start;
+  margin: 0 auto;
+  max-width: 1400px;
+  padding: 40px 24px;
   width: 100%;
   text-align: left;
+  animation: slideFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .friction-column-left {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 28px;
-  max-height: 540px;
-  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.01) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 24px !important;
+  padding: 40px !important;
+  max-height: none !important;
+  overflow: visible !important;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-}
-
-.friction-column-left::-webkit-scrollbar {
-  width: 6px;
-}
-.friction-column-left::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  gap: 32px;
 }
 
 .friction-card-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
 }
 
 .friction-card-pre {
   font-family: 'Outfit', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--accent-indigo);
@@ -3408,7 +3404,7 @@ html, body {
 
 .friction-card-title {
   font-family: 'Outfit', sans-serif;
-  font-size: 20px;
+  font-size: 24px;
   margin: 0;
   font-weight: 700;
   color: #fff;
@@ -3419,45 +3415,34 @@ html, body {
 .stagnation-timeline {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-}
-
-.stagnation-title {
-  display: block;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  color: #ff453a;
-  letter-spacing: 1px;
+  gap: 28px;
 }
 
 .stagnation-step {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   position: relative;
 }
 
 .stagnation-dot {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(255, 69, 58, 0.12);
-  border: 1px solid rgba(255, 69, 58, 0.4);
+  background: rgba(255, 69, 58, 0.08);
+  border: 1px solid rgba(255, 69, 58, 0.3);
   color: #ff453a;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Outfit', sans-serif;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   flex-shrink: 0;
-  z-index: 2;
-  box-shadow: 0 0 15px rgba(255, 69, 58, 0.15);
 }
 
 .stagnation-step-title {
   font-family: 'Outfit', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #ffffff;
   display: block;
@@ -3465,50 +3450,35 @@ html, body {
 
 .stagnation-step-desc {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.45;
   margin: 4px 0 0 0;
-}
-
-.breaking-cycle-box {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.breaking-cycle-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--accent-cyan);
-  letter-spacing: 1px;
-}
-
-.breaking-cycle-desc {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin: 0;
 }
 
 /* Right Column details */
 .friction-column-right {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 36px;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .friction-analysis-layout-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 767px) {
+  .friction-analysis-layout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
   }
   .friction-column-left {
-    max-height: none;
+    padding: 24px !important;
   }
 }
 

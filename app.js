@@ -573,7 +573,7 @@ const ALL_FLOW_NODES = {
   // 6. RELATIONSHIPS & SOCIAL LIFE (Conditional)
   relationships_q1: {
     type: 'multiple',
-    title: "Where do you currently invest or spend most of your time socially?",
+    title: "Where do you currently spend most of your social energy?",
     subtitle: "Select all options that apply.",
     get options() {
       const gender = state.sessionData?.basic_info?.gender || (typeof userState !== 'undefined' && userState?.genderIdentity) || '';
@@ -588,7 +588,7 @@ const ALL_FLOW_NODES = {
         { id: 'rel_q1_alone', text: "Mostly Alone", desc: "Focusing heavily on self-reliance or feeling disconnected.", icon: 'user' },
         { id: 'rel_q1_family', text: "With Family", desc: "Spending significant time with parents, siblings, or relatives.", icon: 'home' },
         { id: 'rel_q1_friends', text: "With Friends / Peers", desc: "Spending time with friend circles, study peers, or coworkers.", icon: 'users' },
-        { id: 'rel_q1_romantic', text: romanticPartnerText, desc: "Spending quality time investing in your primary romantic partnership.", icon: 'heart' }
+        { id: 'rel_q1_romantic', text: romanticPartnerText, desc: "Investing quality time in your primary romantic partnership.", icon: 'heart' }
       ];
     },
     save: (vals) => {
@@ -599,36 +599,29 @@ const ALL_FLOW_NODES = {
 
   relationships_q2_active: {
     type: 'single',
-    get title() {
-      const gender = state.sessionData?.basic_info?.gender || (typeof userState !== 'undefined' && userState?.genderIdentity) || '';
-      let partnerLabel = "Partner";
-      if (gender === 'Male') partnerLabel = "Girlfriend";
-      else if (gender === 'Female') partnerLabel = "Boyfriend";
-      return `How would you honestly describe the current state of your relationship with your ${partnerLabel}?`;
-    },
-    subtitle: "",
+    title: "How would you describe your relationship right now?",
+    subtitle: "Choose the statement that fits best.",
     options: [
-      { id: 'rel_q2_elite', text: "Elite Sync", desc: "Mutual support, deep values alignment, and shared micro-routines.", icon: 'zap' },
-      { id: 'rel_q2_passive', text: "Passive Distance", desc: "Comfortable but drifting, lacking deep communication focus.", icon: 'compass' },
-      { id: 'rel_q2_volatility', text: "Constant Volatility", desc: "Frequent misunderstandings and energy drainage. (Score deduction: -20 MIND)", icon: 'battery-low' },
-      { id: 'rel_q2_toxic', text: "Toxic Trap", desc: "Heavy emotional drama depleting study/work grit. (Score deduction: -25 PURPOSE)", icon: 'alert-triangle' }
+      { id: 'rel_q2_strong', text: "Strong & Supportive", desc: "Mutual support, deep values alignment, and healthy daily focus.", icon: 'zap' },
+      { id: 'rel_q2_drifting', text: "Slowly Drifting Apart", desc: "Comfortable but drifting, lacking deep communication focus.", icon: 'compass' },
+      { id: 'rel_q2_exhausting', text: "Emotionally Exhausting", desc: "Frequent misunderstandings, arguments, and energy drainage.", icon: 'battery-low' },
+      { id: 'rel_q2_toxic', text: "Toxic & Hurting My Peace", desc: "Heavy emotional drama actively depleting work/study grit.", icon: 'alert-triangle' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.relationships_q2 = val;
     }
   },
 
-
   relationships_q2_history: {
     type: 'single',
     title: "Have you been in a romantic relationship recently?",
-    subtitle: "",
+    subtitle: "Choose the statement that fits best.",
     options: [
-      { id: 'rel_q2_h_recent', text: "Yes, currently or recently (< 1 month)", desc: "Fresh separation or loosely looking for new alignment.", icon: 'refresh-cw' },
-      { id: 'rel_q2_h_medium', text: "Yes (Between 1 to 6 months ago)", desc: "Processing lessons, focusing on routine stabilization.", icon: 'calendar' },
-      { id: 'rel_q2_h_year', text: "Yes (Between 6 months to 1 year ago)", desc: "Recovering autonomy, building high-performance lifestyle.", icon: 'lock' },
-      { id: 'rel_q2_h_long', text: "Yes (Long term, > 1 year ago)", desc: "Substantial single block, established individual habits.", icon: 'shield' },
-      { id: 'rel_q2_h_never', text: "No, I’ve been single for a long time / never in one", desc: "Focusing purely on self-sovereignty and absolute focus goals.", icon: 'compass' }
+      { id: 'rel_q2_h_recent', text: "Yes, currently or within 1 month", desc: "Fresh separation or loosely looking for new alignment.", icon: 'refresh-cw' },
+      { id: 'rel_q2_h_medium', text: "Within 1–6 months", desc: "Processing lessons, focusing on routine stabilization.", icon: 'calendar' },
+      { id: 'rel_q2_h_year', text: "Within 6–12 months", desc: "Recovering autonomy, building high-performance lifestyle.", icon: 'lock' },
+      { id: 'rel_q2_h_long', text: "More than a year ago", desc: "Substantial single block, established individual habits.", icon: 'shield' },
+      { id: 'rel_q2_h_never', text: "Never / Long-term single", desc: "Focusing purely on self-sovereignty and absolute focus goals.", icon: 'compass' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.relationships_q2 = val;
@@ -637,35 +630,35 @@ const ALL_FLOW_NODES = {
 
   relationships_q3: {
     type: 'single',
-    title: "Let's audit the rest of your core social structure. Which of these bottlenecks hits closest to home right now?",
-    subtitle: "",
+    title: "Which social challenge affects you the most right now?",
+    subtitle: "Select the primary friction point.",
     get options() {
       const q1Ans = state.sessionData.flow_responses?.relationships_q1 || [];
       const opts = [];
 
       if (q1Ans.includes("Mostly Alone")) {
-        opts.push({ id: 'rel_q3_isolation', text: "Isolation Sink", desc: "I have zero social outlets and feel completely cut off.", icon: 'user-x' });
+        opts.push({ id: 'rel_q3_isolation', text: "I feel isolated from people", desc: "Lacking high-vibe social outlets and feeling cut off.", icon: 'user-x' });
       }
       if (q1Ans.includes("With Family")) {
-        opts.push({ id: 'rel_q3_family', text: "Family Friction", desc: "High family expectations or domestic drama are breaking my focus.", icon: 'home' });
+        opts.push({ id: 'rel_q3_family', text: "Family stress affects my focus", desc: "Domestic drama or high family expectations breaking focus.", icon: 'home' });
       }
       if (q1Ans.includes("With Friends / Peers")) {
-        opts.push({ id: 'rel_q3_peers', text: "Low-Vibe Circle", desc: "My current friends are complacent; they just want to kill time.", icon: 'users' });
+        opts.push({ id: 'rel_q3_peers', text: "My circle lacks ambition or direction", desc: "Complacent friends who just want to kill time.", icon: 'users' });
       }
       
-      // Render permanent baseline fallback option
-      opts.push({ id: 'rel_q3_none', text: "Zero Friction", desc: "My remaining social circles are stable; I just need to execute.", icon: 'shield-check' });
+      // Always show
+      opts.push({ id: 'rel_q3_none', text: "My social environment is mostly stable", desc: "Stable social connections; focus remains on execution.", icon: 'shield-check' });
 
       return opts;
     },
     save: (val) => {
       state.sessionData.flow_responses.relationships_q3 = val;
       state.sessionData.dashboard_offers = state.sessionData.dashboard_offers || {};
-      if (val === "Isolation Sink") {
+      if (val === "I feel isolated from people") {
         state.sessionData.dashboard_offers.social = 'Social Connection & Vibe Alignment Protocol';
-      } else if (val === "Family Friction") {
+      } else if (val === "Family stress affects my focus") {
         state.sessionData.dashboard_offers.social = 'Stoic Boundaries & Compassion Rings Map';
-      } else if (val === "Low-Vibe Circle") {
+      } else if (val === "My circle lacks ambition or direction") {
         state.sessionData.dashboard_offers.social = 'Attention Insulation & Peer Upgrades Vault';
       } else {
         state.sessionData.dashboard_offers.social = 'Inner Circle Automation Reminders';
@@ -675,14 +668,14 @@ const ALL_FLOW_NODES = {
 
   relationships_q4: {
     type: 'single',
-    title: "What is your biggest psychological bottleneck when dealing with people?",
-    subtitle: "",
+    title: "What is your biggest internal struggle when dealing with people?",
+    subtitle: "Select the closest bottleneck.",
     options: [
-      { id: 'rel_q4_anxiety', text: "Social Anxiety / Overthinking", desc: "Fear of judgment or over-analyzing social interactions.", icon: 'alert-circle' },
-      { id: 'rel_q4_pleasing', text: "People Pleasing / Weak Boundaries", desc: "Sacrificing personal priorities to appease others.", icon: 'shield-alert' },
-      { id: 'rel_q4_validation', text: "Validation Seeking / Status Addiction", desc: "Chasing external approval or social comparison circles.", icon: 'award' },
-      { id: 'rel_q4_unavailability', text: "Emotional Unavailability / Hyper-Independence", desc: "Struggling to let people in or build deep emotional bridges.", icon: 'lock' },
-      { id: 'rel_q4_none', text: "Zero Friction / Fully Calibrated", desc: "Confident, stable, and highly functional interpersonal states.", icon: 'shield-check' }
+      { id: 'rel_q4_anxiety', text: "Overthinking & Social Anxiety", desc: "Fear of judgment or over-analyzing social interactions.", icon: 'alert-circle' },
+      { id: 'rel_q4_pleasing', text: "Weak Boundaries / People Pleasing", desc: "Sacrificing personal priorities to appease others.", icon: 'shield-alert' },
+      { id: 'rel_q4_validation', text: "Validation Seeking", desc: "Chasing external approval or status comparison loops.", icon: 'award' },
+      { id: 'rel_q4_isolation', text: "Emotional Isolation", desc: "Struggling to let people in or build deep emotional bridges.", icon: 'lock' },
+      { id: 'rel_q4_confident', text: "I communicate confidently", desc: "Confident, stable, and highly functional interpersonal states.", icon: 'shield-check' }
     ],
     save: (val) => {
       state.sessionData.flow_responses.relationships_q4 = val;
@@ -2060,33 +2053,33 @@ function calculateLifeMapMetrics() {
     
     // Q2 Branch routing answers
     const relQ2 = flow.relationships_q2 || '';
-    if (relQ2 === 'Constant Volatility') {
+    if (relQ2 === 'Emotionally Exhausting') {
       mind -= 20;
-    } else if (relQ2 === 'Toxic Trap') {
+    } else if (relQ2 === 'Toxic & Hurting My Peace') {
       purpose -= 25;
     }
     
     // Q3 Bottlenecks
     const relQ3 = flow.relationships_q3 || '';
-    if (relQ3 === 'Isolation Sink') {
+    if (relQ3 === 'I feel isolated from people') {
       connection -= 25;
-    } else if (relQ3 === 'Family Friction') {
+    } else if (relQ3 === 'Family stress affects my focus') {
       connection -= 15;
-    } else if (relQ3 === 'Low-Vibe Circle') {
+    } else if (relQ3 === 'My circle lacks ambition or direction') {
       connection -= 20;
     }
 
     // Q4 Psychological Bottlenecks
     const relQ4 = flow.relationships_q4 || '';
-    if (relQ4 === 'Social Anxiety / Overthinking') {
+    if (relQ4 === 'Overthinking & Social Anxiety') {
       mind -= 15;
-    } else if (relQ4 === 'People Pleasing / Weak Boundaries') {
+    } else if (relQ4 === 'Weak Boundaries / People Pleasing') {
       purpose -= 15;
-    } else if (relQ4 === 'Validation Seeking / Status Addiction') {
+    } else if (relQ4 === 'Validation Seeking') {
       fuel -= 10;
-    } else if (relQ4 === 'Emotional Unavailability / Hyper-Independence') {
+    } else if (relQ4 === 'Emotional Isolation') {
       connection -= 10;
-    } else if (relQ4 === 'Zero Friction / Fully Calibrated') {
+    } else if (relQ4 === 'I communicate confidently') {
       mind += 5;
     }
   }
@@ -2230,6 +2223,7 @@ function calculateLifeMapMetrics() {
 // SCREEN: Premium Profile & Dynamic Life Map Radar Visualizer
 // SCREEN: Premium Profile & Dynamic Life Map Radar Visualizer
 function renderProfileLifeMap(viewWrap) {
+  viewWrap.className = 'page-view page-view-wide';
   const scores = calculateLifeMapMetrics();
   
   // Simple hex to rgb converter for custom styles
@@ -2494,111 +2488,140 @@ function renderProfileLifeMap(viewWrap) {
 
 // SCREEN: "Friction & Strategy Analysis" Insights Page
 function renderWhatsHoldingYouBack(viewWrap) {
-  const analysis = generateAIPersonalityAnalysis();
-
   viewWrap.className = 'page-view';
   viewWrap.innerHTML = `
-    <div class="question-header" style="margin-bottom: 24px;">
+    <div class="question-header" style="margin-bottom: 40px; text-align: center;">
       <span class="question-pre">Friction & Strategy Analysis</span>
       <h2 class="question-title">Friction & Strategy Analysis</h2>
-      <p class="question-desc" style="margin-bottom: 0;">We have identified your primary physical and cognitive bottlenecks and mapped direct counter-strategy protocols.</p>
+      <p class="question-desc" style="margin-bottom: 0; max-width: 700px; margin-left: auto; margin-right: auto;">We have mapped your primary focus struggles against the high-conviction Kairos execution model.</p>
     </div>
 
     <!-- 2-Column Responsive Layout Container Grid -->
     <div class="friction-analysis-layout-grid">
       
-      <!-- COLUMN 1: Stoic Truth & Stagnation Loop (40% Width) -->
+      <!-- COLUMN 1: Why Most People Stay Stuck -->
       <div class="friction-column-left">
         <div class="friction-card-header">
-          <span class="friction-card-pre">Stoic Truth</span>
-          <h3 class="friction-card-title">What Most People Never Realize</h3>
+          <span class="friction-card-pre">The Reality Loop</span>
+          <h3 class="friction-card-title">Why Most People Stay Stuck</h3>
         </div>
 
         <div class="stagnation-timeline">
-          <span class="stagnation-title">THE STAGNATION LOOP</span>
-          
           <div class="stagnation-step">
-            <div class="stagnation-dot">1</div>
+            <div class="stagnation-dot">
+              <i data-lucide="zap-off" style="width: 14px; height: 14px;"></i>
+            </div>
             <div class="stagnation-details">
-              <span class="stagnation-step-title">Motivation Hype</span>
-              <p class="stagnation-step-desc">A burst of emotional drive sparks the desire to change everything overnight.</p>
+              <span class="stagnation-step-title">1. Motivation fades quickly</span>
+              <p class="stagnation-step-desc">Initial emotional drive sparks quick starts but evaporates when real resistance hits.</p>
             </div>
           </div>
 
           <div class="stagnation-step">
-            <div class="stagnation-dot">2</div>
+            <div class="stagnation-dot">
+              <i data-lucide="smartphone" style="width: 14px; height: 14px;"></i>
+            </div>
             <div class="stagnation-details">
-              <span class="stagnation-step-title">Sudden Friction</span>
-              <p class="stagnation-step-desc">Life gets busy, fatigue kicks in, and the initial excitement evaporates.</p>
+              <span class="stagnation-step-title">2. Distractions break consistency</span>
+              <p class="stagnation-step-desc">Unprotected focus environments and daily digital loops trigger procrastination patterns.</p>
             </div>
           </div>
 
           <div class="stagnation-step">
-            <div class="stagnation-dot">3</div>
+            <div class="stagnation-dot">
+              <i data-lucide="compass" style="width: 14px; height: 14px;"></i>
+            </div>
             <div class="stagnation-details">
-              <span class="stagnation-step-title">Consistency Crash</span>
-              <p class="stagnation-step-desc">Missing a habit triggers a guilt spiral. The routine is completely abandoned.</p>
+              <span class="stagnation-step-title">3. Goals become unclear</span>
+              <p class="stagnation-step-desc">Vague progress definitions lead directly to choice fatigue and execution blockages.</p>
             </div>
           </div>
 
           <div class="stagnation-step">
-            <div class="stagnation-dot">4</div>
+            <div class="stagnation-dot">
+              <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+            </div>
             <div class="stagnation-details">
-              <span class="stagnation-step-title">Stagnation Loop</span>
-              <p class="stagnation-step-desc">You return exactly to where you started, waiting for the next spark of motivation.</p>
+              <span class="stagnation-step-title">4. People restart endlessly</span>
+              <p class="stagnation-step-desc">Without high-quality habit anchors, you loop indefinitely at absolute baseline limits.</p>
             </div>
           </div>
-        </div>
-
-        <div class="breaking-cycle-box">
-          <span class="breaking-cycle-title">WHY YOU ARE BREAKING THE CYCLE</span>
-          <p class="breaking-cycle-desc">
-            95% of people quit because they rely on emotional inspiration to do hard things. They build massive plans but build zero self-awareness. By choosing to deconstruct your day honestly, you have already bypassed the first gate. We are not building a motivation plan; we are assembling a resilient habits system.
-          </p>
         </div>
       </div>
 
-      <!-- COLUMN 2: Personalized Elements (60% Width) -->
+      <!-- COLUMN 2: Your Personal Analysis -->
       <div class="friction-column-right">
         
-        <!-- Top Half: Your Identified Bottlenecks -->
-        <div class="bottlenecks-section">
-          <h3 class="plan-helpers-header" style="text-align: left; margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #fff;">Your Identified Bottlenecks</h3>
-          <div class="plan-helpers-grid" style="grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 0;">
-            ${analysis.struggles.map(s => `
-              <div class="struggle-item" style="flex-direction: column; gap: 8px; padding: 16px; text-align: left; border-left: none; border-bottom: 3px solid rgba(239, 68, 68, 0.4); margin-bottom: 0; min-height: 110px;">
-                <div class="struggle-icon-box" style="margin: 0 0 4px; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ff453a;">
-                  <i data-lucide="${s.icon}"></i>
-                </div>
-                <div class="struggle-details">
-                  <span class="struggle-title" style="font-size: 14px; text-align: left; display: block; font-weight: 600; color: #fff;">${s.title}</span>
-                  <p class="struggle-desc" style="font-size: 12px; text-align: left; line-height: 1.4; margin-top: 4px; color: var(--text-secondary);">${s.desc}</p>
-                </div>
+        <!-- SECTION 1: Your Current Friction Points -->
+        <div class="bottlenecks-section" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px;">Your Current Friction Points</h3>
+          
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="struggle-item glow-card" style="padding: 18px 24px; border-bottom: 2px solid rgba(239, 68, 68, 0.2); background: rgba(255,255,255,0.01); display: flex; align-items: center; gap: 16px; min-height: auto; border-left: none; margin-bottom: 0;">
+              <div class="struggle-icon-box" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #ff453a; flex-shrink: 0; margin: 0;">
+                <i data-lucide="alert-circle" style="width: 16px; height: 16px;"></i>
               </div>
-            `).join('')}
+              <div class="struggle-details" style="text-align: left;">
+                <span class="struggle-title" style="font-size: 14px; font-weight: 700; color: #fff; display: block; text-align: left;">Motivation Dependency</span>
+                <p class="struggle-desc" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0 0 0; text-align: left;">Relying purely on emotional inspiration rather than built-in habit structures.</p>
+              </div>
+            </div>
+
+            <div class="struggle-item glow-card" style="padding: 18px 24px; border-bottom: 2px solid rgba(239, 68, 68, 0.2); background: rgba(255,255,255,0.01); display: flex; align-items: center; gap: 16px; min-height: auto; border-left: none; margin-bottom: 0;">
+              <div class="struggle-icon-box" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #ff453a; flex-shrink: 0; margin: 0;">
+                <i data-lucide="alert-triangle" style="width: 16px; height: 16px;"></i>
+              </div>
+              <div class="struggle-details" style="text-align: left;">
+                <span class="struggle-title" style="font-size: 14px; font-weight: 700; color: #fff; display: block; text-align: left;">Focus Fragmentation</span>
+                <p class="struggle-desc" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0 0 0; text-align: left;">Dividing daily attention across notifications, tasks, and digital loops.</p>
+              </div>
+            </div>
+
+            <div class="struggle-item glow-card" style="padding: 18px 24px; border-bottom: 2px solid rgba(239, 68, 68, 0.2); background: rgba(255,255,255,0.01); display: flex; align-items: center; gap: 16px; min-height: auto; border-left: none; margin-bottom: 0;">
+              <div class="struggle-icon-box" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #ff453a; flex-shrink: 0; margin: 0;">
+                <i data-lucide="navigation" style="width: 16px; height: 16px;"></i>
+              </div>
+              <div class="struggle-details" style="text-align: left;">
+                <span class="struggle-title" style="font-size: 14px; font-weight: 700; color: #fff; display: block; text-align: left;">Inconsistent Direction</span>
+                <p class="struggle-desc" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0 0 0; text-align: left;">Attempting to progress without a highly structured daily program path.</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Bottom Half: How Your Plan Will Help -->
-        <div class="helpers-section">
-          <h3 class="plan-helpers-header" style="text-align: left; margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #fff;">How Your Plan Will Help</h3>
-          <div class="plan-helpers-grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 0;">
-            <div class="plan-helper-card glow-card" style="padding: 16px;">
-              <i data-lucide="anchor" class="plan-helper-icon" style="font-size: 18px; margin-bottom: 8px;"></i>
-              <span class="plan-helper-title" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Habit Anchoring</span>
-              <p class="plan-helper-desc" style="font-size: 11px; margin: 0; line-height: 1.4; color: var(--text-secondary);">Frictionless 5-minute micro-habits that bypass your brain's action resistance.</p>
+        <!-- SECTION 2: How Kairos Will Help -->
+        <div class="helpers-section" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px;">How Kairos Will Help</h3>
+          
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="plan-helper-card glow-card" style="padding: 18px 24px; background: rgba(255,255,255,0.01); display: flex; align-items: center; gap: 16px;">
+              <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--accent-indigo); flex-shrink: 0;">
+                <i data-lucide="anchor" style="width: 16px; height: 16px;"></i>
+              </div>
+              <div class="struggle-details" style="text-align: left;">
+                <span class="plan-helper-title" style="font-size: 14px; font-weight: 700; color: #fff; display: block; text-align: left;">Habit Anchoring</span>
+                <p class="plan-helper-desc" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0 0 0; text-align: left;">Frictionless 5-minute micro-habits that completely bypass brain resistance.</p>
+              </div>
             </div>
 
-            <div class="plan-helper-card glow-card" style="padding: 16px;">
-              <i data-lucide="shield" class="plan-helper-icon" style="font-size: 18px; margin-bottom: 8px;"></i>
-              <span class="plan-helper-title" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Friction Insulation</span>
-              <p class="plan-helper-desc" style="font-size: 11px; margin: 0; line-height: 1.4; color: var(--text-secondary);">Systematic rules to lock out environments and digital loops that trigger procrastination.</p>
+            <div class="plan-helper-card glow-card" style="padding: 18px 24px; background: rgba(255,255,255,0.01); display: flex; align-items: center; gap: 16px;">
+              <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--accent-indigo); flex-shrink: 0;">
+                <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+              </div>
+              <div class="struggle-details" style="text-align: left;">
+                <span class="plan-helper-title" style="font-size: 14px; font-weight: 700; color: #fff; display: block; text-align: left;">Distraction Protection</span>
+                <p class="plan-helper-desc" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0 0 0; text-align: left;">Attention barriers that insulate your high-performance focus blocks.</p>
+              </div>
             </div>
 
-            <div class="plan-helper-card glow-card" style="padding: 16px;">
-              <i data-lucide="trending-up" class="plan-helper-icon" style="font-size: 18px; margin-bottom: 8px;"></i>
-              <span class="plan-helper-title" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Consistency Scaling</span>
-              <p class="plan-helper-desc" style="font-size: 11px; margin: 0; line-height: 1.4; color: var(--text-secondary);">Gradual progression models that increase routine demands only after self-trust stabilizes.</p>
+            <div class="plan-helper-card glow-card" style="padding: 18px 24px; background: rgba(255,255,255,0.01); display: flex; align-items: center; gap: 16px;">
+              <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--accent-indigo); flex-shrink: 0;">
+                <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
+              </div>
+              <div class="struggle-details" style="text-align: left;">
+                <span class="plan-helper-title" style="font-size: 14px; font-weight: 700; color: #fff; display: block; text-align: left;">Consistency Scaling</span>
+                <p class="plan-helper-desc" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0 0 0; text-align: left;">Calibrated baseline progression targets that grow only as self-trust scales.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -2607,10 +2630,11 @@ function renderWhatsHoldingYouBack(viewWrap) {
 
     </div>
 
-    <div class="action-bar" style="margin-top: 24px;">
-      <button id="btn-submit-struggles" class="btn-premium primary">
-        <span>Continue to Roadmap →</span>
-        <i data-lucide="arrow-right"></i>
+    <!-- Centered CTA with large top spacing and no crowding -->
+    <div class="action-bar" style="margin-top: 64px; margin-bottom: 20px; display: flex; justify-content: center; width: 100%;">
+      <button id="btn-submit-struggles" class="btn-premium primary" style="padding: 16px 40px; font-size: 15px; font-weight: 600; min-width: 280px; justify-content: center; display: inline-flex; align-items: center; gap: 8px;">
+        <span>Continue to Your Roadmap →</span>
+        <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
       </button>
     </div>
   `;
@@ -2668,7 +2692,7 @@ function renderRoadmapScreen(viewWrap) {
   ];
 
   // Render the final confirmation view directly (no fake AI calculations loader delay!)
-  viewWrap.className = 'page-view';
+  viewWrap.className = 'page-view page-view-wide';
   viewWrap.innerHTML = `
     <div class="roadmap-container">
       <div class="pulse-sparkle-box">
