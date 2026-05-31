@@ -131,7 +131,18 @@ const state = {
     flow_responses: {},
     general_responses: {},
     generated_roadmap: {},
-    dashboard_offers: {}
+    dashboard_offers: {},
+    bodyMetrics: {
+      heightCm: 0,
+      weightKg: 0,
+      bmi: 0,
+      bmiCategory: '',
+      physicalBaselineScore: 100,
+      bodyMappingPenalty: 0,
+      occupationalLoadModifier: 'unknown',
+      recoveryDemand: false,
+      sleepRisk: false
+    }
   },
   
   // Active Question Definition
@@ -1606,7 +1617,10 @@ function renderBasicInfoForm(viewWrap) {
     info.height     = parseInt(heightInp.value);
     info.weight     = parseInt(weightInp.value);
     info.occupation = occupSel.value;
-    
+
+    // Auto-calculate BMI and store body metrics
+    calculateBMI(info.height, info.weight, info.occupation);
+
     advanceStep();
   });
 }
@@ -1623,6 +1637,84 @@ function highlightError(element) {
 function validateBasicInfoForm() {
   const info = state.sessionData.basic_info;
   return info.full_name && info.age && info.gender && info.height && info.weight && info.occupation;
+}
+
+// --- BMI Calculation & Body Metrics Engine ---
+function calculateBMI(heightCm, weightKg, occupation) {
+  // Guard: require valid numbers before computing
+  const h = parseFloat(heightCm);
+  const w = parseFloat(weightKg);
+  if (!h || !w || h <= 0 || w <= 0) return;
+
+  // BMI = weight(kg) / (height(m))^2
+  const heightM = h / 100;
+  const bmi = Math.round((w / (heightM * heightM)) * 10) / 10;
+
+  // --- BMI Category (product-safe language) ---
+  let bmiCategory = 'Healthy Range';
+  if (bmi < 18.5)        bmiCategory = 'Underweight';
+  else if (bmi < 25)     bmiCategory = 'Healthy Range';
+  else if (bmi < 30)     bmiCategory = 'Overweight';
+  else                   bmiCategory = 'Obesity Range';
+
+  // --- BMI scoring penalty ---
+  let bodyMappingPenalty = 0;
+  if (bmiCategory === 'Underweight')    bodyMappingPenalty = 12;
+  else if (bmiCategory === 'Overweight') bodyMappingPenalty = 10;
+  else if (bmiCategory === 'Obesity Range') bodyMappingPenalty = 18;
+
+  // --- Occupational Load Modifier ---
+  const occupationMap = {
+    'Student':                                                    'low_to_moderate',
+    'Office / Desk-Based Professional':                           'low',
+    'Business Owner / Entrepreneur':                              'variable_stress',
+    'Retail / Customer Service Worker':                           'moderate_standing',
+    'Delivery, Transportation, or Field-Based Worker':            'moderate_to_high',
+    'Manual Labor / Construction / Physically Demanding Worker':  'high',
+    'Healthcare Worker':                                          'moderate_to_high_shift_risk',
+    'Homemaker / Caregiver':                                      'variable',
+    'Retired':                                                    'low_to_moderate',
+    'Currently Unemployed':                                       'variable',
+    'Shift Worker (Night or Rotating Shifts)':                    'circadian_risk',
+    'Other / Prefer to Self-Describe':                            'unknown'
+  };
+  const occupationalLoadModifier = occupationMap[occupation] || 'unknown';
+
+  // --- Occupational scoring penalty ---
+  let occupationalPenalty = 0;
+  let recoveryDemand = false;
+  let sleepRisk = false;
+
+  switch (occupationalLoadModifier) {
+    case 'low':                        occupationalPenalty = 5;  break;
+    case 'low_to_moderate':            occupationalPenalty = 2;  break;
+    case 'variable_stress':            occupationalPenalty = 4;  break;
+    case 'moderate_standing':          occupationalPenalty = 0;  break;
+    case 'moderate_to_high':           occupationalPenalty = 0;  break;
+    case 'high':                       occupationalPenalty = 0;  recoveryDemand = true; break;
+    case 'moderate_to_high_shift_risk':occupationalPenalty = 6;  recoveryDemand = true; break;
+    case 'variable':                   occupationalPenalty = 2;  break;
+    case 'circadian_risk':             occupationalPenalty = 8;  sleepRisk = true; break;
+    default:                           occupationalPenalty = 0;
+  }
+
+  // --- Physical Baseline Score (0-100) ---
+  const physicalBaselineScore = Math.min(100, Math.max(0,
+    100 - bodyMappingPenalty - occupationalPenalty
+  ));
+
+  // --- Persist to state ---
+  state.sessionData.bodyMetrics = {
+    heightCm: h,
+    weightKg: w,
+    bmi,
+    bmiCategory,
+    physicalBaselineScore,
+    bodyMappingPenalty,
+    occupationalLoadModifier,
+    recoveryDemand,
+    sleepRisk
+  };
 }
 
 // SCREEN: Interactive 1-10 Routine Confidence Slider Scale
@@ -2281,12 +2373,43 @@ function calculateLifeMapMetrics() {
   userArchetype = userArchetype || "THE UNSHAKEABLE PILLAR";
   state.sessionData.userArchetype = userArchetype;
 
+  // --- BMI & OCCUPATIONAL LOAD MODIFIERS (Body Metrics Integration) ---
+  // Reads pre-calculated bodyMetrics from Step 1 and applies gentle score adjustments.
+  // These feel like personalised insight, not punishment.
+  const bm = state.sessionData.bodyMetrics || {};
+  const bmiCat = bm.bmiCategory || '';
+  const occMod = bm.occupationalLoadModifier || '';
+
+  if (bmiCat === 'Underweight') {
+    body    -= 12; // Physical baseline reduced — energy impact of low body mass
+    fuel    -= 6;  // Likely nutritional deficit affecting energy reserves
+    rest    -= 4;  // Recovery affected by low physical baseline
+  } else if (bmiCat === 'Overweight') {
+    body    -= 10;
+    fuel    -= 5;
+    rest    -= 3;
+  } else if (bmiCat === 'Obesity Range') {
+    body    -= 18;
+    fuel    -= 8;
+    rest    -= 6;
+  }
+
+  if (occMod === 'circadian_risk') {
+    rest    -= 8; // Night/rotating shifts disrupt circadian rhythm and rest quality
+    mind    -= 4; // Shift-work cognitive fatigue
+  }
+
+  if (occMod === 'high' || occMod === 'moderate_to_high_shift_risk') {
+    rest    -= 4; // High physical demand requires more recovery bandwidth
+    fuel    -= 3; // Higher caloric and nutritional demand
+  }
+
   // --- ABSOLUTE MATH BOUNDARY GUARDS (Strict Floor [15%] and Ceiling [100%]) ---
-  body = Math.min(100, Math.max(15, body));
-  fuel = Math.min(100, Math.max(15, fuel));
-  rest = Math.min(100, Math.max(15, rest));
-  mind = Math.min(100, Math.max(15, mind));
-  purpose = Math.min(100, Math.max(15, purpose));
+  body       = Math.min(100, Math.max(15, body));
+  fuel       = Math.min(100, Math.max(15, fuel));
+  rest       = Math.min(100, Math.max(15, rest));
+  mind       = Math.min(100, Math.max(15, mind));
+  purpose    = Math.min(100, Math.max(15, purpose));
   connection = Math.min(100, Math.max(15, connection));
 
   // --- GLOBAL COMPETITIVE RANK TIER CALCULATION ---
@@ -3983,7 +4106,18 @@ function renderUserDashboard(viewWrap) {
           flow_responses: {},
           general_responses: {},
           generated_roadmap: {},
-          dashboard_offers: {}
+          dashboard_offers: {},
+          bodyMetrics: {
+            heightCm: 0,
+            weightKg: 0,
+            bmi: 0,
+            bmiCategory: '',
+            physicalBaselineScore: 100,
+            bodyMappingPenalty: 0,
+            occupationalLoadModifier: 'unknown',
+            recoveryDemand: false,
+            sleepRisk: false
+          }
         };
 
         // 4. Hard clean unmount of the dashboard container
