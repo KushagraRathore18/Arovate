@@ -12,6 +12,14 @@
   <link rel="stylesheet" href="styles.css">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Service-Worker Poison Pill: unregister any stale SW on every load -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        regs.forEach(function(reg) { reg.unregister(); });
+      });
+    }
+  </script>
 </head>
 <body>
   <!-- Ambient Liquid Gradient Background Canvas -->

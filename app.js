@@ -1,3 +1,7 @@
+// --- Build Version (bump this string on every deployment to force cache refresh) ---
+const APP_VERSION = '2026-05-31.1';
+const APP_VERSION_KEY = 'kairos_app_version';
+
 // --- IndexedDB Client-Side Database Layer ---
 const DB_NAME = 'KairosDB';
 const DB_VERSION = 1;
@@ -4445,6 +4449,42 @@ function renderUserDashboard(viewWrap) {
 
 // --- App Entry Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+
+  // 0. SELF-HEALING BOOT: Unregister stale service workers + version check
+  // This runs synchronously before any render so users always get fresh JS/CSS.
+  (function bootHealthCheck() {
+    // (a) Silently unregister any service workers that may exist from past experiments.
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+      }).catch(() => {/* ignore */});
+    }
+
+    // (b) App version check — if version changed, force one clean reload.
+    // We guard with sessionStorage to prevent infinite reload loops.
+    try {
+      const storedVersion = localStorage.getItem(APP_VERSION_KEY);
+      const alreadyReloaded = sessionStorage.getItem('kairos_reloaded');
+
+      if (storedVersion !== APP_VERSION && !alreadyReloaded) {
+        // Mark reload as in-flight so we never loop.
+        sessionStorage.setItem('kairos_reloaded', '1');
+        // Write new version BEFORE reload so second boot sees it as current.
+        localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
+        // Hard reload — bypasses disk cache and fetches fresh HTML/JS/CSS.
+        window.location.reload(true);
+        return; // Stop current boot sequence; reloaded page will continue.
+      }
+
+      // Version matches (or already reloaded): clear the one-time reload flag
+      // and stamp the version so next deployment triggers correctly.
+      sessionStorage.removeItem('kairos_reloaded');
+      localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
+    } catch (e) {
+      // localStorage blocked (private browsing on some browsers) — safe to ignore.
+    }
+  })();
+
   // 1. Initialize Canvas Background Engine
   initAmbientCanvas();
   
