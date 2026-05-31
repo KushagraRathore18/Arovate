@@ -113,10 +113,11 @@ const state = {
     id: '',
     timestamp: '',
     basic_info: {
-      first_name: '',
+      full_name: '',
       age: 25,
       gender: '',
-      country: '',
+      height: '',
+      weight: '',
       occupation: '',
       relationship_status: '',
       activity_level: ''
@@ -343,7 +344,7 @@ const ALL_FLOW_NODES = {
   gym_q3: {
     type: 'multiple',
     get title() {
-      const username = state?.sessionData?.basic_info?.first_name || 'my friend';
+      const username = state?.sessionData?.basic_info?.full_name || 'my friend';
       return `Alright ${username}, if we're setting up your physical training loop, where do you need guidance?`;
     },
     subtitle: "",
@@ -1495,49 +1496,58 @@ function renderBasicInfoForm(viewWrap) {
     </div>
     
     <form class="form-grid" id="basic-info-form" onsubmit="return false;">
-      <!-- First Name -->
-      <div class="form-group">
-        <label class="form-label" for="inp-first-name">First Name</label>
-        <input type="text" id="inp-first-name" class="input-premium" placeholder="e.g. Alexander" value="${info.first_name}" required autocomplete="off">
+      <!-- Full Name -->
+      <div class="form-group full-width">
+        <label class="form-label" for="inp-full-name">Full Name</label>
+        <input type="text" id="inp-full-name" class="input-premium" placeholder="e.g. Alexander Mitchell" value="${info.full_name || ''}" required autocomplete="off">
       </div>
       
       <!-- Age -->
       <div class="form-group">
         <label class="form-label" for="inp-age">Age</label>
-        <input type="number" id="inp-age" class="input-premium" min="12" max="100" placeholder="25" value="${info.age || ''}" required>
+        <input type="number" id="inp-age" class="input-premium" min="13" max="100" placeholder="25" value="${info.age || ''}" required>
       </div>
-      
-      <!-- Gender Cards -->
-      <div class="form-group full-width">
-        <label class="form-label">Gender Identity</label>
-        <div class="select-grid" id="grid-gender">
-          <div class="selector-option ${info.gender === 'Male' ? 'selected' : ''}" data-val="Male">Male</div>
-          <div class="selector-option ${info.gender === 'Female' ? 'selected' : ''}" data-val="Female">Female</div>
-          <div class="selector-option ${info.gender === 'Non-binary' ? 'selected' : ''}" data-val="Non-binary">Non-binary</div>
-          <div class="selector-option ${info.gender === 'Prefer not to say' ? 'selected' : ''}" data-val="Prefer not to say">Skip</div>
-        </div>
-      </div>
-      
-      <!-- Country Dropdown -->
+
+      <!-- Sex -->
       <div class="form-group">
-        <label class="form-label" for="sel-country">Country</label>
-        <select id="sel-country" class="input-premium" style="background-color: #0b0f19;">
-          <option value="" disabled ${!info.country ? 'selected' : ''}>Select Country</option>
-          ${COUNTRIES_LIST.map(c => `
-            <option value="${c}" ${info.country === c ? 'selected' : ''}>${c}</option>
-          `).join('')}
+        <label class="form-label" for="sel-sex">Sex</label>
+        <select id="sel-sex" class="input-premium" style="background-color: #0b0f19;">
+          <option value="" disabled ${!info.gender ? 'selected' : ''}>Select</option>
+          <option value="Male" ${info.gender === 'Male' ? 'selected' : ''}>Male</option>
+          <option value="Female" ${info.gender === 'Female' ? 'selected' : ''}>Female</option>
+          <option value="Prefer not to say" ${info.gender === 'Prefer not to say' ? 'selected' : ''}>Prefer not to say</option>
         </select>
       </div>
-      
-      <!-- Occupation -->
+
+      <!-- Height -->
       <div class="form-group">
-        <label class="form-label" for="sel-occupation">Occupation Status</label>
+        <label class="form-label" for="inp-height">Height <span style="color: var(--text-secondary); font-weight: 400;">(cm)</span></label>
+        <input type="number" id="inp-height" class="input-premium" min="50" max="280" placeholder="175" value="${info.height || ''}" required>
+      </div>
+
+      <!-- Weight -->
+      <div class="form-group">
+        <label class="form-label" for="inp-weight">Weight <span style="color: var(--text-secondary); font-weight: 400;">(kg)</span></label>
+        <input type="number" id="inp-weight" class="input-premium" min="20" max="500" placeholder="70" value="${info.weight || ''}" required>
+      </div>
+      
+      <!-- Occupational Lifestyle -->
+      <div class="form-group full-width">
+        <label class="form-label" for="sel-occupation">Occupational Lifestyle</label>
         <select id="sel-occupation" class="input-premium" style="background-color: #0b0f19;">
-          <option value="" disabled ${!info.occupation ? 'selected' : ''}>Select Occupation</option>
+          <option value="" disabled ${!info.occupation ? 'selected' : ''}>Select your occupational lifestyle</option>
           <option value="Student" ${info.occupation === 'Student' ? 'selected' : ''}>Student</option>
-          <option value="Working Professional" ${info.occupation === 'Working Professional' ? 'selected' : ''}>Working</option>
-          <option value="Self-employed" ${info.occupation === 'Self-employed' ? 'selected' : ''}>Self-employed</option>
-          <option value="Other" ${info.occupation === 'Other' ? 'selected' : ''}>Other / Transitional</option>
+          <option value="Office / Desk-Based Professional" ${info.occupation === 'Office / Desk-Based Professional' ? 'selected' : ''}>Office / Desk-Based Professional</option>
+          <option value="Business Owner / Entrepreneur" ${info.occupation === 'Business Owner / Entrepreneur' ? 'selected' : ''}>Business Owner / Entrepreneur</option>
+          <option value="Retail / Customer Service Worker" ${info.occupation === 'Retail / Customer Service Worker' ? 'selected' : ''}>Retail / Customer Service Worker</option>
+          <option value="Delivery, Transportation, or Field-Based Worker" ${info.occupation === 'Delivery, Transportation, or Field-Based Worker' ? 'selected' : ''}>Delivery, Transportation, or Field-Based Worker</option>
+          <option value="Manual Labor / Construction / Physically Demanding Worker" ${info.occupation === 'Manual Labor / Construction / Physically Demanding Worker' ? 'selected' : ''}>Manual Labor / Construction / Physically Demanding Worker</option>
+          <option value="Healthcare Worker" ${info.occupation === 'Healthcare Worker' ? 'selected' : ''}>Healthcare Worker</option>
+          <option value="Homemaker / Caregiver" ${info.occupation === 'Homemaker / Caregiver' ? 'selected' : ''}>Homemaker / Caregiver</option>
+          <option value="Retired" ${info.occupation === 'Retired' ? 'selected' : ''}>Retired</option>
+          <option value="Currently Unemployed" ${info.occupation === 'Currently Unemployed' ? 'selected' : ''}>Currently Unemployed</option>
+          <option value="Shift Worker (Night or Rotating Shifts)" ${info.occupation === 'Shift Worker (Night or Rotating Shifts)' ? 'selected' : ''}>Shift Worker (Night or Rotating Shifts)</option>
+          <option value="Other / Prefer to Self-Describe" ${info.occupation === 'Other / Prefer to Self-Describe' ? 'selected' : ''}>Other / Prefer to Self-Describe</option>
         </select>
       </div>
     </form>
@@ -1550,42 +1560,34 @@ function renderBasicInfoForm(viewWrap) {
     </div>
   `;
   
-  // Segmented selectors trigger listeners
-  const setupSegmented = (containerId, stateKey) => {
-    const options = viewWrap.querySelectorAll(`#${containerId} .selector-option`);
-    options.forEach(opt => {
-      opt.addEventListener('click', () => {
-        options.forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        info[stateKey] = opt.getAttribute('data-val');
-      });
-    });
-  };
-  
-  setupSegmented('grid-gender', 'gender');
-  
-  // Form submission validations
+  // Form submission validation
   viewWrap.querySelector('#btn-submit-info').addEventListener('click', () => {
-    const nameInp = viewWrap.querySelector('#inp-first-name');
-    const ageInp = viewWrap.querySelector('#inp-age');
-    const countrySel = viewWrap.querySelector('#sel-country');
-    const occupSel = viewWrap.querySelector('#sel-occupation');
+    const nameInp   = viewWrap.querySelector('#inp-full-name');
+    const ageInp    = viewWrap.querySelector('#inp-age');
+    const sexSel    = viewWrap.querySelector('#sel-sex');
+    const heightInp = viewWrap.querySelector('#inp-height');
+    const weightInp = viewWrap.querySelector('#inp-weight');
+    const occupSel  = viewWrap.querySelector('#sel-occupation');
     
-    // Quick interactive validation triggers
     if (!nameInp.value.trim()) {
       highlightError(nameInp);
       return;
     }
-    if (!ageInp.value || ageInp.value < 12 || ageInp.value > 100) {
+    const ageVal = parseInt(ageInp.value);
+    if (!ageInp.value || ageVal < 13 || ageVal > 100) {
       highlightError(ageInp);
       return;
     }
-    if (!info.gender) {
-      highlightError(viewWrap.querySelector('#grid-gender'));
+    if (!sexSel.value) {
+      highlightError(sexSel);
       return;
     }
-    if (!countrySel.value) {
-      highlightError(countrySel);
+    if (!heightInp.value || parseInt(heightInp.value) < 50 || parseInt(heightInp.value) > 280) {
+      highlightError(heightInp);
+      return;
+    }
+    if (!weightInp.value || parseInt(weightInp.value) < 20 || parseInt(weightInp.value) > 500) {
+      highlightError(weightInp);
       return;
     }
     if (!occupSel.value) {
@@ -1593,10 +1595,12 @@ function renderBasicInfoForm(viewWrap) {
       return;
     }
     
-    // Compile and advance
-    info.first_name = nameInp.value.trim();
-    info.age = parseInt(ageInp.value);
-    info.country = countrySel.value;
+    // Commit all fields to state
+    info.full_name  = nameInp.value.trim();
+    info.age        = ageVal;
+    info.gender     = sexSel.value;
+    info.height     = parseInt(heightInp.value);
+    info.weight     = parseInt(weightInp.value);
     info.occupation = occupSel.value;
     
     advanceStep();
@@ -1614,7 +1618,7 @@ function highlightError(element) {
 
 function validateBasicInfoForm() {
   const info = state.sessionData.basic_info;
-  return info.first_name && info.age && info.gender && info.country && info.occupation;
+  return info.full_name && info.age && info.gender && info.height && info.weight && info.occupation;
 }
 
 // SCREEN: Interactive 1-10 Routine Confidence Slider Scale
@@ -1769,7 +1773,7 @@ function renderRoutineConfidence(viewWrap) {
 
 // --- AI PERSONALITY ANALYSIS & COPY GENERATION ENGINE ---
 function generateAIPersonalityAnalysis() {
-  const info = state.sessionData.basic_info || { first_name: 'Alexander' };
+  const info = state.sessionData.basic_info || { full_name: 'Alexander' };
   const energy = state.sessionData.general_responses.personality_energy || '';
   const stateVal = state.sessionData.life_state || [];
   const confidence = state.sessionData.general_responses.routine_confidence || 5;
@@ -1969,7 +1973,7 @@ function renderHowWeSeeYou(viewWrap) {
     </div>
 
     <p class="analysis-intro-text">
-      ${info?.first_name || 'Alexander'}, your responses paint a clear picture of a highly self-aware individual. You have recognized where your daily routines break down, and you have taken the first step by deconstructing the habits holding you back. Here is your baseline profile:
+      ${info?.full_name || 'Alexander'}, your responses paint a clear picture of a highly self-aware individual. You have recognized where your daily routines break down, and you have taken the first step by deconstructing the habits holding you back. Here is your baseline profile:
     </p>
 
     <div class="analysis-grid">
@@ -2830,7 +2834,7 @@ function renderRoadmapScreen(viewWrap) {
       
       <span class="roadmap-badge">Onboarding Complete</span>
       <h2 class="welcome-title" style="font-size: 38px; letter-spacing:-1px;">Your Ascent Roadmap</h2>
-      <p class="welcome-subtitle" style="font-size: 15px; margin-bottom: 24px;">Welcome, ${state.sessionData.basic_info.first_name || 'my friend'}. Here is your customized timeline progression for the <strong>${userArchetype}</strong> protocol.</p>
+      <p class="welcome-subtitle" style="font-size: 15px; margin-bottom: 24px;">Welcome, ${state.sessionData.basic_info.full_name || 'my friend'}. Here is your customized timeline progression for the <strong>${userArchetype}</strong> protocol.</p>
       
       <div class="roadmap-card" style="margin-top: 0; padding-top: 24px; padding-bottom: 24px;">
         <!-- Center Gamification Display Block -->
@@ -2938,7 +2942,7 @@ function compileAlgorithmRoadmap() {
   const archetype = state.sessionData.userArchetype || 'THE UNSHAKEABLE PILLAR';
   
   // 2. Custom letter crafting
-  let letter = `Welcome to the KAIROS ascent protocol, ${info.first_name}. `;
+  let letter = `Welcome to the KAIROS ascent protocol, ${info.full_name}. `;
   
   // Contextual drivers
   if (values.length > 0) {
@@ -3161,7 +3165,7 @@ function initDBInspectorController() {
     
     tbody.innerHTML = sessions.map(sess => {
       const date = new Date(sess.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const name = sess.basic_info.first_name || 'Anonymous';
+      const name = sess.basic_info.full_name || 'Anonymous';
       const arch = sess.generated_roadmap.archetype || 'Pending Synthesis';
       const isSel = sess.id === selectedSessionId;
       
@@ -3255,7 +3259,7 @@ function renderUserDashboard(viewWrap) {
   const scores = calculateLifeMapMetrics();
 
   const focus = state.sessionData.focus_areas || state.sessionData.selectedTracks || [];
-  const first_name = state.sessionData.basic_info?.first_name || 'Achiever';
+  const first_name = state.sessionData.basic_info?.full_name || 'Achiever';
   const archetype = state.sessionData.userArchetype || 'THE UNSHAKEABLE PILLAR';
   const userRank = state.sessionData.userRank || "DISCIPLINE BEGINNER";
   const rankColor = state.sessionData.rankColor || "#FFA500";
@@ -3961,10 +3965,11 @@ function renderUserDashboard(viewWrap) {
           id: 'session_' + Date.now(),
           timestamp: new Date().toISOString(),
           basic_info: {
-            first_name: '',
+            full_name: '',
             age: 25,
             gender: '',
-            country: '',
+            height: '',
+            weight: '',
             occupation: '',
             relationship_status: '',
             activity_level: ''
