@@ -2374,35 +2374,70 @@ function calculateLifeMapMetrics() {
   state.sessionData.userArchetype = userArchetype;
 
   // --- BMI & OCCUPATIONAL LOAD MODIFIERS (Body Metrics Integration) ---
-  // Reads pre-calculated bodyMetrics from Step 1 and applies gentle score adjustments.
-  // These feel like personalised insight, not punishment.
-  const bm = state.sessionData.bodyMetrics || {};
-  const bmiCat = bm.bmiCategory || '';
-  const occMod = bm.occupationalLoadModifier || '';
+  // BMI signals are body-mapping only — they NEVER reduce Mind directly.
+  // Occupation penalties follow the exact per-lifestyle table from the spec.
+  const bm      = state.sessionData.bodyMetrics || {};
+  const bmiCat  = bm.bmiCategory || '';
+  const occ     = state.sessionData.basic_info?.occupation || '';
+  const sleepRisk = bm.sleepRisk || false;
 
+  // --- BMI Scoring: Body / Rest / Fuel only ---
   if (bmiCat === 'Underweight') {
-    body    -= 12; // Physical baseline reduced — energy impact of low body mass
-    fuel    -= 6;  // Likely nutritional deficit affecting energy reserves
-    rest    -= 4;  // Recovery affected by low physical baseline
+    body -= 12;
+    fuel -= 6;
+    rest -= 4;
   } else if (bmiCat === 'Overweight') {
-    body    -= 10;
-    fuel    -= 5;
-    rest    -= 3;
+    body -= 10;
+    fuel -= 5;
+    rest -= 3;
   } else if (bmiCat === 'Obesity Range') {
-    body    -= 18;
-    fuel    -= 8;
-    rest    -= 6;
+    body -= 18;
+    fuel -= 8;
+    rest -= 6;
   }
+  // Healthy Range: no penalty (intentional no-op)
 
-  if (occMod === 'circadian_risk') {
-    rest    -= 8; // Night/rotating shifts disrupt circadian rhythm and rest quality
-    mind    -= 4; // Shift-work cognitive fatigue
+  // --- Occupational Lifestyle Scoring (per-occupation table) ---
+  if (occ === 'Office / Desk-Based Professional') {
+    body -= 4;
+    rest -= 2;
+  } else if (occ === 'Student') {
+    rest -= 2;
+    // Mind: no direct penalty from occupation
+  } else if (occ === 'Business Owner / Entrepreneur') {
+    rest -= 4;
+    // Purpose: no direct penalty from occupation
+  } else if (occ === 'Retail / Customer Service Worker') {
+    rest -= 3;
+    // Body: no penalty
+  } else if (occ === 'Delivery, Transportation, or Field-Based Worker') {
+    rest -= 3;
+    fuel -= 2;
+  } else if (occ === 'Manual Labor / Construction / Physically Demanding Worker') {
+    rest -= 5;
+    fuel -= 3;
+    // Body: no penalty (physically demanding work is not a body deficit)
+  } else if (occ === 'Healthcare Worker') {
+    rest -= 5;
+    fuel -= 3;
+  } else if (occ === 'Homemaker / Caregiver') {
+    rest -= 3;
+    fuel -= 2;
+  } else if (occ === 'Retired') {
+    body -= 3;
+    // Rest: no penalty
+  } else if (occ === 'Currently Unemployed') {
+    purpose -= 4;
+    rest    -= 2;
+  } else if (occ === 'Shift Worker (Night or Rotating Shifts)') {
+    rest -= 10;
+    fuel -= 6;
+    // Mind: max -2, only applied when circadian/sleep risk already flagged
+    if (sleepRisk) {
+      mind -= 2;
+    }
   }
-
-  if (occMod === 'high' || occMod === 'moderate_to_high_shift_risk') {
-    rest    -= 4; // High physical demand requires more recovery bandwidth
-    fuel    -= 3; // Higher caloric and nutritional demand
-  }
+  // 'Other / Prefer to Self-Describe': no penalty (intentional no-op)
 
   // --- ABSOLUTE MATH BOUNDARY GUARDS (Strict Floor [15%] and Ceiling [100%]) ---
   body       = Math.min(100, Math.max(15, body));
