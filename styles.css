@@ -1,5 +1,5 @@
-/* ==========================================================================
-   KAIROS PREMIUM ONBOARDING APP - DESIGN SYSTEM & STYLING
+﻿/* ==========================================================================
+   AROVATE PREMIUM ONBOARDING APP - DESIGN SYSTEM & STYLING
    ========================================================================== */
 
 /* --- CSS Variables & Design Tokens --- */
@@ -2264,7 +2264,7 @@ html, body {
 }
 
 /* --- Premium Toast Notification --- */
-.kairos-notification {
+.arovate-notification {
   position: fixed;
   bottom: 32px;
   left: 50%;
@@ -2289,13 +2289,13 @@ html, body {
   pointer-events: none;
 }
 
-.kairos-notification.show {
+.arovate-notification.show {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
   pointer-events: auto;
 }
 
-.kairos-notification-icon {
+.arovate-notification-icon {
   color: #ff9f0a; /* premium warning orange */
   display: flex;
   align-items: center;
@@ -2303,13 +2303,13 @@ html, body {
   font-size: 18px;
 }
 
-.kairos-notification-icon i,
-.kairos-notification-icon svg {
+.arovate-notification-icon i,
+.arovate-notification-icon svg {
   width: 18px;
   height: 18px;
 }
 
-.kairos-notification-text {
+.arovate-notification-text {
   letter-spacing: -0.1px;
 }
 
@@ -3651,7 +3651,7 @@ html, body {
 }
 
 /* How You Break the Loop Card Container (Indigo Apple/Linear SaaS Glow) */
-.kairos-break-card {
+.arovate-break-card {
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
   background: rgba(8, 8, 8, 0.6) !important;
   backdrop-filter: blur(20px) !important;
@@ -3661,19 +3661,19 @@ html, body {
   padding: 48px !important;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
-.kairos-break-card:hover {
+.arovate-break-card:hover {
   border-color: rgba(99, 102, 241, 0.22) !important;
   box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9), 
               0 0 60px -5px rgba(99, 102, 241, 0.1) !important;
 }
 
 @media (max-width: 767px) {
-  .reality-loop-card, .kairos-break-card {
+  .reality-loop-card, .arovate-break-card {
     padding: 28px 20px !important;
   }
 }
 
-/* The Kairos Advantage Card Container (Purple Accent Widescreen Grid) */
+/* The Arovate Advantage Card Container (Purple Accent Widescreen Grid) */
 .strategic-alignment-advantage-card {
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
   background: rgba(8, 8, 8, 0.75) !important;

@@ -1,8 +1,8 @@
-/* ==========================================================================
-   KAIROS PREMIUM ONBOARDING APP - INDEXEDDB LAYER
+﻿/* ==========================================================================
+   AROVATE PREMIUM ONBOARDING APP - INDEXEDDB LAYER
    ========================================================================== */
 
-const DB_NAME = 'KairosDB';
+const DB_NAME = 'ArovateDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'onboarding_sessions';
 
