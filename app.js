@@ -1,9 +1,9 @@
-// --- Build Version (bump this string on every deployment to force cache refresh) ---
+﻿// --- Build Version (bump this string on every deployment to force cache refresh) ---
 const APP_VERSION = '2026-05-31.1';
-const APP_VERSION_KEY = 'kairos_app_version';
+const APP_VERSION_KEY = 'arovate_app_version';
 
 // --- IndexedDB Client-Side Database Layer ---
-const DB_NAME = 'KairosDB';
+const DB_NAME = 'ArovateDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'onboarding_sessions';
 
@@ -1306,7 +1306,7 @@ function renderStandardOptionCard(viewWrap) {
   
   viewWrap.innerHTML = `
     <div class="question-header">
-      <span class="question-pre">Kairos Analysis</span>
+      <span class="question-pre">Arovate Analysis</span>
       <h2 class="question-title">${title}</h2>
       <p class="question-desc">${subtitle}</p>
     </div>
@@ -1446,7 +1446,7 @@ function renderWelcomeScreen(viewWrap) {
       <div class="logo-icon-glow">
         <i data-lucide="compass"></i>
       </div>
-      <h1 class="welcome-title">Kairos</h1>
+      <h1 class="welcome-title">Arovate</h1>
       <p class="welcome-subtitle">Build the life you know you’re capable of.</p>
     </div>
     
@@ -2749,7 +2749,7 @@ function renderWhatsHoldingYouBack(viewWrap) {
     <div class="question-header" style="margin-bottom: 64px; text-align: center;">
       <span class="question-pre" style="color: #818cf8; letter-spacing: 0.25em; font-size: 0.9rem; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">STRATEGIC ALIGNMENT</span>
       <h2 class="strategic-alignment-title">Strategic Alignment</h2>
-      <p class="strategic-alignment-desc">We have mapped your primary focus struggles against the <span style="color: #818cf8; font-weight: 600;">high-conviction</span> Kairos execution model.</p>
+      <p class="strategic-alignment-desc">We have mapped your primary focus struggles against the <span style="color: #818cf8; font-weight: 600;">high-conviction</span> Arovate execution model.</p>
     </div>
 
     <!-- 2-Column Responsive Layout Container Grid -->
@@ -2807,14 +2807,14 @@ function renderWhatsHoldingYouBack(viewWrap) {
         </div>
       </div>
 
-      <!-- COLUMN 2: How You Break the Loop with Kairos -->
+      <!-- COLUMN 2: How You Break the Loop with Arovate -->
       <div class="w-full">
-        <div class="kairos-break-card">
+        <div class="arovate-break-card">
           <div class="friction-card-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px; margin-bottom: 32px;">
-            <span class="friction-card-pre" style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-indigo); display: block; margin-bottom: 6px; font-weight: 700;">HOW YOU BREAK THE LOOP WITH KAIROS</span>
-            <h3 class="friction-card-title" style="font-family: 'Outfit', sans-serif; font-size: 24px; margin: 0; font-weight: 800; color: #fff; letter-spacing: -0.5px;">How You Break the Loop with Kairos</h3>
+            <span class="friction-card-pre" style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-indigo); display: block; margin-bottom: 6px; font-weight: 700;">HOW YOU BREAK THE LOOP WITH AROVATE</span>
+            <h3 class="friction-card-title" style="font-family: 'Outfit', sans-serif; font-size: 24px; margin: 0; font-weight: 800; color: #fff; letter-spacing: -0.5px;">How You Break the Loop with Arovate</h3>
           </div>
-          <p style="margin: 0 0 24px 0; font-size: 13.5px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.55;">To build bulletproof consistency, Kairos deploys a suite of behavioral counter-strategies designed to neutralize execution drag:</p>
+          <p style="margin: 0 0 24px 0; font-size: 13.5px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.55;">To build bulletproof consistency, Arovate deploys a suite of behavioral counter-strategies designed to neutralize execution drag:</p>
           
           <div class="flex flex-col gap-4">
             <!-- Strategy 1 -->
@@ -2864,12 +2864,12 @@ function renderWhatsHoldingYouBack(viewWrap) {
 
     </div>
 
-    <!-- 3-Column Metrics Panel Row: How Kairos Will Help -->
+    <!-- 3-Column Metrics Panel Row: How Arovate Will Help -->
     <div class="w-full block clear-both mt-8 pt-0 layout-flush px-6-custom px-10-custom">
       <div class="strategic-alignment-advantage-card">
         <div style="text-align: center; margin-bottom: 40px;">
-          <span style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #c084fc; display: block; margin-bottom: 8px; font-weight: 700;">THE KAIROS ADVANTAGE</span>
-          <h3 style="font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; font-family: 'Outfit', sans-serif; margin: 0 0 8px 0;">How Kairos Will Help</h3>
+          <span style="font-family: 'Outfit', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #c084fc; display: block; margin-bottom: 8px; font-weight: 700;">THE AROVATE ADVANTAGE</span>
+          <h3 style="font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; font-family: 'Outfit', sans-serif; margin: 0 0 8px 0;">How Arovate Will Help</h3>
           <p style="font-size: 15px; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.55;">Our systems remove friction, protect your focus, and compound your execution.</p>
         </div>
         
@@ -3104,7 +3104,7 @@ function compileAlgorithmRoadmap() {
   const archetype = state.sessionData.userArchetype || 'THE UNSHAKEABLE PILLAR';
   
   // 2. Custom letter crafting
-  let letter = `Welcome to the KAIROS ascent protocol, ${info.full_name}. `;
+  let letter = `Welcome to the AROVATE ascent protocol, ${info.full_name}. `;
   
   // Contextual drivers
   if (values.length > 0) {
@@ -3374,19 +3374,19 @@ function updateDBInspectorBadge() {
 
 // Premium toast notification helper
 function showNotification(message) {
-  let toast = document.getElementById('kairos-toast');
+  let toast = document.getElementById('arovate-toast');
   if (!toast) {
     toast = document.createElement('div');
-    toast.id = 'kairos-toast';
-    toast.className = 'kairos-notification';
+    toast.id = 'arovate-toast';
+    toast.className = 'arovate-notification';
     document.body.appendChild(toast);
   }
   
   toast.innerHTML = `
-    <div class="kairos-notification-icon">
+    <div class="arovate-notification-icon">
       <i data-lucide="alert-triangle"></i>
     </div>
-    <span class="kairos-notification-text">${message}</span>
+    <span class="arovate-notification-text">${message}</span>
   `;
   
   // Render Lucide icons in toast
@@ -4633,11 +4633,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // We guard with sessionStorage to prevent infinite reload loops.
     try {
       const storedVersion = localStorage.getItem(APP_VERSION_KEY);
-      const alreadyReloaded = sessionStorage.getItem('kairos_reloaded');
+      const alreadyReloaded = sessionStorage.getItem('arovate_reloaded');
 
       if (storedVersion !== APP_VERSION && !alreadyReloaded) {
         // Mark reload as in-flight so we never loop.
-        sessionStorage.setItem('kairos_reloaded', '1');
+        sessionStorage.setItem('arovate_reloaded', '1');
         // Write new version BEFORE reload so second boot sees it as current.
         localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
         // Hard reload — bypasses disk cache and fetches fresh HTML/JS/CSS.
@@ -4647,7 +4647,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Version matches (or already reloaded): clear the one-time reload flag
       // and stamp the version so next deployment triggers correctly.
-      sessionStorage.removeItem('kairos_reloaded');
+      sessionStorage.removeItem('arovate_reloaded');
       localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
     } catch (e) {
       // localStorage blocked (private browsing on some browsers) — safe to ignore.
