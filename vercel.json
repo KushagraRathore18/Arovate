@@ -1,7 +1,4 @@
 {
-  "rewrites": [
-    { "source": "/signup", "destination": "/index.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",

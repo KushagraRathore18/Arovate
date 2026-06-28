@@ -80,7 +80,7 @@
         </nav>
 
         <!-- Desktop CTA -->
-        <a href="/signup" id="lp-header-cta-btn">Create Account</a>
+        <a href="javascript:void(0)" onclick="lpStartOnboarding()" id="lp-header-cta-btn">Create Account</a>
 
         <!-- Mobile Hamburger -->
         <button id="lp-mobile-toggle" aria-label="Toggle mobile menu">
@@ -97,7 +97,7 @@
       <a href="#lp-focus-areas" onclick="lpCloseMobileMenu()">Focus Areas</a>
       <a href="#lp-process"     onclick="lpCloseMobileMenu()">How it Works</a>
       <a href="#lp-contact"     onclick="lpCloseMobileMenu()">Contact</a>
-      <a href="/signup" id="lp-mobile-cta" onclick="lpCloseMobileMenu()">Create Account</a>
+      <a href="javascript:void(0)" id="lp-mobile-cta" onclick="lpCloseMobileMenu(); lpStartOnboarding()">Create Account</a>
     </nav>
 
     <!-- ==================== MAIN CONTENT ==================== -->
@@ -173,7 +173,7 @@
 
           <!-- Action Buttons -->
           <div id="lp-hero-actions">
-            <a href="/signup" class="lp-btn-primary" id="lp-hero-create-btn">
+            <a href="javascript:void(0)" onclick="lpStartOnboarding()" class="lp-btn-primary" id="lp-hero-create-btn">
               Create Account
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
@@ -478,7 +478,7 @@
             <p id="lp-result-text"></p>
             <div id="lp-result-footer">
               <p>Like this flow? Prepare your focus journey:</p>
-              <a href="/signup" id="lp-result-cta">
+              <a href="javascript:void(0)" onclick="lpStartOnboarding()" id="lp-result-cta">
                 Pre-Register Now
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </a>

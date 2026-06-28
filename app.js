@@ -1201,8 +1201,8 @@ function renderActiveStep() {
 
       // Attach and activate the fresh card
       container.appendChild(viewWrap);
-      // Reset scroll so every new question starts at the very top
-      container.scrollTop = 0;
+      // Reset scroll so every new question starts at the very top of the window
+      window.scrollTo(0, 0);
 
       requestAnimationFrame(() => {
         viewWrap.classList.add('active');
@@ -1214,7 +1214,7 @@ function renderActiveStep() {
   } else {
     // First render — no old card to clear
     container.appendChild(viewWrap);
-    container.scrollTop = 0;
+    window.scrollTo(0, 0);
 
     requestAnimationFrame(() => {
       viewWrap.classList.add('active');
@@ -4616,110 +4616,84 @@ function renderUserDashboard(viewWrap) {
   });
 }
 
-// --- Path-Based Router ---
-// Detects whether the user is on "/" (landing page) or "/signup" (onboarding app).
-// app.js is loaded at bottom of <body>, so the DOM is fully parsed when this runs.
-
+// --- Single URL Router ---
+// Always shows the landing page first. Onboarding is loaded in-place when requested.
 (function arovateRouter() {
-  const path     = window.location.pathname;
-  const isSignup = (path === '/signup' || path === '/signup/');
-
   const lpRoot   = document.getElementById('lp-root');
   const appShell = document.getElementById('app-shell');
 
-  if (isSignup) {
-    // --- SIGNUP / ONBOARDING MODE ---
-    if (appShell) appShell.style.display = '';
-    if (lpRoot)   lpRoot.style.display   = 'none';
-    // Ensure onboarding CSS body overflow:hidden applies
-    document.documentElement.classList.remove('lp-active');
-    document.body.classList.remove('lp-active');
+  // Default: Show landing page, hide onboarding app shell
+  if (lpRoot)   lpRoot.style.display   = '';
+  if (appShell) appShell.style.display = 'none';
+
+  // Enable scrolling for landing page
+  document.documentElement.classList.add('lp-active');
+  document.body.classList.add('lp-active');
+
+  // Initialize landing page
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLandingPage);
   } else {
-    // --- LANDING PAGE MODE ---
-    if (lpRoot)   lpRoot.style.display   = '';
-    if (appShell) appShell.style.display = 'none';
-    // Allow scroll for landing page
-    document.documentElement.classList.add('lp-active');
-    document.body.classList.add('lp-active');
-    // app.js is deferred to bottom of body, so DOM is ready. Init immediately.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initLandingPage);
-    } else {
-      initLandingPage();
-    }
-    // Do NOT fall through to the onboarding DOMContentLoaded handler below.
-    return;
+    initLandingPage();
   }
 })();
 
-
-// --- App Entry Initialization (only runs on /signup) ---
-document.addEventListener('DOMContentLoaded', () => {
-
-  // 0. SELF-HEALING BOOT: Unregister stale service workers + version check
-  // This runs synchronously before any render so users always get fresh JS/CSS.
-  (function bootHealthCheck() {
-    // (a) Silently unregister any service workers that may exist from past experiments.
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(regs => {
-        regs.forEach(reg => reg.unregister());
-      }).catch(() => {/* ignore */});
-    }
-
-    // (b) App version check — if version changed, force one clean reload.
-    // We guard with sessionStorage to prevent infinite reload loops.
-    try {
-      const storedVersion = localStorage.getItem(APP_VERSION_KEY);
-      const alreadyReloaded = sessionStorage.getItem('arovate_reloaded');
-
-      if (storedVersion !== APP_VERSION && !alreadyReloaded) {
-        // Mark reload as in-flight so we never loop.
-        sessionStorage.setItem('arovate_reloaded', '1');
-        // Write new version BEFORE reload so second boot sees it as current.
-        localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
-        // Hard reload — bypasses disk cache and fetches fresh HTML/JS/CSS.
-        window.location.reload(true);
-        return; // Stop current boot sequence; reloaded page will continue.
-      }
-
-      // Version matches (or already reloaded): clear the one-time reload flag
-      // and stamp the version so next deployment triggers correctly.
-      sessionStorage.removeItem('arovate_reloaded');
+// --- Self-Healing Boot & Version Check (Runs on page load) ---
+function lpBootHealthCheck() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(reg => reg.unregister());
+    }).catch(() => {/* ignore */});
+  }
+  try {
+    const storedVersion = localStorage.getItem(APP_VERSION_KEY);
+    const alreadyReloaded = sessionStorage.getItem('arovate_reloaded');
+    if (storedVersion !== APP_VERSION && !alreadyReloaded) {
+      sessionStorage.setItem('arovate_reloaded', '1');
       localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
-    } catch (e) {
-      // localStorage blocked (private browsing on some browsers) — safe to ignore.
+      window.location.reload(true);
+      return true; // Reloading
     }
-  })();
+    sessionStorage.removeItem('arovate_reloaded');
+    localStorage.setItem(APP_VERSION_KEY, APP_VERSION);
+  } catch (e) {}
+  return false;
+}
 
-  // Guard: only run onboarding init when the app shell is visible
+document.addEventListener('DOMContentLoaded', () => {
+  lpBootHealthCheck();
+});
+
+// --- Onboarding Starter ---
+// Triggered when clicking "Create Account" on the landing page
+function lpStartOnboarding() {
+  const lpRoot   = document.getElementById('lp-root');
   const appShell = document.getElementById('app-shell');
-  if (!appShell || appShell.style.display === 'none') return;
 
-  // 1. Initialize Canvas Background Engine
+  if (lpRoot)   lpRoot.style.display   = 'none';
+  if (appShell) appShell.style.display = '';
+
+  // Revert body styling to onboarding defaults (overflow: hidden, height: 100%)
+  document.documentElement.classList.remove('lp-active');
+  document.body.classList.remove('lp-active');
+
+  // Initialize Onboarding App
   initAmbientCanvas();
-  
-  // 2. Initialize database
   initDatabase()
     .then(() => {
-      // 3. Setup global application state
       initializeState();
-      
-      // 4. Bind static navigation and drawer actions
       registerNavigationListeners();
       initDBInspectorController();
-      
-      // 5. Render sign-in page
       renderActiveStep();
     })
     .catch(err => {
       console.error("IndexedDB initialisation failed, fallback in place:", err);
-      // Fallback without IndexedDB persistence (runs in memory)
       initializeState();
       registerNavigationListeners();
       initDBInspectorController();
       renderActiveStep();
     });
-});
+}
 
 
 // =============================================================================
