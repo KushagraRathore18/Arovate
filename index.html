@@ -1,15 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Arovate — Elevate Your Life</title>
-  <!-- Google Fonts: Outfit and Plus Jakarta Sans -->
+  <meta name="description" content="Arovate is a self-improvement and personal growth app built to help you reflect deeply on your habits, mindset, and focus areas, tracking your mental evolution over time.">
+  <!-- Google Fonts: Outfit and Plus Jakarta Sans (onboarding) + Inter & JetBrains Mono (landing) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Vanilla CSS Style Sheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Onboarding App CSS -->
   <link rel="stylesheet" href="styles.css">
+  <!-- Landing Page CSS (scoped under #lp-root) -->
+  <link rel="stylesheet" href="landing.css">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Service-Worker Poison Pill: unregister any stale SW on every load -->
@@ -22,108 +25,794 @@
   </script>
 </head>
 <body>
-  <!-- Ambient Liquid Gradient Background Canvas -->
-  <canvas id="ambient-canvas"></canvas>
-  <div class="ambient-overlay"></div>
 
-  <!-- Main Application Wrapper -->
-  <div class="app-wrapper">
-    <!-- Top Navigation and Progress Bar -->
-    <header class="app-header" id="app-header">
-      <div class="header-container">
-        <button id="btn-back" class="nav-btn" aria-label="Go Back">
-          <i data-lucide="chevron-left"></i>
-          <span>Back</span>
-        </button>
-        
-        <div class="progress-bar-wrapper">
-          <div class="progress-track">
-            <div id="progress-bar-fill" class="progress-fill"></div>
-          </div>
-          <span id="progress-text" class="progress-text">Step 1 of 4</span>
-        </div>
+  <!-- ===================================================================
+       LANDING PAGE (shown when path is "/")
+       Rendered entirely in vanilla HTML. Hidden when path is "/signup".
+       =================================================================== -->
+  <div id="lp-root" style="display:none;">
 
-        <button id="btn-reset" class="nav-btn reset-btn" aria-label="Reset Onboarding" title="Reset Onboarding">
-          <i data-lucide="rotate-ccw"></i>
+    <!-- Ambient background blobs -->
+    <div id="lp-ambient-blob-tl"></div>
+    <div id="lp-ambient-blob-mr"></div>
+    <div id="lp-ambient-blob-bl"></div>
+    <div id="lp-grid-overlay"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header id="lp-header">
+      <div id="lp-header-inner">
+
+        <!-- Logo -->
+        <a href="#" id="lp-logo-link">
+          <!-- Arovate SVG Logo -->
+          <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="transition:transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <defs>
+              <linearGradient id="lp-brand-a-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%"   stop-color="#d1bcff"/>
+                <stop offset="40%"  stop-color="#a78bfa"/>
+                <stop offset="100%" stop-color="#3b82f6"/>
+              </linearGradient>
+              <linearGradient id="lp-portal-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%"   stop-color="#e879f9"/>
+                <stop offset="100%" stop-color="#a78bfa"/>
+              </linearGradient>
+              <filter id="lp-rim-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <circle cx="50" cy="55" r="18" fill="#a78bfa" opacity="0.12" filter="url(#lp-rim-glow)"/>
+            <path d="M 50 12 C 53 12, 80 54, 85 76 C 81 77, 75 75, 68 65 C 61 54, 57 43, 50 43 C 43 43, 39 54, 32 65 C 25 75, 19 77, 15 76 C 20 54, 47 12, 50 12 Z" fill="url(#lp-brand-a-grad)"/>
+            <path d="M 46.5 56 L 46.5 50.5 C 46.5 48.5, 53.5 48.5, 53.5 50.5 L 53.5 56 Z" fill="url(#lp-portal-grad)" opacity="0.95"/>
+            <path d="M 47.5 56 C 47.5 56, 51.5 64, 44.5 69 C 36 75, 41 79, 61 79 C 69 79, 59 74.5, 54.5 69 C 50.5 64, 52.5 56, 52.5 56 Z" fill="url(#lp-brand-a-grad)" opacity="0.9"/>
+            <path d="M 47.5 56 C 47.5 56, 51.5 64, 44.5 69 C 36 75, 41 79, 61 79 C 69 79, 59 74.5, 54.5 69 C 50.5 64, 52.5 56, 52.5 56 Z" stroke="#e879f9" stroke-width="0.75" stroke-opacity="0.5" fill="none"/>
+          </svg>
+          <span id="lp-logo-wordmark">Arovate</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav id="lp-desktop-nav">
+          <a href="#lp-about">About</a>
+          <a href="#lp-features">Features</a>
+          <a href="#lp-focus-areas">Focus Areas</a>
+          <a href="#lp-process">How it Works</a>
+          <a href="#lp-contact">Contact</a>
+        </nav>
+
+        <!-- Desktop CTA -->
+        <a href="/signup" id="lp-header-cta-btn">Create Account</a>
+
+        <!-- Mobile Hamburger -->
+        <button id="lp-mobile-toggle" aria-label="Toggle mobile menu">
+          <svg id="lp-icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="lp-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
     </header>
 
-    <!-- Dynamic Content Container -->
-    <main id="app-container" class="app-container">
-      <!-- Active Question Card / Sign-In Screen will be injected here dynamically -->
-    </main>
-  </div>
+    <!-- Mobile Nav Drawer -->
+    <nav id="lp-mobile-nav">
+      <a href="#lp-about"       onclick="lpCloseMobileMenu()">About</a>
+      <a href="#lp-features"    onclick="lpCloseMobileMenu()">Features</a>
+      <a href="#lp-focus-areas" onclick="lpCloseMobileMenu()">Focus Areas</a>
+      <a href="#lp-process"     onclick="lpCloseMobileMenu()">How it Works</a>
+      <a href="#lp-contact"     onclick="lpCloseMobileMenu()">Contact</a>
+      <a href="/signup" id="lp-mobile-cta" onclick="lpCloseMobileMenu()">Create Account</a>
+    </nav>
 
-  <!-- Live Developer Database Inspector Panel -->
-  <div id="db-inspector" class="db-inspector">
-    <div class="db-inspector-header">
-      <div class="db-title-group">
-        <i data-lucide="database"></i>
-        <h3>Arovate Database Inspector</h3>
-      </div>
-      <button id="btn-db-close" class="btn-db-close" aria-label="Close Inspector">
-        <i data-lucide="x"></i>
-      </button>
-    </div>
-    
-    <div class="db-inspector-body">
-      <div class="db-actions">
-        <button id="btn-db-refresh" class="db-action-btn secondary">
-          <i data-lucide="refresh-cw"></i> Refresh
-        </button>
-        <button id="btn-db-clear" class="db-action-btn danger">
-          <i data-lucide="trash-2"></i> Clear Database
-        </button>
-      </div>
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main id="lp-main">
 
-      <div class="db-stats">
-        <span class="db-stat-item">Total Sessions: <strong id="db-stat-count">0</strong></span>
-        <span class="db-stat-item">Storage Engine: <strong>IndexedDB (v1)</strong></span>
-      </div>
+      <!-- DEV NOTICE BANNER -->
+      <section style="padding-top:1.5rem;">
+        <div id="lp-dev-banner" class="lp-glass lp-glow-text">
+          <div id="lp-dev-banner-inner">
+            <div id="lp-dev-icon-wrap">
+              <!-- Info icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </div>
+            <div>
+              <p id="lp-dev-notice-1">Arovate is currently under development. Some features may be incomplete, experimental, or changed as the product evolves.</p>
+              <p id="lp-dev-notice-2">Go ahead and explore freely — answer, test, and try things out. Nothing you enter here is permanent for now.</p>
+            </div>
+          </div>
+          <div id="lp-dev-badge">
+            <span id="lp-dev-badge-dot"></span>
+            Active Sandbox
+          </div>
+        </div>
+      </section>
 
-      <div class="db-table-wrapper">
-        <table class="db-table" id="db-records-table">
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Name</th>
-              <th>Archetype</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="db-records-body">
-            <!-- Dynamically populated rows -->
-            <tr class="db-empty-row">
-              <td colspan="4">No sessions stored in database yet.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- ============ HERO SECTION ============ -->
+      <section id="lp-hero">
 
-      <!-- JSON Detail Section -->
-      <div id="db-json-container" class="db-json-container">
-        <div class="db-json-header">
-          <span>Active Record JSON:</span>
-          <button id="btn-db-copy-json" class="btn-copy-json" title="Copy JSON">
-            <i data-lucide="copy"></i> Copy
+        <!-- Left: Text -->
+        <div id="lp-hero-text">
+
+          <!-- Brand lockup -->
+          <div id="lp-hero-brand-box">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="lp-hero-logo-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+                    <stop offset="0%"   stop-color="#d1bcff"/>
+                    <stop offset="40%"  stop-color="#a78bfa"/>
+                    <stop offset="100%" stop-color="#3b82f6"/>
+                  </linearGradient>
+                  <linearGradient id="lp-hero-portal-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+                    <stop offset="0%"   stop-color="#e879f9"/>
+                    <stop offset="100%" stop-color="#a78bfa"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="55" r="18" fill="#a78bfa" opacity="0.12"/>
+                <path d="M 50 12 C 53 12, 80 54, 85 76 C 81 77, 75 75, 68 65 C 61 54, 57 43, 50 43 C 43 43, 39 54, 32 65 C 25 75, 19 77, 15 76 C 20 54, 47 12, 50 12 Z" fill="url(#lp-hero-logo-grad)"/>
+                <path d="M 46.5 56 L 46.5 50.5 C 46.5 48.5, 53.5 48.5, 53.5 50.5 L 53.5 56 Z" fill="url(#lp-hero-portal-grad)" opacity="0.95"/>
+                <path d="M 47.5 56 C 47.5 56, 51.5 64, 44.5 69 C 36 75, 41 79, 61 79 C 69 79, 59 74.5, 54.5 69 C 50.5 64, 52.5 56, 52.5 56 Z" fill="url(#lp-hero-logo-grad)" opacity="0.9"/>
+              </svg>
+              <span id="lp-hero-brand-name">Arovate</span>
+            </div>
+            <span id="lp-hero-brand-tagline">Elevate. Evolve. Become.</span>
+          </div>
+
+          <!-- Early Access chip -->
+          <div id="lp-early-access-chip">
+            <span></span>
+            Early Access Phase
+          </div>
+
+          <!-- Headline -->
+          <h1 id="lp-hero-h1">
+            Understand your life.
+            <span class="lp-gradient-line">Improve with direction.</span>
+          </h1>
+
+          <!-- Description -->
+          <p id="lp-hero-desc">
+            Arovate is a self-improvement and personal growth app under development, built to help you reflect deeply on your habits, mindset, and focus areas, tracking your mental evolution over time in a secure, private space.
+          </p>
+
+          <!-- Action Buttons -->
+          <div id="lp-hero-actions">
+            <a href="/signup" class="lp-btn-primary" id="lp-hero-create-btn">
+              Create Account
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="mailto:support@arovate.com" class="lp-btn-secondary" id="lp-hero-support-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+              Contact Support
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Orbit Graphic -->
+        <div id="lp-hero-visual">
+          <div id="lp-orbit-wrap">
+            <div id="lp-orbit-glow-1"></div>
+            <div id="lp-orbit-glow-2"></div>
+            <div id="lp-orbit-svg-wrap">
+              <svg viewBox="0 0 400 400" style="width:100%;height:100%;overflow:visible;">
+                <defs>
+                  <radialGradient id="lp-core-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stop-color="#ffffff"/>
+                    <stop offset="30%"  stop-color="#e9ddff"/>
+                    <stop offset="70%"  stop-color="#a78bfa" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#0b1326" stop-opacity="0"/>
+                  </radialGradient>
+                  <filter id="lp-super-glow" x="-150%" y="-150%" width="400%" height="400%">
+                    <feGaussianBlur stdDeviation="8" result="blur"/>
+                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                  </filter>
+                  <linearGradient id="lp-vc-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%"   stop-color="#d0bcff"/>
+                    <stop offset="50%"  stop-color="#4cd7f6"/>
+                    <stop offset="100%" stop-color="#3b82f6"/>
+                  </linearGradient>
+                  <linearGradient id="lp-ra-grad" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="#fb7185"/>
+                    <stop offset="50%"  stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#4edea3"/>
+                  </linearGradient>
+                </defs>
+                <!-- Grid lines -->
+                <g opacity="0.08" stroke="#ffffff" stroke-width="0.5">
+                  <circle cx="200" cy="200" r="180" fill="none" stroke-dasharray="2 6"/>
+                  <circle cx="200" cy="200" r="140" fill="none" stroke-dasharray="1 4"/>
+                  <circle cx="200" cy="200" r="90"  fill="none" stroke-dasharray="3 3"/>
+                  <line x1="20" y1="200" x2="380" y2="200" stroke-dasharray="1 5"/>
+                  <line x1="200" y1="20" x2="200" y2="380" stroke-dasharray="1 5"/>
+                </g>
+                <!-- Orbit rings -->
+                <ellipse cx="200" cy="200" rx="110" ry="55"  transform="rotate(-25 200 200)" fill="none" stroke="url(#lp-vc-grad)" stroke-width="1.25" opacity="0.25"/>
+                <ellipse cx="200" cy="200" rx="145" ry="75"  transform="rotate(35 200 200)"  fill="none" stroke="url(#lp-ra-grad)" stroke-width="1.25" opacity="0.25"/>
+                <ellipse cx="200" cy="200" rx="175" ry="90"  transform="rotate(-55 200 200)" fill="none" stroke="url(#lp-vc-grad)" stroke-width="1" stroke-dasharray="6 4" opacity="0.18"/>
+                <!-- Core -->
+                <circle cx="200" cy="200" r="48" fill="url(#lp-core-glow)" opacity="0.9"/>
+                <circle cx="200" cy="200" r="10" fill="#ffffff" filter="url(#lp-super-glow)"/>
+                <!-- Orbit nodes (CSS-animated via SVG animateTransform) -->
+                <!-- Node 1: Focus (Violet) — inner orbit CW 22s -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="22s" repeatCount="indefinite"/>
+                  <g transform="translate(200,200) rotate(-25) translate(110,0) rotate(25) translate(-200,-200)">
+                    <circle cx="200" cy="200" r="13" fill="#0b1326" stroke="#d0bcff" stroke-width="2.5" filter="url(#lp-super-glow)"/>
+                    <circle cx="200" cy="200" r="5"  fill="#d0bcff"/>
+                  </g>
+                </g>
+                <!-- Node 2: Health (Green) — middle orbit CCW 28s -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="-360 200 200" dur="28s" repeatCount="indefinite"/>
+                  <g transform="translate(200,200) rotate(35) translate(145,0) rotate(-35) translate(-200,-200)">
+                    <circle cx="200" cy="200" r="13" fill="#0b1326" stroke="#4edea3" stroke-width="2.5" filter="url(#lp-super-glow)"/>
+                    <circle cx="200" cy="200" r="5"  fill="#4edea3"/>
+                  </g>
+                </g>
+                <!-- Node 3: Education (Cyan) — inner orbit CW 18s -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="180 200 200" to="540 200 200" dur="18s" repeatCount="indefinite"/>
+                  <g transform="translate(200,200) rotate(-205) translate(110,0) rotate(205) translate(-200,-200)">
+                    <circle cx="200" cy="200" r="13" fill="#0b1326" stroke="#4cd7f6" stroke-width="2.5" filter="url(#lp-super-glow)"/>
+                    <circle cx="200" cy="200" r="5"  fill="#4cd7f6"/>
+                  </g>
+                </g>
+                <!-- Node 4: Relationships (Rose) — middle orbit CCW 32s -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="180 200 200" to="-180 200 200" dur="32s" repeatCount="indefinite"/>
+                  <g transform="translate(200,200) rotate(215) translate(145,0) rotate(-215) translate(-200,-200)">
+                    <circle cx="200" cy="200" r="13" fill="#0b1326" stroke="#fb7185" stroke-width="2.5" filter="url(#lp-super-glow)"/>
+                    <circle cx="200" cy="200" r="5"  fill="#fb7185"/>
+                  </g>
+                </g>
+                <!-- Node 5: Peace (Blue) — outer orbit CW 40s -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="40s" repeatCount="indefinite"/>
+                  <g transform="translate(200,200) rotate(-55) translate(175,0) rotate(55) translate(-200,-200)">
+                    <circle cx="200" cy="200" r="13" fill="#0b1326" stroke="#60a5fa" stroke-width="2.5" filter="url(#lp-super-glow)"/>
+                    <circle cx="200" cy="200" r="5"  fill="#60a5fa"/>
+                  </g>
+                </g>
+                <!-- Node 6: Motivation (Amber) — outer orbit CCW 25s -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="90 200 200" to="-270 200 200" dur="25s" repeatCount="indefinite"/>
+                  <g transform="translate(200,200) rotate(125) translate(175,0) rotate(-125) translate(-200,-200)">
+                    <circle cx="200" cy="200" r="13" fill="#0b1326" stroke="#f59e0b" stroke-width="2.5" filter="url(#lp-super-glow)"/>
+                    <circle cx="200" cy="200" r="5"  fill="#f59e0b"/>
+                  </g>
+                </g>
+              </svg>
+
+              <!-- Floating ambient tags -->
+              <div class="lp-float-badge" style="top:10%;left:8%;color:#c4b5fd;border-color:rgba(139,92,246,0.2);">MINDSET</div>
+              <div class="lp-float-badge" style="bottom:12%;left:4%;color:#67e8f9;border-color:rgba(76,215,246,0.2);">HABITS</div>
+              <div class="lp-float-badge" style="bottom:18%;right:8%;color:#6ee7b7;border-color:rgba(78,222,163,0.2);">ALIGNMENT</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ABOUT / FEATURES SECTION ============ -->
+      <section id="lp-about" class="lp-section lp-section-divider">
+        <div id="lp-about-grid">
+
+          <!-- Left: Info + Tabs -->
+          <div id="lp-about-info">
+            <h2>What is Arovate?</h2>
+            <p>
+              Arovate provides a highly structured, calm environment for guided self-reflection. By mapping out different core areas of your life, you can confidently identify negative friction, reinforce positive intentions, and securely track your personal evolution over time.
+            </p>
+
+            <!-- Feature Tabs -->
+            <div id="lp-features" style="width:100%;margin-bottom:2rem;">
+              <div id="lp-tabs-row">
+                <button class="lp-tab-btn lp-active" data-tab="reflect" id="lp-tab-btn-reflect" onclick="lpSwitchTab('reflect')">
+                  <!-- MessageSquareQuote icon -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>
+                  Reflect
+                </button>
+                <button class="lp-tab-btn" data-tab="identify" id="lp-tab-btn-identify" onclick="lpSwitchTab('identify')">
+                  <!-- LineChart icon -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  Identify
+                </button>
+                <button class="lp-tab-btn" data-tab="improve" id="lp-tab-btn-improve" onclick="lpSwitchTab('improve')">
+                  <!-- TrendingUp icon -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                  Improve
+                </button>
+              </div>
+
+              <!-- Tab Card -->
+              <div id="lp-tab-card">
+                <h4 id="lp-tab-card-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="lp-tab-card-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>
+                  <span id="lp-tab-card-title-text">Reflect Journey</span>
+                </h4>
+                <p id="lp-tab-card-desc">Arovate provides non-judgmental, structured prompts that invite deep reflection on your daily life, routines, and inner thoughts, opening a pathway to true self-discovery.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Clarity Map -->
+          <div id="lp-about-visual">
+            <div class="lp-clarity-map-wrap">
+              <div id="lp-clarity-overlay">CLARITY MAP v0.4</div>
+              <svg viewBox="0 0 500 300" style="width:100%;height:100%;overflow:visible;">
+                <defs>
+                  <linearGradient id="lp-glass-edge" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.15"/>
+                    <stop offset="50%"  stop-color="#ffffff" stop-opacity="0.03"/>
+                    <stop offset="100%" stop-color="#4cd7f6" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="lp-path-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="#a078ff"/>
+                    <stop offset="50%"  stop-color="#4cd7f6"/>
+                    <stop offset="100%" stop-color="#4edea3"/>
+                  </linearGradient>
+                  <filter id="lp-path-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="5" result="blur"/>
+                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                  </filter>
+                </defs>
+                <!-- Grid lines -->
+                <g opacity="0.1" stroke="#ffffff" stroke-width="0.5">
+                  <line x1="50" y1="210" x2="450" y2="210"/>
+                  <line x1="50" y1="180" x2="450" y2="180"/>
+                  <line x1="50" y1="150" x2="450" y2="150"/>
+                  <line x1="100" y1="80"  x2="100" y2="250"/>
+                  <line x1="200" y1="80"  x2="200" y2="250"/>
+                  <line x1="300" y1="80"  x2="300" y2="250"/>
+                  <line x1="400" y1="80"  x2="400" y2="250"/>
+                </g>
+                <!-- 3D glass plate -->
+                <polygon points="60,210 440,210 400,90 100,90" fill="#060e20" opacity="0.6"/>
+                <polygon points="60,200 440,200 400,80 100,80" fill="rgba(19,27,46,0.45)" stroke="url(#lp-glass-edge)" stroke-width="1.5"/>
+                <polygon points="70,195 430,195 390,85 110,85" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                <polygon points="60,200 440,200 440,205 60,205" fill="rgba(76,215,246,0.2)" stroke="rgba(76,215,246,0.3)" stroke-width="0.5"/>
+                <!-- Path trail -->
+                <path d="M 120 140 Q 180 100 240 150 T 360 110" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 120 140 Q 180 100 240 150 T 360 110" fill="none" stroke="url(#lp-path-grad)" stroke-width="4" stroke-linecap="round" filter="url(#lp-path-glow)"/>
+                <path d="M 120 140 Q 180 100 240 150 T 360 110" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="20 120" filter="url(#lp-path-glow)">
+                  <animate attributeName="stroke-dashoffset" values="200;0;-200" dur="4s" repeatCount="indefinite"/>
+                </path>
+                <!-- Route points -->
+                <circle cx="120" cy="140" r="8"  fill="#131b2e" stroke="#a078ff" stroke-width="2"/>
+                <circle cx="120" cy="140" r="3"  fill="#a078ff"/>
+                <circle cx="240" cy="150" r="8"  fill="#131b2e" stroke="#4cd7f6" stroke-width="2"/>
+                <circle cx="240" cy="150" r="3"  fill="#4cd7f6">
+                  <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="360" cy="110" r="10" fill="#131b2e" stroke="#4edea3" stroke-width="2" filter="url(#lp-path-glow)"/>
+                <circle cx="360" cy="110" r="4"  fill="#4edea3"/>
+                <!-- Labels -->
+                <g>
+                  <rect x="70" y="220" width="70" height="20" rx="4" fill="rgba(19,27,46,0.8)" stroke="rgba(160,120,255,0.3)" stroke-width="1"/>
+                  <text x="105" y="233" fill="#dae2fd" font-size="9" font-family="'JetBrains Mono',monospace" text-anchor="middle" letter-spacing="1">START</text>
+                  <line x1="105" y1="220" x2="120" y2="148" stroke="rgba(160,120,255,0.4)" stroke-width="0.75" stroke-dasharray="2 2"/>
+                </g>
+                <g>
+                  <rect x="340" y="40" width="90" height="20" rx="4" fill="rgba(19,27,46,0.8)" stroke="rgba(78,222,163,0.3)" stroke-width="1"/>
+                  <text x="385" y="53" fill="#4edea3" font-size="9" font-family="'JetBrains Mono',monospace" text-anchor="middle" letter-spacing="1">DIRECTION</text>
+                  <line x1="385" y1="60" x2="360" y2="100" stroke="rgba(78,222,163,0.4)" stroke-width="0.75" stroke-dasharray="2 2"/>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Reflect / Identify / Improve triad -->
+            <div id="lp-triad">
+              <div class="lp-triad-card">
+                <div class="lp-triad-icon" style="background:rgba(139,92,246,0.1);color:#d0bcff;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span class="lp-triad-label">Reflect</span>
+              </div>
+              <div class="lp-triad-card">
+                <div class="lp-triad-icon" style="background:rgba(76,215,246,0.1);color:#4cd7f6;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <span class="lp-triad-label">Identify</span>
+              </div>
+              <div class="lp-triad-card">
+                <div class="lp-triad-icon" style="background:rgba(78,222,163,0.1);color:#4edea3;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                </div>
+                <span class="lp-triad-label">Improve</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INTERACTIVE REFLECTION SANDBOX ============ -->
+      <section class="lp-section">
+        <div id="lp-sandbox-wrap" class="lp-glow-text">
+
+          <!-- Header -->
+          <div id="lp-sandbox-hdr">
+            <div id="lp-sandbox-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <h3>Interactive Reflection Sandbox</h3>
+              <p>Answer the sample prompt below to try out Arovate&apos;s reflection flow.</p>
+            </div>
+          </div>
+
+          <!-- Prompt body -->
+          <div id="lp-sandbox-body">
+            <div id="lp-sandbox-prompt-header">
+              <span id="lp-sandbox-prompt-label">Guided Reflection Prompt</span>
+              <button type="button" id="lp-shuffle-btn" onclick="lpShufflePrompt()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+                Shuffle Prompt
+              </button>
+            </div>
+            <p id="lp-sandbox-prompt-text">"What drained most of your energy today, and why do you think it affected you?"</p>
+
+            <textarea id="lp-sandbox-textarea" rows="3" maxlength="240" placeholder="Reflect freely here... (e.g., Infinite scrolling social feeds because of fatigue after my afternoon sprint...)"></textarea>
+            <div id="lp-char-count">0/240</div>
+
+            <div id="lp-sandbox-actions">
+              <span id="lp-sandbox-notice">ⓘ This reflection is client-only. Nothing is stored permanently.</span>
+              <div id="lp-sandbox-btns">
+                <button type="button" id="lp-sandbox-reset-btn" onclick="lpSandboxReset()">Reset</button>
+                <button type="button" id="lp-sandbox-submit-btn" onclick="lpSandboxSubmit()" disabled>Synthesize Reflection</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading state -->
+          <div id="lp-sandbox-loading">
+            <div id="lp-loading-spinner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <p id="lp-loading-text">MAPPING PATTERNS &amp; PATHWAYS</p>
+          </div>
+
+          <!-- Result state -->
+          <div id="lp-sandbox-result">
+            <div id="lp-result-header">
+              <span id="lp-result-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Synthesis Analysis
+              </span>
+              <div id="lp-result-tags"></div>
+            </div>
+            <p id="lp-result-text"></p>
+            <div id="lp-result-footer">
+              <p>Like this flow? Prepare your focus journey:</p>
+              <a href="/signup" id="lp-result-cta">
+                Pre-Register Now
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FOCUS AREAS SECTION ============ -->
+      <section id="lp-focus-areas" class="lp-section lp-section-divider">
+        <div class="lp-section-header">
+          <h2>Core Areas of Focus</h2>
+          <p>Holistic self-improvement and genuine personal growth require careful attention to the multiple dimensions of life.</p>
+        </div>
+        <div id="lp-focus-grid">
+
+          <!-- Health -->
+          <div class="lp-focus-card lp-green">
+            <div class="lp-focus-card-glow">
+              <div class="lp-focus-card-glow-blob lp-glow-green"></div>
+              <svg class="lp-focus-card-glow-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke-width="0.5" stroke-dasharray="3 3"/><circle cx="50" cy="50" r="30" stroke-width="0.5"/><circle cx="50" cy="50" r="15" stroke-width="0.5" stroke-dasharray="1 1"/></svg>
+            </div>
+            <div class="lp-focus-icon lp-icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <h3>Health</h3>
+            <p>Understand your lifestyle, recovery, and energy patterns over time.</p>
+            <span class="lp-focus-tag lp-tag-green">Health Dimension</span>
+          </div>
+
+          <!-- Focus -->
+          <div class="lp-focus-card lp-violet">
+            <div class="lp-focus-card-glow">
+              <div class="lp-focus-card-glow-blob lp-glow-violet"></div>
+              <svg class="lp-focus-card-glow-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke-width="0.5" stroke-dasharray="3 3"/><circle cx="50" cy="50" r="30" stroke-width="0.5"/><circle cx="50" cy="50" r="15" stroke-width="0.5" stroke-dasharray="1 1"/></svg>
+            </div>
+            <div class="lp-focus-icon lp-icon-violet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+            <h3>Focus</h3>
+            <p>Recognize major distractions and build robust mental direction.</p>
+            <span class="lp-focus-tag lp-tag-violet">Focus Dimension</span>
+          </div>
+
+          <!-- Education -->
+          <div class="lp-focus-card lp-cyan">
+            <div class="lp-focus-card-glow">
+              <div class="lp-focus-card-glow-blob lp-glow-cyan"></div>
+              <svg class="lp-focus-card-glow-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke-width="0.5" stroke-dasharray="3 3"/><circle cx="50" cy="50" r="30" stroke-width="0.5"/><circle cx="50" cy="50" r="15" stroke-width="0.5" stroke-dasharray="1 1"/></svg>
+            </div>
+            <div class="lp-focus-icon lp-icon-cyan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <h3>Education</h3>
+            <p>Stay consistently aligned with learning, development, and intellectual growth.</p>
+            <span class="lp-focus-tag lp-tag-cyan">Education Dimension</span>
+          </div>
+
+          <!-- Relationships -->
+          <div class="lp-focus-card lp-rose">
+            <div class="lp-focus-card-glow">
+              <div class="lp-focus-card-glow-blob lp-glow-rose"></div>
+              <svg class="lp-focus-card-glow-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke-width="0.5" stroke-dasharray="3 3"/><circle cx="50" cy="50" r="30" stroke-width="0.5"/><circle cx="50" cy="50" r="15" stroke-width="0.5" stroke-dasharray="1 1"/></svg>
+            </div>
+            <div class="lp-focus-icon lp-icon-rose">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3>Relationships</h3>
+            <p>Reflect carefully on connection, community, and social balance.</p>
+            <span class="lp-focus-tag lp-tag-rose">Relationships Dimension</span>
+          </div>
+
+          <!-- Peace -->
+          <div class="lp-focus-card lp-blue">
+            <div class="lp-focus-card-glow">
+              <div class="lp-focus-card-glow-blob lp-glow-blue"></div>
+              <svg class="lp-focus-card-glow-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke-width="0.5" stroke-dasharray="3 3"/><circle cx="50" cy="50" r="30" stroke-width="0.5"/><circle cx="50" cy="50" r="15" stroke-width="0.5" stroke-dasharray="1 1"/></svg>
+            </div>
+            <div class="lp-focus-icon lp-icon-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+            </div>
+            <h3>Peace</h3>
+            <p>Build profound clarity around stress factors and personal mental space.</p>
+            <span class="lp-focus-tag lp-tag-blue">Peace Dimension</span>
+          </div>
+
+          <!-- Motivation -->
+          <div class="lp-focus-card lp-amber">
+            <div class="lp-focus-card-glow">
+              <div class="lp-focus-card-glow-blob lp-glow-amber"></div>
+              <svg class="lp-focus-card-glow-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke-width="0.5" stroke-dasharray="3 3"/><circle cx="50" cy="50" r="30" stroke-width="0.5"/><circle cx="50" cy="50" r="15" stroke-width="0.5" stroke-dasharray="1 1"/></svg>
+            </div>
+            <div class="lp-focus-icon lp-icon-amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3>Motivation</h3>
+            <p>Find, track, and amplify what keeps you moving forward every day.</p>
+            <span class="lp-focus-tag lp-tag-amber">Motivation Dimension</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ THE PROCESS SECTION ============ -->
+      <section id="lp-process" class="lp-section lp-section-divider">
+        <div class="lp-section-header">
+          <h2>The Process</h2>
+          <p>Arovate operates on a simple, repeating three-stage cycle designed to maximize personal direction.</p>
+        </div>
+        <div id="lp-process-steps" style="position:relative;">
+          <div id="lp-process-timeline"></div>
+
+          <!-- Step 1 -->
+          <div class="lp-process-step">
+            <div class="lp-step-icon-frame" style="box-shadow:0 0 25px rgba(160,120,255,0.4);border-color:rgba(160,120,255,0.3);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span class="lp-step-number">1</span>
+            </div>
+            <span class="lp-step-label">Step 1</span>
+            <h3>Guided Questions</h3>
+            <p>Engage with calm, non-evaluative prompts designed to bring unconscious routines and behaviors into clarity.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="lp-process-step">
+            <div class="lp-step-icon-frame" style="box-shadow:0 0 25px rgba(76,215,246,0.4);border-color:rgba(76,215,246,0.3);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span class="lp-step-number">2</span>
+            </div>
+            <span class="lp-step-label">Step 2</span>
+            <h3>Current State</h3>
+            <p>Observe a beautiful, unified snapshot of your current balance, stress levels, and habit indicators.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="lp-process-step">
+            <div class="lp-step-icon-frame" style="box-shadow:0 0 25px rgba(78,222,163,0.4);border-color:rgba(78,222,163,0.3);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              <span class="lp-step-number">3</span>
+            </div>
+            <span class="lp-step-label">Step 3</span>
+            <h3>Move with Direction</h3>
+            <p>Take actionable, bite-sized directions tailored directly to alignment and course corrections in your life.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CONTACT SECTION ============ -->
+      <section id="lp-contact" class="lp-section lp-section-divider">
+        <div class="lp-section-header">
+          <h2>Get in Touch</h2>
+          <p>We look forward to hearing your insights, testing experiences, and feature proposals.</p>
+        </div>
+        <div id="lp-contact-grid">
+
+          <!-- Support Card -->
+          <div class="lp-contact-card">
+            <div class="lp-contact-icon" style="background:rgba(76,215,246,0.1);color:#4cd7f6;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+            </div>
+            <h3>Support</h3>
+            <p>Need support or have specific technical questions during early access?</p>
+            <a href="mailto:support@arovate.com" id="lp-contact-support-btn" class="lp-contact-btn lp-contact-btn-cyan">
+              support@arovate.com
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+
+          <!-- Founder Card -->
+          <div class="lp-contact-card">
+            <div class="lp-contact-icon" style="background:rgba(208,188,255,0.1);color:#d0bcff;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h3>Founder</h3>
+            <p>Have strategic advice or want to connect with founder Kushagra Rathore directly?</p>
+            <a href="mailto:kushagra@arovate.com" id="lp-contact-founder-btn" class="lp-contact-btn lp-contact-btn-violet">
+              kushagra@arovate.com
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </main><!-- /#lp-main -->
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer id="lp-footer">
+      <div id="lp-footer-inner">
+
+        <div id="lp-footer-logo-group">
+          <!-- Footer logo -->
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="lp-footer-logo-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+                  <stop offset="0%"   stop-color="#d1bcff"/>
+                  <stop offset="40%"  stop-color="#a78bfa"/>
+                  <stop offset="100%" stop-color="#3b82f6"/>
+                </linearGradient>
+                <linearGradient id="lp-footer-portal-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+                  <stop offset="0%"   stop-color="#e879f9"/>
+                  <stop offset="100%" stop-color="#a78bfa"/>
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="55" r="18" fill="#a78bfa" opacity="0.12"/>
+              <path d="M 50 12 C 53 12, 80 54, 85 76 C 81 77, 75 75, 68 65 C 61 54, 57 43, 50 43 C 43 43, 39 54, 32 65 C 25 75, 19 77, 15 76 C 20 54, 47 12, 50 12 Z" fill="url(#lp-footer-logo-grad)"/>
+              <path d="M 46.5 56 L 46.5 50.5 C 46.5 48.5, 53.5 48.5, 53.5 50.5 L 53.5 56 Z" fill="url(#lp-footer-portal-grad)" opacity="0.95"/>
+              <path d="M 47.5 56 C 47.5 56, 51.5 64, 44.5 69 C 36 75, 41 79, 61 79 C 69 79, 59 74.5, 54.5 69 C 50.5 64, 52.5 56, 52.5 56 Z" fill="url(#lp-footer-logo-grad)" opacity="0.9"/>
+            </svg>
+          </div>
+          <p id="lp-footer-copy">&copy; 2024 Arovate. The Personal Growth Operating System.</p>
+          <p id="lp-footer-motto">Elevate. Evolve. Become.</p>
+        </div>
+
+        <div id="lp-footer-links">
+          <a href="#lp-about">Privacy Policy</a>
+          <a href="#lp-about">Terms of Service</a>
+          <a href="#lp-about">Cookie Policy</a>
+          <a href="mailto:support@arovate.com" id="lp-footer-support-link">Support</a>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /#lp-root -->
+
+
+  <!-- ===================================================================
+       ONBOARDING APP SHELL (shown when path is "/signup")
+       Identical to original — app.js manages all rendering inside here.
+       =================================================================== -->
+  <div id="app-shell" style="display:none;">
+    <!-- Ambient Liquid Gradient Background Canvas -->
+    <canvas id="ambient-canvas"></canvas>
+    <div class="ambient-overlay"></div>
+
+    <!-- Main Application Wrapper -->
+    <div class="app-wrapper">
+      <!-- Top Navigation and Progress Bar -->
+      <header class="app-header" id="app-header">
+        <div class="header-container">
+          <button id="btn-back" class="nav-btn" aria-label="Go Back">
+            <i data-lucide="chevron-left"></i>
+            <span>Back</span>
+          </button>
+          
+          <div class="progress-bar-wrapper">
+            <div class="progress-track">
+              <div id="progress-bar-fill" class="progress-fill"></div>
+            </div>
+            <span id="progress-text" class="progress-text">Step 1 of 4</span>
+          </div>
+
+          <button id="btn-reset" class="nav-btn reset-btn" aria-label="Reset Onboarding" title="Reset Onboarding">
+            <i data-lucide="rotate-ccw"></i>
           </button>
         </div>
-        <pre class="db-json-pre"><code id="db-json-code">// Select a session row above to inspect the fully branched database structure...</code></pre>
+      </header>
+
+      <!-- Dynamic Content Container -->
+      <main id="app-container" class="app-container">
+        <!-- Active Question Card / Sign-In Screen will be injected here dynamically -->
+      </main>
+    </div>
+
+    <!-- Live Developer Database Inspector Panel -->
+    <div id="db-inspector" class="db-inspector">
+      <div class="db-inspector-header">
+        <div class="db-title-group">
+          <i data-lucide="database"></i>
+          <h3>Arovate Database Inspector</h3>
+        </div>
+        <button id="btn-db-close" class="btn-db-close" aria-label="Close Inspector">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <div class="db-inspector-body">
+        <div class="db-actions">
+          <button id="btn-db-refresh" class="db-action-btn secondary">
+            <i data-lucide="refresh-cw"></i> Refresh
+          </button>
+          <button id="btn-db-clear" class="db-action-btn danger">
+            <i data-lucide="trash-2"></i> Clear Database
+          </button>
+        </div>
+
+        <div class="db-stats">
+          <span class="db-stat-item">Total Sessions: <strong id="db-stat-count">0</strong></span>
+          <span class="db-stat-item">Storage Engine: <strong>IndexedDB (v1)</strong></span>
+        </div>
+
+        <div class="db-table-wrapper">
+          <table class="db-table" id="db-records-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Name</th>
+                <th>Archetype</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="db-records-body">
+              <!-- Dynamically populated rows -->
+              <tr class="db-empty-row">
+                <td colspan="4">No sessions stored in database yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- JSON Detail Section -->
+        <div id="db-json-container" class="db-json-container">
+          <div class="db-json-header">
+            <span>Active Record JSON:</span>
+            <button id="btn-db-copy-json" class="btn-copy-json" title="Copy JSON">
+              <i data-lucide="copy"></i> Copy
+            </button>
+          </div>
+          <pre class="db-json-pre"><code id="db-json-code">// Select a session row above to inspect the fully branched database structure...</code></pre>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Floating Database Toggle Button -->
-  <button id="btn-db-toggle" class="btn-db-toggle" title="Toggle Developer Database Inspector">
-    <div class="badge-wrapper">
-      <i data-lucide="database"></i>
-      <span class="db-badge" id="db-badge">0</span>
-    </div>
-    <span class="btn-db-toggle-label">Database Inspector</span>
-  </button>
+    <!-- Floating Database Toggle Button -->
+    <button id="btn-db-toggle" class="btn-db-toggle" title="Toggle Developer Database Inspector">
+      <div class="badge-wrapper">
+        <i data-lucide="database"></i>
+        <span class="db-badge" id="db-badge">0</span>
+      </div>
+      <span class="btn-db-toggle-label">Database Inspector</span>
+    </button>
+  </div><!-- /#app-shell -->
 
-  <!-- ES6+ Script -->
+
+  <!-- ES6+ Script (handles routing + all app logic) -->
   <script src="app.js"></script>
 </body>
 </html>

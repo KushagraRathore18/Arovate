@@ -1,4 +1,4 @@
-﻿// --- Build Version (bump this string on every deployment to force cache refresh) ---
+// --- Build Version (bump this string on every deployment to force cache refresh) ---
 const APP_VERSION = '2026-05-31.1';
 const APP_VERSION_KEY = 'arovate_app_version';
 
@@ -4616,7 +4616,44 @@ function renderUserDashboard(viewWrap) {
   });
 }
 
-// --- App Entry Initialization ---
+// --- Path-Based Router ---
+// Detects whether the user is on "/" (landing page) or "/signup" (onboarding app).
+// app.js is loaded at bottom of <body>, so the DOM is fully parsed when this runs.
+
+(function arovateRouter() {
+  const path     = window.location.pathname;
+  const isSignup = (path === '/signup' || path === '/signup/');
+
+  const lpRoot   = document.getElementById('lp-root');
+  const appShell = document.getElementById('app-shell');
+
+  if (isSignup) {
+    // --- SIGNUP / ONBOARDING MODE ---
+    if (appShell) appShell.style.display = '';
+    if (lpRoot)   lpRoot.style.display   = 'none';
+    // Ensure onboarding CSS body overflow:hidden applies
+    document.documentElement.classList.remove('lp-active');
+    document.body.classList.remove('lp-active');
+  } else {
+    // --- LANDING PAGE MODE ---
+    if (lpRoot)   lpRoot.style.display   = '';
+    if (appShell) appShell.style.display = 'none';
+    // Allow scroll for landing page
+    document.documentElement.classList.add('lp-active');
+    document.body.classList.add('lp-active');
+    // app.js is deferred to bottom of body, so DOM is ready. Init immediately.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLandingPage);
+    } else {
+      initLandingPage();
+    }
+    // Do NOT fall through to the onboarding DOMContentLoaded handler below.
+    return;
+  }
+})();
+
+
+// --- App Entry Initialization (only runs on /signup) ---
 document.addEventListener('DOMContentLoaded', () => {
 
   // 0. SELF-HEALING BOOT: Unregister stale service workers + version check
@@ -4654,6 +4691,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })();
 
+  // Guard: only run onboarding init when the app shell is visible
+  const appShell = document.getElementById('app-shell');
+  if (!appShell || appShell.style.display === 'none') return;
+
   // 1. Initialize Canvas Background Engine
   initAmbientCanvas();
   
@@ -4679,3 +4720,242 @@ document.addEventListener('DOMContentLoaded', () => {
       renderActiveStep();
     });
 });
+
+
+// =============================================================================
+// LANDING PAGE INTERACTIVITY
+// All functions below are prefixed `lp` to prevent any collision with app code.
+// =============================================================================
+
+// --- Data ---
+const LP_SANDBOX_PROMPTS = [
+  'What drained most of your energy today, and why do you think it affected you?',
+  'What distracted you the most today?',
+  'What is one thing you avoided even though it mattered?',
+  'Which part of your life feels most out of balance right now?',
+  'What gave you momentum today?',
+  'Where do you feel stuck: health, focus, studies, relationships, peace, or motivation?',
+  'What is one small thing you could improve tomorrow?',
+  'What thought kept repeating in your mind today?'
+];
+
+const LP_FEATURE_TABS = {
+  reflect: {
+    title: 'Reflect',
+    iconSvg: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/>',
+    desc: 'Arovate provides non-judgmental, structured prompts that invite deep reflection on your daily life, routines, and inner thoughts, opening a pathway to true self-discovery.'
+  },
+  identify: {
+    title: 'Identify',
+    iconSvg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+    desc: 'By analyzing your answers and choices over time, the operating system helps you easily spot systemic patterns, positive habits, and negative triggers across all life dimensions.'
+  },
+  improve: {
+    title: 'Improve',
+    iconSvg: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    desc: 'Transform self-knowledge into deliberate progress. Define clear intentions, track small course corrections, and move forward with unwavering focus and direction.'
+  }
+};
+
+const LP_REFLECTION_RULES = [
+  { area: 'Health',        keywords: ['sleep','tired','food','workout','gym','body','energy','lazy','sick','routine'],          advice: 'Listen to your physical body. Rest is active recovery, not wasted time. Tomorrow, prioritize an exact sleep schedule or a nourishing meal to restore energy equilibrium.' },
+  { area: 'Focus',         keywords: ['distraction','reels','phone','scrolling','procrastination','attention','focus','discipline'], advice: 'Friction is your friend. Disconnect from digital triggers before they drain your attention reservoir. Tomorrow, try setting one 20-minute phone-free block before your highest-priority task.' },
+  { area: 'Education',     keywords: ['study','class','exam','learning','college','assignment','course','project','studies'],    advice: 'Clarity beats anxiety. Break your workload into bite-sized sprints rather than viewing it as a mountain. Tomorrow, focus purely on completing one micro-task in a single undisturbed focus block.' },
+  { area: 'Relationships', keywords: ['friend','family','girlfriend','boyfriend','partner','social','lonely','people','connection'], advice: 'Nurture genuine bonds. Real human support balances the strain of individual pursuits. Tomorrow, send one appreciative text or have a brief, distraction-free conversation with someone who grounds you.' },
+  { area: 'Peace',         keywords: ['stress','anxiety','overthinking','anger','calm','mental','pressure','mood'],               advice: 'Your mind needs empty space to breathe. Emotional waves are indicators, not permanent realities. Tomorrow, take 5 deep diaphragmatic breaths during a transition moment to reset your autonomic nervous system.' },
+  { area: 'Motivation',    keywords: ['purpose','goal','ambition','stuck','drive','confidence','future','direction'],             advice: 'Action precedes motivation. Momentum is built in small increments, not giant leaps. Tomorrow, pick the absolute smallest, easiest task and complete it first to kickstart your internal momentum engine.' }
+];
+
+// --- Landing Page State ---
+let _lpPromptIndex = 0;
+let _lpActiveTab   = 'reflect';
+let _lpSynthesizing = false;
+let _lpHasResult    = false;
+
+// --- Main Init ---
+function initLandingPage() {
+  // Mobile menu
+  const toggle = document.getElementById('lp-mobile-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', lpToggleMobileMenu);
+  }
+
+  // Textarea char counter + submit enable/disable
+  const textarea = document.getElementById('lp-sandbox-textarea');
+  if (textarea) {
+    textarea.addEventListener('input', function() {
+      const count = document.getElementById('lp-char-count');
+      if (count) count.textContent = this.value.length + '/240';
+      const submitBtn = document.getElementById('lp-sandbox-submit-btn');
+      if (submitBtn) submitBtn.disabled = (!this.value.trim() || _lpSynthesizing || _lpHasResult);
+      const resetBtn = document.getElementById('lp-sandbox-reset-btn');
+      if (resetBtn) {
+        if (this.value.trim()) resetBtn.classList.add('lp-visible');
+        else resetBtn.classList.remove('lp-visible');
+      }
+    });
+  }
+
+  // Smooth-scroll for anchor links inside landing page
+  document.querySelectorAll('#lp-root a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+}
+
+// --- Mobile Menu ---
+function lpToggleMobileMenu() {
+  const nav       = document.getElementById('lp-mobile-nav');
+  const iconMenu  = document.getElementById('lp-icon-menu');
+  const iconClose = document.getElementById('lp-icon-close');
+  if (!nav) return;
+  const isOpen = nav.classList.toggle('lp-open');
+  if (iconMenu)  iconMenu.style.display  = isOpen ? 'none'  : '';
+  if (iconClose) iconClose.style.display = isOpen ? ''      : 'none';
+}
+
+function lpCloseMobileMenu() {
+  const nav       = document.getElementById('lp-mobile-nav');
+  const iconMenu  = document.getElementById('lp-icon-menu');
+  const iconClose = document.getElementById('lp-icon-close');
+  if (nav) nav.classList.remove('lp-open');
+  if (iconMenu)  iconMenu.style.display  = '';
+  if (iconClose) iconClose.style.display = 'none';
+}
+
+// --- Feature Tabs ---
+function lpSwitchTab(tabId) {
+  _lpActiveTab = tabId;
+  const tab = LP_FEATURE_TABS[tabId];
+  if (!tab) return;
+
+  // Update button states
+  Object.keys(LP_FEATURE_TABS).forEach(id => {
+    const btn = document.getElementById('lp-tab-btn-' + id);
+    if (btn) {
+      btn.classList.toggle('lp-active', id === tabId);
+    }
+  });
+
+  // Update card content
+  const titleText = document.getElementById('lp-tab-card-title-text');
+  const cardDesc  = document.getElementById('lp-tab-card-desc');
+  const cardIcon  = document.getElementById('lp-tab-card-icon');
+  const card      = document.getElementById('lp-tab-card');
+
+  if (titleText) titleText.textContent = tab.title + ' Journey';
+  if (cardDesc)  cardDesc.textContent  = tab.desc;
+  if (cardIcon)  cardIcon.innerHTML    = tab.iconSvg;
+
+  // Fade animation
+  if (card) {
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(-8px)';
+    card.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+    setTimeout(() => {
+      card.style.opacity   = '1';
+      card.style.transform = 'translateX(0)';
+    }, 30);
+  }
+}
+
+// --- Sandbox: Shuffle Prompt ---
+function lpShufflePrompt() {
+  let next = _lpPromptIndex;
+  while (next === _lpPromptIndex && LP_SANDBOX_PROMPTS.length > 1) {
+    next = Math.floor(Math.random() * LP_SANDBOX_PROMPTS.length);
+  }
+  _lpPromptIndex = next;
+
+  const promptEl = document.getElementById('lp-sandbox-prompt-text');
+  if (promptEl) promptEl.textContent = '\u201c' + LP_SANDBOX_PROMPTS[_lpPromptIndex] + '\u201d';
+
+  // Reset state
+  lpSandboxReset();
+}
+
+// --- Sandbox: Reset ---
+function lpSandboxReset() {
+  _lpSynthesizing = false;
+  _lpHasResult    = false;
+
+  const textarea  = document.getElementById('lp-sandbox-textarea');
+  const charCount = document.getElementById('lp-char-count');
+  const submitBtn = document.getElementById('lp-sandbox-submit-btn');
+  const resetBtn  = document.getElementById('lp-sandbox-reset-btn');
+  const loading   = document.getElementById('lp-sandbox-loading');
+  const result    = document.getElementById('lp-sandbox-result');
+
+  if (textarea)  { textarea.value = ''; textarea.disabled = false; }
+  if (charCount) charCount.textContent = '0/240';
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Synthesize Reflection'; }
+  if (resetBtn)  resetBtn.classList.remove('lp-visible');
+  if (loading)   loading.classList.remove('lp-visible');
+  if (result)    result.classList.remove('lp-visible');
+}
+
+// --- Sandbox: Submit ---
+function lpSandboxSubmit() {
+  const textarea = document.getElementById('lp-sandbox-textarea');
+  if (!textarea || !textarea.value.trim()) return;
+
+  _lpSynthesizing = true;
+  _lpHasResult    = false;
+
+  // Disable inputs
+  textarea.disabled = true;
+  const submitBtn = document.getElementById('lp-sandbox-submit-btn');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Synthesizing...'; }
+
+  // Show loading
+  const loading = document.getElementById('lp-sandbox-loading');
+  if (loading) loading.classList.add('lp-visible');
+  const result  = document.getElementById('lp-sandbox-result');
+  if (result)   result.classList.remove('lp-visible');
+
+  // Client-side keyword analysis
+  const text    = textarea.value.toLowerCase();
+  const matched = LP_REFLECTION_RULES.filter(rule => rule.keywords.some(kw => text.includes(kw)));
+
+  let payload;
+  if (matched.length === 0) {
+    payload = {
+      areas: ['Focus', 'Peace'],
+      text:  'This seems connected to your general Focus and Peace dimensions. When direct keywords are absent, distractions often stem from a misalignment of current energy and subtle micro-intentions. Tomorrow, try dedicating a 15-minute undisturbed interval of pure focus to reset this pattern.'
+    };
+  } else {
+    const areaNames   = matched.map(m => m.area);
+    const adviceStr   = matched.map(m => m.advice).join(' ');
+    payload = {
+      areas: areaNames,
+      text:  'Your reflection is closely connected to the ' + areaNames.join(' & ') + ' dimension' + (areaNames.length > 1 ? 's' : '') + '. Here is what your self-analysis suggests: ' + adviceStr
+    };
+  }
+
+  // Simulate synthesis delay
+  setTimeout(() => {
+    _lpSynthesizing = false;
+    _lpHasResult    = true;
+
+    if (loading) loading.classList.remove('lp-visible');
+
+    // Render result
+    const tagsEl    = document.getElementById('lp-result-tags');
+    const textEl    = document.getElementById('lp-result-text');
+    if (tagsEl) {
+      tagsEl.innerHTML = payload.areas.map(a =>
+        '<span class="lp-result-tag">' + a + '</span>'
+      ).join('');
+    }
+    if (textEl) textEl.textContent = payload.text;
+    if (result) result.classList.add('lp-visible');
+
+    const resetBtn = document.getElementById('lp-sandbox-reset-btn');
+    if (resetBtn) resetBtn.classList.add('lp-visible');
+  }, 1800);
+}

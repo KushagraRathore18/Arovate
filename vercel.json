@@ -1,4 +1,7 @@
 {
+  "rewrites": [
+    { "source": "/signup", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -32,6 +35,15 @@
     },
     {
       "source": "/app.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/landing.css",
       "headers": [
         {
           "key": "Cache-Control",
